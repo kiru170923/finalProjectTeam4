@@ -3,9 +3,6 @@ import {getTags} from '../service/tags'
 import {getArticles} from '../service/articles'
 
 const Home = () => {
-    const [tags,setTags] = useState([]);
-    const [articles,setArticles] = useState([]);
-
 
     return (
         <div>

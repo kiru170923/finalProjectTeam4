@@ -1,29 +1,34 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {setUser} from '../service/user';
 import toast from 'react-hot-toast';
 import {setLogin} from '../service/user'
+import { useNavigate } from 'react-router-dom';
+import { ThemeContext } from '../App';
 const Login = () => {
-
-
+    const nav = useNavigate();
+    const {setIsLogin} = useContext(ThemeContext);
+    const {isLogin} = useContext(ThemeContext);
     const [currentAccountInfo, setCurrentAccountInfo] = useState({
         user: {
             email: '',
             password: ''
         }
     });
-    const [login,setCurrentLogin] = useState(false);
+
 
 
     useEffect(()=>{
-       if(login){
+       if(isLogin){
         setLogin(currentAccountInfo).then((res)=>{
-            console.log(res);
+            localStorage.setItem('token', res.user.token);
         })
-        setCurrentLogin(false);
+        nav('/home');
+        toast.success("Login Successfull.")
        }
        
-    }, [login]);
+    }, [isLogin]);
     
+    //get ussrer information from inpt
     function getUserInformation(event){
         setCurrentAccountInfo((pre)=> (
             {
@@ -37,7 +42,9 @@ const Login = () => {
         <div>
             <input type='text' onChange={()=>getUserInformation(event)} className='form-control mt-3' name='email' placeholder='Enter Email...'></input>
             <input type='text' onChange={()=>getUserInformation(event)} className='form-control mt-3' name='password' placeholder='Enter Password...'></input>
-            <div><button type='button' onClick={()=>setCurrentLogin(true)}>Login</button></div>
+            <div><button type='button' onClick={()=>{
+                setIsLogin(true);
+            }}>Login</button></div>
         </div>
     </div>
     );

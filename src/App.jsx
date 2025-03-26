@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { createContext, useState } from 'react'
 import './App.css'
 import Home from './pages/Home'
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
@@ -12,27 +12,29 @@ import Favorite from './pages/Favorite'
 import { Toaster } from "react-hot-toast";
 
 
+
+export const ThemeContext = createContext();
 function App() {
 
+
+  const [isLogin, setIsLogin] = useState(false);
   return (
     <>
+      <ThemeContext.Provider value={{isLogin, setIsLogin} }>
     <BrowserRouter>
     <Toaster/>
     <Header/>
     <Routes>
-      <Route path='/home' element={<Home/>}></Route>
+      <Route path='/home' element={<Articles/>}></Route>
       <Route path='/' element={<Home/>}></Route>
-      <Route path='/article' element={<Articles/>} ></Route>
       <Route path='/login' element = {<Login/>}></Route>
       <Route path='/signup' element={<Signup/>}></Route>
       <Route path='/profile' element={<Profile/>}></Route>
       <Route path='/favorite' element={<Favorite/>}></Route>
 
-
-
-      
     </Routes>
     </BrowserRouter>
+    </ThemeContext.Provider>
     </>
   )
 }

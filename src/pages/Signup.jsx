@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {setUser} from '../service/user';
 import toast from 'react-hot-toast';
 
@@ -11,10 +11,10 @@ const Signup = () => {
         email:'',
         password:''
       }
-    })
+    });
+  
     const [signup,setSignup] = useState(false);
-    const [userToken, setUserToken] = useState('');
-    
+
 
     // get new user ìnomation from input
     function setAccountInformation(event){
@@ -28,8 +28,6 @@ const Signup = () => {
         if (signup) {
             setUser(accountInfor).then((user) => {
                 if (user.user) {
-                    setUserToken(user.user.token);
-                    
                     setTimeout(()=>{
                         toast.success("Sign Up Successfully.")
                     }, 1000)

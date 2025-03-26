@@ -1,5 +1,5 @@
 #root {
-  max-width: 1280px;
+ 
   
   padding: 2rem;
   
@@ -9,4 +9,14 @@
 /* Header css */
 .header ul{
   margin: 0;
+}
+.header a{
+ color: white; 
+}
+.articles img{
+  
+  width: 100%;
+}
+.first-title input:checked{
+  border: 0px;
 }

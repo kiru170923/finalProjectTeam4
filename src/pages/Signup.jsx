@@ -50,7 +50,7 @@ const Signup = () => {
             <div>
                 <input required onChange={setAccountInformation}  type='text' className='form-control mt-3' name='username' placeholder='Enter UserName...'></input>
                 <input required onChange={setAccountInformation}  type='text' className='form-control mt-3' name='email' placeholder='Enter UserName...'></input>
-                <input required onChange={setAccountInformation}  type='text' className='form-control mt-3' name='password' placeholder='Enter Password...'></input>
+                <input required onChange={setAccountInformation}  type='password' className='form-control mt-3' name='password' placeholder='Enter Password...'></input>
                 <div><button type='button' className='mt-3' onClick={()=> setSignup(true)}>Sign up</button></div>
             </div>
         </div>

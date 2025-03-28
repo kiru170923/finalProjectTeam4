@@ -31,3 +31,21 @@ export const setLogin = async(userData) =>{
     }
 }
 
+
+
+export const getCurrentUser = async () => {
+  try {
+    const token = localStorage.getItem('token');
+    const res = await axios.get(API_URL + '/user', {
+      headers: {
+        'Authorization': 'Token ' + token
+      }
+    });
+    return res.data;
+  } catch (error) {
+    if (error.response) {
+      return { errors: error.response.data.errors };
+    }
+    console.log(error.message);
+  }
+}

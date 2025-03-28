@@ -15,18 +15,17 @@ const Login = () => {
         }
     });
 
-
-
     useEffect(()=>{
        if(isLogin){
         setLogin(currentAccountInfo).then((res)=>{
             localStorage.setItem('token', res.user.token);
+            console.log(res.user.bio)
         })
         nav('/home');
         toast.success("Login Successfull.")
        }
-       
     }, [isLogin]);
+
     
     //get ussrer information from inpt
     function getUserInformation(event){
@@ -36,12 +35,13 @@ const Login = () => {
             }
         ))
     }
-
     return (
+        
         <div>
+           
         <div>
             <input type='text' onChange={()=>getUserInformation(event)} className='form-control mt-3' name='email' placeholder='Enter Email...'></input>
-            <input type='text' onChange={()=>getUserInformation(event)} className='form-control mt-3' name='password' placeholder='Enter Password...'></input>
+            <input type='password' onChange={()=>getUserInformation(event)} className='form-control mt-3' name='password' placeholder='Enter Password...'></input>
             <div><button type='button' onClick={()=>{
                 setIsLogin(true);
             }}>Login</button></div>
@@ -49,5 +49,6 @@ const Login = () => {
     </div>
     );
 };
+
 
 export default Login;

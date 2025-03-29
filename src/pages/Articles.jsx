@@ -55,7 +55,7 @@ const Articles = ({}) => {
                     {isLogin ? (
                         <div className='col-7 d-flex justify-content-center align-items-center first-title p-3 rounded' 
                              style={{ backgroundColor: '#ffffff', border: '1px solid #ddd' }}>
-                            <img src='/src/assets/images/logo.PNG' style={{ width: '70px' }} />
+                            <img src='/images/logo.PNG' style={{ width: '70px' }} />
                             <input className='border-0' type="text" placeholder="What's new?" />
                             <div className='col-12 text-end mt-2'>
                             <BootstrapModal setArticles= {setArticles} setReload = {setReload}></BootstrapModal>
@@ -64,7 +64,7 @@ const Articles = ({}) => {
                     ) : (
                         <div className='text-center'>
                             <p><Link to={'/login'}>Login</Link> to share your world</p>
-                            <img src="/src/assets/images/world.gif" style={{ width: '80px' }} alt="" />
+                            <img src="images/world.gif" style={{ width: '80px' }} alt="" />
                         </div>
                     )}
                 </div>

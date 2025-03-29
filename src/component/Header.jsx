@@ -41,7 +41,7 @@ const Header = () => {
 
   </div>
   <Link to={'/home'}>
-  <div> <img src='/src/assets/images/logo.PNG' style={{width:'60px', borderRadius:'10px', position:"absolute", top:'10px'}}></img></div></Link>
+  <div> <img src='images/logo.PNG' style={{width:'60px', borderRadius:'10px', position:"absolute", top:'10px'}}></img></div></Link>
   
 
 </ul>

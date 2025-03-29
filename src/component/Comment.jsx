@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { uploadImage } from '../service/uploadImage';
 import { postNewComment } from '../service/comments';
 import { TextField, Button } from '@mui/material';
+import { ThemeContext } from '../App';
 
-const Comment = ({ slug, setReload }) => {
+const Comment = ({slug}) => {
+  const {setReload, reload} = useContext(ThemeContext);
   const [comment, setComment] = useState('');
   const [files, setFiles] = useState([]);
-
   const handleSubmit = async () => {
     let imageLinks = [];
 
@@ -16,6 +17,8 @@ const Comment = ({ slug, setReload }) => {
           const link = await uploadImage(file);
           imageLinks.push(link);
         }
+
+
       } catch (err) {
         alert('Upload lỗi: ' + err.message);
         return;
@@ -35,7 +38,7 @@ const Comment = ({ slug, setReload }) => {
       setFiles([]);
     });
 
-    setReload(prev => !prev);
+    setReload((pre) => !pre);
 
   };
 

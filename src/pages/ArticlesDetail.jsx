@@ -1,14 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { getCurrentArticle, getCurrentArticleComment, setFavoriteArticle, unsetFavoriteArticle } from '../service/articles';
 import { useNavigate, useParams } from 'react-router-dom';
 import Comment from '../component/Comment';
+import { ThemeContext } from '../App';
+import toast from 'react-hot-toast';
+import {deleteCurrentComment} from '../service/comments'
 
 const ArticlesDetail = () => {
     const { slug } = useParams();
     const [currentArticles, setCurrentArticles] = useState('');
     const [currentComments, setCurrentComments] = useState([]);
     const nav = useNavigate();
-    const [reload,setReload] = useState(false);
+    const {setReload, reload, currentUser} = useContext(ThemeContext);
+    
 
     useEffect(() => {
         getCurrentArticle(slug).then(res => {
@@ -62,6 +66,14 @@ const ArticlesDetail = () => {
         return parts;
     }
 
+    //del
+    function deleteComment(id){
+        deleteCurrentComment(slug, id).then(res =>{
+            toast.success("Delete succesfully")
+            setReload((pre) => !pre);
+        })
+    }
+
     return (
         <div className="container mt-4">
             <div className="article-card shadow-sm border rounded p-3" style={{
@@ -100,19 +112,29 @@ const ArticlesDetail = () => {
                 <div className="comment-section mt-3">
                     <h6 className="text-center fw-bold">Bình luận</h6>
                     <hr />
-                    {currentComments.map((comment) => {
+                    <div><Comment slug={slug} /></div>
+                    <hr></hr>
+                    {currentComments.map((comment, index) => {
                         if (!comment.body) return null;
                         const parts = parseCommentContent(comment.body);
 
                         return (
+
+                            
                             <div className="comment-card p-2 mb-3 rounded shadow-sm" style={{
                                 backgroundColor: '#f8f9fa'
                             }} key={comment.id}>
+                                {currentUser && comment.author.username === currentUser.username ? (
+    <button onClick={() => deleteComment(comment.id)}>Delete</button>
+) : null}
+
+                                {/* {comment.author.username === currentUser.username } */}
                                 <div className="d-flex align-items-center gap-3">
                                     <img src={comment.author.image} alt="" style={{
                                         width: '35px', height: '35px', borderRadius: '50%'
                                     }} />
-                                    <b>{comment.author.username}</b>
+                                    <b>{comment.author.username + (comment.author.username === currentUser.username ? ' (Bạn)' : '')}</b>
+
                                     <span className="text-muted" style={{ fontSize: '12px' }}>20h</span>
                                 </div>
                             
@@ -154,7 +176,7 @@ const ArticlesDetail = () => {
                         );
                     })}
                     <hr />
-                    <div><Comment slug={slug} setReload = {()=>setReload(pre => !pre)} /></div>
+                    
                 </div>
             </div>
         </div>

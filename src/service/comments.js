@@ -24,3 +24,23 @@ export const postNewComment = async(slug, commentData) =>{
     }
 }
 
+export const deleteCurrentComment = async(slug, id) =>{
+    try{
+        const res = await axios.delete(API_URL + '/articles/'+ slug + '/comments/' + id, {
+            headers: {
+                'Authorization': 'Token '+ localStorage.getItem('token')
+            }
+            
+        })
+        return res.data;
+    }
+    catch(error){
+        if(error.response){
+            return {errors: error.response.data.errors};
+        }
+
+    }
+}
+
+
+

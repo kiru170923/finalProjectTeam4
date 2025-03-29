@@ -3,7 +3,7 @@ import axios from 'axios';
 export const getArticles = async ()=>{
 
   try{
-    const userApi = 'https://node-express-conduit.appspot.com/api/articles'
+    const userApi = 'https://node-express-conduit.appspot.com/api/articles/?page=1'
     const res = await axios.get(userApi);
     return res.data;
   }
@@ -86,6 +86,29 @@ export const createNewArticle = async(article) =>{
     console.log(error);
   }
 }
+
+export const DeleteArticle = async(slug) =>{
+
+  try{
+    const userApi = 'https://node-express-conduit.appspot.com/api/articles/' + slug;
+    const res = await axios.delete(userApi, {
+      headers: {
+        'Authorization': 'Token '+localStorage.getItem('token')
+      }
+    });
+    return res.data; 
+
+  }
+  catch(error){
+    if(error.response){
+        return {errors: error.response.data.errors};
+    }
+
+}
+}
+
+
+
 
 
 

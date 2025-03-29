@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import {createNewArticle} from "../service/articles"
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
-const BootstrapModal = () => {
+const BootstrapModal = ({setArticles, articles}) => {
   const [show, setShow] = useState(false);
+  const nav = useNavigate();
   const [submit,setSubmit] = useState(false);
   const [articleData, setArticleData] = useState({
-  
     article: {
       title: '',
       description: '',
@@ -29,7 +30,16 @@ const BootstrapModal = () => {
   useEffect(()=>{
     if(submit){
       createNewArticle(articleData).then((res)=>{
-        toast.success("Đăng bài thành công !")
+        setArticleData({
+          article: {
+            title: '',
+            description: '',
+            body: '',
+            tagList: ''
+          }
+        })
+        toast.success("Đăng bài thành công !");
+        window.location.reload()
       })
     }
   },[submit])
@@ -94,7 +104,7 @@ const BootstrapModal = () => {
           <Button variant="secondary" onClick={() => setShow(false)}>
             Đóng
           </Button>
-          <Button onClick={()=>setSubmit(true)} variant="primary">Lưu</Button>
+          <Button onClick={()=>{setSubmit(true), setShow(false)}} variant="primary">Lưu</Button>
         </Modal.Footer>
       </Modal>
     </div>

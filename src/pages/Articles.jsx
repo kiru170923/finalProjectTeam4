@@ -4,13 +4,15 @@ import { ThemeContext } from '../App';
 import { Link, useNavigate } from 'react-router-dom';
 import { getCurrentUser } from '../service/user';
 import BootstrapModal from '../component/BootstrapModal';
+import {DeleteArticle} from '../service/articles';
+import toast from 'react-hot-toast';
 
-const Articles = () => {
-    
+const Articles = ({}) => {
     
     const [articles, setArticles] = useState([]);
     const [loading, setLoading] = useState(true);
     const { isLogin } = useContext(ThemeContext);
+    const {setReload, getFormatTime} = useContext(ThemeContext);
     const nav = useNavigate();
 
     useEffect(() => {
@@ -30,6 +32,19 @@ const Articles = () => {
         return nav('/articles/' + slug);
     }
 
+    function DeleteThisArticle(slug, e){
+        DeleteArticle(slug).then(res =>{
+            if(!res.errors){
+                setArticles((pre => pre.filter(article => (article.slug != slug))))
+                toast.success("Delete successfully !")
+            }
+            else{
+                toast.error("Delete failed!")
+            }
+          
+        });
+        e.stopPropagation();
+    }
     return (
         
         <div className='border rounded-top-4 shadow-sm p-3 bg-white' 
@@ -43,7 +58,7 @@ const Articles = () => {
                             <img src='/src/assets/images/logo.PNG' style={{ width: '70px' }} />
                             <input className='border-0' type="text" placeholder="What's new?" />
                             <div className='col-12 text-end mt-2'>
-                            <BootstrapModal></BootstrapModal>
+                            <BootstrapModal setArticles= {setArticles} setReload = {setReload}></BootstrapModal>
                             </div>
                         </div>
                     ) : (
@@ -58,19 +73,21 @@ const Articles = () => {
                 {loading ? <div className="text-center">Loading...</div> : null}
 
                 {articles.map(article => (
+                    
                     <div className='article_overview p-3 rounded mb-3 shadow-sm' 
                          onClick={() => goToThisArticle(article.slug)} 
                          style={{ cursor: 'pointer', transition: '0.3s', backgroundColor: '#fdfdfd' }}
                          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f8f9fa'}
                          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#fdfdfd'}>
                         <div className='row align-items-center'>
+                            <div className='btn btn-danger' onClick={(e)=>{DeleteThisArticle(article.slug, e)}}>Delete</div>
                             <div className='col-auto'>
                                 <img src={article.author.image} alt="" 
                                      className='rounded-circle' style={{ width: '40px', height: '40px', objectFit: 'cover' }} />
                             </div>
                             <div className='col-auto'>
                                 <b>{article.author.username}</b>
-                                <p className='text-muted' style={{ fontSize: '12px' }}>20h</p>
+                                <p className='text-muted' style={{ fontSize: '12px' }}>{getFormatTime(article.createdAt)}</p>
                             </div>
                             <div className='col ms-auto d-flex justify-content-end'>
                                 <button className='btn btn-light btn-sm p-1'><i className="bi bi-three-dots"></i></button>

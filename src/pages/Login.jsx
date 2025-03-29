@@ -7,7 +7,8 @@ import { ThemeContext } from '../App';
 const Login = () => {
     const nav = useNavigate();
     const {setIsLogin} = useContext(ThemeContext);
-    const {isLogin} = useContext(ThemeContext);
+    const {isLogin, setCurrentUser} = useContext(ThemeContext);
+    
     const [currentAccountInfo, setCurrentAccountInfo] = useState({
         user: {
             email: '',
@@ -19,7 +20,7 @@ const Login = () => {
        if(isLogin){
         setLogin(currentAccountInfo).then((res)=>{
             localStorage.setItem('token', res.user.token);
-            console.log(res.user.bio)
+            setCurrentUser(res.user);
         })
         nav('/home');
         toast.success("Login Successfull.")

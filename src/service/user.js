@@ -49,3 +49,39 @@ export const getCurrentUser = async () => {
     console.log(error.message);
   }
 }
+
+
+export const followAnUser = async (userName) => {
+  try {
+    const token = localStorage.getItem('token');
+    const res = await axios.post(API_URL + '/profiles/'+ userName + '/follow', {
+     
+    }, {
+      headers: {
+        'Authorization': 'Token ' + token
+      }
+    });
+    return res.data;
+  } catch (error) {
+    if (error.response) {
+      return { errors: error.response.data.errors };
+    }
+    console.log(error.message);
+  }
+}
+export const unFollowAnUser = async (userName) => {
+  try {
+    const token = localStorage.getItem('token');
+    const res = await axios.delete(API_URL + '/profiles/'+ userName + '/follow' , {
+      headers: {
+        'Authorization': 'Token ' + token
+      }
+    });
+    return res.data;
+  } catch (error) {
+    if (error.response) {
+      return { errors: error.response.data.errors };
+    }
+    console.log(error.message);
+  }
+}

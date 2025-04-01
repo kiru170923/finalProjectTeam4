@@ -42,6 +42,12 @@ const Comment = ({slug}) => {
 
   };
 
+  window.onkeydown = function (e) {
+    if(e.key == "Enter"){
+      handleSubmit();
+    }
+  }
+
   return (
     <div>
       <TextField

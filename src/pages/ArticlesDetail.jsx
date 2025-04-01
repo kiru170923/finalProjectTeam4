@@ -1,40 +1,53 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { getCurrentArticle, getCurrentArticleComment, setFavoriteArticle, unsetFavoriteArticle } from '../service/articles';
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import { getCurrentArticle, getCurrentArticleComment ,setFavoriteArticle, unsetFavoriteArticle} from '../service/articles';
 import { useNavigate, useParams } from 'react-router-dom';
 import Comment from '../component/Comment';
 import { ThemeContext } from '../App';
 import toast from 'react-hot-toast';
 import {deleteCurrentComment} from '../service/comments'
 
+
 const ArticlesDetail = () => {
     const { slug } = useParams();
     const [currentArticles, setCurrentArticles] = useState('');
     const [currentComments, setCurrentComments] = useState([]);
     const nav = useNavigate();
-    const {setReload, reload, currentUser} = useContext(ThemeContext);
-    
+    const {setReload, reload, getFormatTime} = useContext(ThemeContext);
+    const currentUser = JSON.parse(localStorage.getItem('user'));
+    const [favorite, setFavorite] = useState(false); 
+    const favoriteCountRef = useRef(null);
+
+    console.log(currentArticles)
 
     useEffect(() => {
         getCurrentArticle(slug).then(res => {
             setCurrentArticles(res.article);
+            favoriteCountRef.current = res.article.favoritesCount;
+            setFavorite(res.article.favorited);
         });
+    
         getCurrentArticleComment(slug).then(res => {
             setCurrentComments(res.comments);
-            console.log(res.comments);
         });
     }, [slug, reload]);
 
-    function ChangeFavoriteSatus() {
-        if (!currentArticles.favorited) {
+
+    function changeFavoriteStatus() {
+        if (!favorite) {
             setFavoriteArticle(slug).then((res) => {
                 setCurrentArticles(res.article);
+                setFavorite(true);
             });
         } else {
             unsetFavoriteArticle(slug).then((res) => {
                 setCurrentArticles(res.article);
+                setFavorite(false);
             });
         }
     }
+    
+
+
 
     function parseCommentContent(content) {
         const regex = /!\[image\]\((.*?)\)/g;
@@ -66,7 +79,6 @@ const ArticlesDetail = () => {
         return parts;
     }
 
-    //del
     function deleteComment(id){
         deleteCurrentComment(slug, id).then(res =>{
             toast.success("Delete succesfully")
@@ -90,13 +102,7 @@ const ArticlesDetail = () => {
                         <b>{currentArticles.author ? currentArticles.author.username : 'Unknown'}</b>
                     </div>
                     <div className="d-flex gap-2">
-                        <button onClick={ChangeFavoriteSatus} className="btn btn-light btn-sm">
-                            {currentArticles.favorited ? (
-                                <i className="bi bi-heart-fill text-danger"></i>
-                            ) : (
-                                <i className="bi bi-heart"></i>
-                            )} {currentArticles.favoritesCount}
-                        </button>
+                        <button onClick={()=>changeFavoriteStatus()} className="btn btn-light btn-sm"><i className="bi bi-heart"> {currentArticles.favoritesCount}</i></button>
                         <button className="btn btn-light btn-sm"><i className="bi bi-chat"></i></button>
                         <button className="btn btn-light btn-sm"><i className="bi bi-arrow-repeat"></i></button>
                     </div>
@@ -119,50 +125,46 @@ const ArticlesDetail = () => {
                         const parts = parseCommentContent(comment.body);
 
                         return (
-
-                            
                             <div className="comment-card p-2 mb-3 rounded shadow-sm" style={{
                                 backgroundColor: '#f8f9fa'
                             }} key={comment.id}>
-                                {currentUser && comment.author.username === currentUser.username ? (
-    <button onClick={() => deleteComment(comment.id)}>Delete</button>
-) : null}
+                                 <div/>
 
-                                {/* {comment.author.username === currentUser.username } */}
-                                <div className="d-flex align-items-center gap-3">
-                                    <img src={comment.author.image} alt="" style={{
+                                <div className="row">
+                                   <div className='d-flex align-align-items-center gap-3 col-6'> <img src={comment.author.image} alt="" style={{
                                         width: '35px', height: '35px', borderRadius: '50%'
                                     }} />
-                                    <b>{comment.author.username + (comment.author.username === currentUser.username ? ' (Bạn)' : '')}</b>
+                                    <b className='d-flex justify-content-center align-items-center'>{comment.author.username + (comment.author.username === currentUser.username ? ' (Bạn)' : '')}</b>
 
-                                    <span className="text-muted" style={{ fontSize: '12px' }}>20h</span>
+                                    <span className="text-muted d-flex justify-content-center align-items-center" style={{ fontSize: '12px' }}>{getFormatTime(comment.createdAt)}</span></div>
+                                    <div className='col-6'>{comment.author.username === currentUser.username ? (
+    <div className='w-100 text-end'><button style={{}} onClick={() => deleteComment(comment.id)}>Delete</button></div>
+) : null}</div>
                                 </div>
-                            
+                                 
                                 <div className="mt-2">
                                     {parts.some(part => part.type === 'text') && (
                                         <p className="m-0" style={{
-                                            width: "94%",
+                                            width: "95%",
                                             overflowWrap: "break-word",
+                                            paddingLeft:'34px'
                                         }}>
                                             {parts.filter(part => part.type === 'text').map(part => part.content).join(' ')}
                                         </p>
-                                        
                                     )}
                                 </div>
 
                                 <div className="mt-2 d-flex flex-wrap gap-2">
                                     {parts.filter(part => part.type === 'image').map((part, index) => (
-                                        <div key={index} className="image-box">
+                                        <div key={index} className="image-box" style={{width:'150px'}}>
                                             <img src={part.content} alt="comment-img"
                                                 className="rounded img-thumbnail"
                                                 style={{
-                                                    width: '100px',
-                                                    height: '100px',
+                                                    height: '180px',
                                                     objectFit: 'cover',
                                                     cursor: 'pointer',
                                                     transition: '0.3s',
                                                     border: '1px solid #ddd',
-                                                    padding: '5px',
                                                     backgroundColor: '#fff'
                                                 }}
                                                 onMouseEnter={(e) => e.target.style.transform = 'scale(1.1)'}
@@ -172,11 +174,9 @@ const ArticlesDetail = () => {
                                     ))}
                                 </div>
                             </div>
-                            
                         );
                     })}
                     <hr />
-                    
                 </div>
             </div>
         </div>

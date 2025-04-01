@@ -50,5 +50,16 @@ hr{
   justify-content: center;
   align-items: center;
   width: calc(33.333% - 10px); 
-  max-width: 100px;
+  
+}
+.image-box img{
+  width: 100% !important;
+}
+
+.popover-body {
+  white-space: normal;
+}
+.custom-popover {
+  max-width: 400px !important;
+ width: 400px!important;
 }

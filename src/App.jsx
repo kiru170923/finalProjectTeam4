@@ -20,7 +20,6 @@ function App() {
   
   const [reload,setReload] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
-  const [currentUser,setCurrentUser] = useState('');
 
   function getFormatTime(time){
     const date = new Date(time);
@@ -44,7 +43,7 @@ function App() {
 
   return (
     <>
-      <ThemeContext.Provider value={{isLogin, setIsLogin, setReload, reload, getFormatTime, setCurrentUser, currentUser} }>
+      <ThemeContext.Provider value={{isLogin, setIsLogin, setReload, reload, getFormatTime} }>
     <BrowserRouter>
     <Toaster/>
     <Header/>

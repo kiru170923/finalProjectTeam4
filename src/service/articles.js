@@ -11,7 +11,25 @@ export const getArticles = async ()=>{
     console.log('error')
     return null;
   }
+  
+} 
 
+export const getArticlesFromUsersYouFollowed = async ()=>{
+
+  try{
+    const userApi = 'https://node-express-conduit.appspot.com/api/articles/feed'
+    const res = await axios.get(userApi, {
+      headers: {
+        'Authorization': 'Token '+localStorage.getItem('token')
+      }
+    });
+    return res.data;
+  }
+  catch(error){
+    console.log('error')
+    return null;
+  }
+  
 } 
 
 export const getCurrentArticle = async(slug)=>{
@@ -92,6 +110,26 @@ export const DeleteArticle = async(slug) =>{
   try{
     const userApi = 'https://node-express-conduit.appspot.com/api/articles/' + slug;
     const res = await axios.delete(userApi, {
+      headers: {
+        'Authorization': 'Token '+localStorage.getItem('token')
+      }
+    });
+    return res.data; 
+
+  }
+  catch(error){
+    if(error.response){
+        return {errors: error.response.data.errors};
+    }
+
+}
+}
+
+export const updateArticle = async(slug, newArticle) =>{
+
+  try{
+    const userApi = 'https://node-express-conduit.appspot.com/api/articles/' + slug;
+    const res = await axios.put(userApi,newArticle, {
       headers: {
         'Authorization': 'Token '+localStorage.getItem('token')
       }

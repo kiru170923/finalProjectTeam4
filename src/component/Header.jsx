@@ -24,7 +24,7 @@ const Header = () => {
     <NavLink to={'/signup'}><li className='btn btn-dark'>Sign Up</li></NavLink>
     <NavLink to={'/login'}><li className='btn btn-dark'>Login</li></NavLink>
   </div>: <div className='d-flex gap-2'>
-  <NavLink to={'/profile'}><button style={{background:'#eaf3ff', width:'75px', paddingTop:'0px', paddingBottom:'2px'}}><img style={{width:'100%'}} src='/src/assets/images/profile_logo.png'></img></button></NavLink>
+  <NavLink to={'/profile'}><button style={{background:'#eaf3ff', width:'75px', paddingTop:'0px', paddingBottom:'2px'}}><img style={{width:'100%'}} src='/images/profile_logo.png'></img></button></NavLink>
   <div> 
   <NavLink to={'/login'}><li onClick={()=>{
     setIsLogin(false);
@@ -41,7 +41,7 @@ const Header = () => {
 
   </div>
   <Link to={'/home'}>
-  <div> <img src='images/logo.PNG' style={{width:'60px', borderRadius:'10px', position:"absolute", top:'10px'}}></img></div></Link>
+  <div> <img src='/images/logo.PNG' style={{width:'60px', borderRadius:'10px', position:"absolute", top:'10px'}}></img></div></Link>
   
 
 </ul>

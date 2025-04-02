@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { getArticles, setFavoriteArticle, unsetFavoriteArticle, DeleteArticle, getArticlesAsGuest } from '../service/articles';
 import { ThemeContext } from '../App';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import BootstrapModal from '../component/BootstrapModal';
 import toast from 'react-hot-toast';
 import SettingsMenu from '../component/SettingMenu';

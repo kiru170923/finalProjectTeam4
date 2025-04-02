@@ -13,8 +13,8 @@ const Taskbar = () => {
             <FaHome size={24} className="mb-4" style={{ cursor: 'pointer' }} onClick={() => navigate('/')} />
             <FaSearch size={24} className="mb-4" style={{ cursor: 'pointer' }} onClick={() => navigate('/search')} />
             {currentUser?<>
-                <FaPlusSquare size={24} className="mb-4" style={{ cursor: 'pointer' }} onClick={() => navigate('/create')} />
-            <FaHeart size={24} className="mb-4" style={{ cursor: 'pointer' }} onClick={() => navigate('/favorites')} />
+            <FaPlusSquare size={24} className="mb-4" style={{ cursor: 'pointer' }} onClick={() => navigate('/create')} />
+            <FaHeart size={24} className="mb-4" style={{ cursor: 'pointer' }} onClick={() => navigate('/home/favorites')} />
             <FaUser size={24} className="mb-4" style={{ cursor: 'pointer' }} onClick={() => navigate('/profile')} /></>: <></>}
         </div>
         

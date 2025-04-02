@@ -13,6 +13,7 @@ import { Toaster } from "react-hot-toast";
 import { differenceInMinutes, format } from "date-fns"
 import SearchComponent from './pages/SearchComponent';
 import Taskbar from './component/Taskbar';
+import BootstrapModal from './component/BootstrapModal';
 
 
 
@@ -59,8 +60,12 @@ function App() {
       <Route path='/profile' element={<Profile/>}></Route>
       <Route path='/favorite' element={<Favorite/>}></Route>
       <Route path='/search' element={<SearchComponent/>}></Route>
+      <Route path='/:create' element={<BootstrapModal/>}></Route>
+      <Route path='/home/:favorite' element={<Favorite/>}></Route>
 
 
+
+      BootstrapModal
     </Routes>
     </BrowserRouter>
     </ThemeContext.Provider>

@@ -4,7 +4,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Comment from '../component/Comment';
 import { ThemeContext } from '../App';
 import toast from 'react-hot-toast';
-import {deleteCurrentComment} from '../service/comments'
+import {deleteCurrentComment} from '../service/comments';
+import Viewer from "react-viewer";
 
 
 const ArticlesDetail = () => {
@@ -15,6 +16,7 @@ const ArticlesDetail = () => {
     const {setReload, reload, getFormatTime} = useContext(ThemeContext);
     const currentUser = JSON.parse(localStorage.getItem('user'));
     const [favorite, setFavorite] = useState(false); 
+    const [visible, setVisible] = useState(false);
 
     
 
@@ -139,7 +141,7 @@ const ArticlesDetail = () => {
                                     }} />
                                     <b className='d-flex justify-content-center align-items-center'>{comment.author.username + (comment.author.username === currentUser.username ? ' (Bạn)' : '')}</b>
 
-                                    <span className="text-muted d-flex justify-content-center align-items-center" style={{ fontSize: '12px' }}>{getFormatTime(comment.createdAt)}</span>{ '' + comment.id}</div>
+                                    <span className="text-muted d-flex justify-content-center align-items-center" style={{ fontSize: '12px' }}>{getFormatTime(comment.createdAt)}</span></div>
                                     <div className='col-6'>{comment.author.username === currentUser.username ? (
     <div className='w-100 text-end'><button style={{}} onClick={() => deleteComment(comment.id)}>Delete</button></div>
 ) : null}</div>
@@ -160,8 +162,10 @@ const ArticlesDetail = () => {
                                 <div className="mt-2 d-flex flex-wrap gap-2">
                                     {parts.filter(part => part.type === 'image').map((part, index) => (
                                         <div key={index} className="image-box" style={{width:'150px'}}>
-                                            <img src={part.content} alt="comment-img"
+                                           {/* <a href={part.content} target='_blank'> */}
+                                           <img src={part.content} alt="comment-img"
                                                 className="rounded img-thumbnail"
+                                                onClick={()=> setVisible(true)}
                                                 style={{
                                                     height: '180px',
                                                     objectFit: 'cover',
@@ -173,6 +177,26 @@ const ArticlesDetail = () => {
                                                 onMouseEnter={(e) => e.target.style.transform = 'scale(1.1)'}
                                                 onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
                                             />
+                                            <Viewer
+                                            visible={visible}
+                                            onClose={()=> setVisible(false)}
+                                            images= {[{src: part.content, alt:'image'}]}
+                                            
+                                          
+                                            // zoomSpeed={0.5} // Điều chỉnh tốc độ zoom
+                                            // drag={false} // Không cho phép kéo ảnh
+                                            // downloadable // Hiển thị nút tải ảnh xuống
+                                            // toolbar={[
+                                            //     { key: "zoomIn", title: "Zoom In" },
+                                            //     { key: "zoomOut", title: "Zoom Out" },
+                                            //     { key: "rotateLeft", title: "Rotate Left" },
+                                            //     { key: "rotateRight", title: "Rotate Right" },
+                                            //     { key: "prev", title: "Previous" },
+                                            //     { key: "next", title: "Next" },
+                                            //     { key: "download", title: "Download" },
+                                            //   ]}
+                                            />
+                                           {/* </a> */}
                                         </div>
                                     ))}
                                 </div>
@@ -184,6 +208,8 @@ const ArticlesDetail = () => {
             </div>
         </div>
     );
+    
+    
 };
 
 export default ArticlesDetail;

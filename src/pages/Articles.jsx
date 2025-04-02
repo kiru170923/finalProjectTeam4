@@ -17,6 +17,7 @@ const Articles = () => {
     const currentUser = JSON.parse(localStorage.getItem('user'));
     const [reload, sReload] = useState(false);
     const nav = useNavigate();
+    const { article } = useParams();
 
     useEffect(() => {
         (currentUser ? getArticles(currentUser.token) : getArticlesAsGuest())
@@ -72,7 +73,6 @@ const Articles = () => {
             }
         )
     }
-
     function changeFavoriteStatus(e, favorite, slug) {
         e.stopPropagation();
         setArticles(prevArticles =>
@@ -86,14 +86,12 @@ const Articles = () => {
                     : article
             )
         );
-
         if (!favorite) {
             setFavoriteArticle(slug);
         } else {
             unsetFavoriteArticle(slug);
         }
     }
-
     return (
         <div className='border rounded-top-4 shadow-sm p-3 pt-0 mt-0 bg-white'
             style={{ width: '615px', margin: '20px auto', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>

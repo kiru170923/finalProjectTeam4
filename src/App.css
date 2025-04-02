@@ -63,3 +63,162 @@ hr{
   max-width: 400px !important;
  width: 400px!important;
 }
+/* General styling */
+.container {
+  padding: 20px;
+}
+
+.article-card {
+  max-width: 700px;
+  margin: 0 auto;
+  border-radius: 15px;
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.article-card .d-flex {
+  display: flex;
+}
+
+.article-card .justify-content-between {
+  justify-content: space-between;
+}
+
+.article-card .align-items-center {
+  align-items: center;
+}
+
+.article-card .pb-2 {
+  padding-bottom: 16px;
+}
+
+.article-card .border-bottom {
+  border-bottom: 1px solid #ddd;
+}
+
+.article-card .btn-light {
+  background-color: #f8f9fa;
+  border-color: #ddd;
+  color: #555;
+  padding: 6px 12px;
+}
+
+.article-card .btn-light:hover {
+  background-color: #e2e6ea;
+}
+
+.article-card .bi-heart-fill {
+  color: #dc3545;
+}
+
+.article-card .bi-heart {
+  color: #6c757d;
+}
+
+.article-card .bi-chat,
+.article-card .bi-arrow-repeat {
+  color: #6c757d;
+}
+
+.article-card .fw-bold {
+  font-weight: 600;
+}
+
+.article-card h5 {
+  font-size: 1.25rem;
+}
+
+.article-card p.text-muted {
+  color: #6c757d;
+}
+
+.comment-section {
+  margin-top: 30px;
+}
+
+.comment-section h6 {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.comment-card {
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  background-color: #f8f9fa;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.comment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.comment-header .d-flex {
+  display: flex;
+  gap: 10px;
+}
+
+.comment-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.username {
+  font-weight: bold;
+}
+
+.comment-time {
+  font-size: 12px;
+  color: #6c757d;
+}
+
+.delete-btn {
+  font-size: 12px;
+  color: #dc3545;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.delete-btn:hover {
+  text-decoration: underline;
+}
+
+.comment-body {
+  margin-top: 10px;
+}
+
+.comment-body p {
+  margin: 0;
+  overflow-wrap: break-word;
+  padding-left: 40px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.image-box {
+  width: 150px;
+  margin-right: 10px;
+}
+
+.image-box img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  transition: 0.3s ease;
+}
+
+.image-box img:hover {
+  transform: scale(1.1);
+}
+
+hr {
+  border-top: 1px solid #ddd;
+  margin: 20px 0;
+}

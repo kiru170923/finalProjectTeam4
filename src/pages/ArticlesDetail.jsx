@@ -15,14 +15,12 @@ const ArticlesDetail = () => {
     const {setReload, reload, getFormatTime} = useContext(ThemeContext);
     const currentUser = JSON.parse(localStorage.getItem('user'));
     const [favorite, setFavorite] = useState(false); 
-    const favoriteCountRef = useRef(null);
 
-    console.log(currentArticles)
+    
 
     useEffect(() => {
         getCurrentArticle(slug).then(res => {
             setCurrentArticles(res.article);
-            favoriteCountRef.current = res.article.favoritesCount;
             setFavorite(res.article.favorited);
         });
     
@@ -32,20 +30,24 @@ const ArticlesDetail = () => {
     }, [slug, reload]);
 
 
-    function changeFavoriteStatus() {
-        if (!favorite) {
+    
+
+    function changeFavoriteStatus(){
+        if (!favorite){
+            setFavorite(true);
             setFavoriteArticle(slug).then((res) => {
                 setCurrentArticles(res.article);
-                setFavorite(true);
+               
             });
         } else {
+            setFavorite(false);
             unsetFavoriteArticle(slug).then((res) => {
                 setCurrentArticles(res.article);
-                setFavorite(false);
+               
             });
         }
+        console.log(favorite)
     }
-    
 
 
 
@@ -102,7 +104,8 @@ const ArticlesDetail = () => {
                         <b>{currentArticles.author ? currentArticles.author.username : 'Unknown'}</b>
                     </div>
                     <div className="d-flex gap-2">
-                        <button onClick={()=>changeFavoriteStatus()} className="btn btn-light btn-sm"><i className="bi bi-heart"> {currentArticles.favoritesCount}</i></button>
+                        <button onClick={()=>changeFavoriteStatus()} className="btn btn-light btn-sm">{currentArticles.favorited ? 
+                        <i className="bi bi-heart-fill text-danger"> {currentArticles.favoritesCount}</i>: <i className="bi bi-heart"> {currentArticles.favoritesCount}</i>}</button>
                         <button className="btn btn-light btn-sm"><i className="bi bi-chat"></i></button>
                         <button className="btn btn-light btn-sm"><i className="bi bi-arrow-repeat"></i></button>
                     </div>
@@ -136,7 +139,7 @@ const ArticlesDetail = () => {
                                     }} />
                                     <b className='d-flex justify-content-center align-items-center'>{comment.author.username + (comment.author.username === currentUser.username ? ' (Bạn)' : '')}</b>
 
-                                    <span className="text-muted d-flex justify-content-center align-items-center" style={{ fontSize: '12px' }}>{getFormatTime(comment.createdAt)}</span></div>
+                                    <span className="text-muted d-flex justify-content-center align-items-center" style={{ fontSize: '12px' }}>{getFormatTime(comment.createdAt)}</span>{ '' + comment.id}</div>
                                     <div className='col-6'>{comment.author.username === currentUser.username ? (
     <div className='w-100 text-end'><button style={{}} onClick={() => deleteComment(comment.id)}>Delete</button></div>
 ) : null}</div>

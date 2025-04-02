@@ -3,6 +3,7 @@ import { uploadImage } from '../service/uploadImage';
 import { postNewComment } from '../service/comments';
 import { TextField, Button } from '@mui/material';
 import { ThemeContext } from '../App';
+import toast from 'react-hot-toast';
 
 const Comment = ({slug}) => {
   const {setReload, reload} = useContext(ThemeContext);
@@ -33,10 +34,22 @@ const Comment = ({slug}) => {
       ? `${comment}\n${imagesMarkdown}`
       : comment;
 
-    await postNewComment(slug, body).then((res) => {
-      setComment('');
-      setFiles([]);
-    });
+    // await postNewComment(slug, body).then((res) => {
+    //   setComment('');
+    //   setFiles([]);
+    // });
+
+    await toast.promise(
+       postNewComment(slug, body),{
+        loading: "dang tai",
+        success: () =>{
+          toast.success("thành công!");
+          setComment('');
+          setFiles([]);
+        },
+        error: " Lỗi !"
+      }
+    )
 
     setReload((pre) => !pre);
 

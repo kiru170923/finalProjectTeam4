@@ -1,9 +1,26 @@
 import axios from 'axios';
 
-export const getArticles = async ()=>{
+export const getArticles = async (token)=>{
 
   try{
-    const userApi = 'https://node-express-conduit.appspot.com/api/articles/?page=1'
+    const userApi = 'https://node-express-conduit.appspot.com/api/articles'
+    const res = await axios.get(userApi, {
+      headers: {
+        'Authorization': 'Bearer '+ token
+      }
+    });
+    return res.data;
+  }
+  catch(error){
+    console.log('error')
+    return null;
+  }
+} 
+
+export const getAllArticles = async ()=>{
+
+  try{
+    const userApi = 'https://node-express-conduit.appspot.com/api/articles/?limit=450'
     const res = await axios.get(userApi);
     return res.data;
   }
@@ -11,16 +28,28 @@ export const getArticles = async ()=>{
     console.log('error')
     return null;
   }
-  
 } 
-
-export const getArticlesFromUsersYouFollowed = async ()=>{
+export const getArticlesAsGuest = async ()=>{
 
   try{
-    const userApi = 'https://node-express-conduit.appspot.com/api/articles/feed'
+    const userApi = 'https://node-express-conduit.appspot.com/api/articles'
+    const res = await axios.get(userApi
+    );
+    return res.data;
+  }
+  catch(error){
+    console.log('error')
+    return null;
+  }
+} 
+
+export const getArticlesFromUsersYouFollowed = async (token)=>{
+
+  try{
+    const userApi = 'https://node-express-conduit.appspot.com/api/articles/feed?limit='
     const res = await axios.get(userApi, {
       headers: {
-        'Authorization': 'Token '+localStorage.getItem('token')
+        'Authorization': 'Token '+ token
       }
     });
     return res.data;
@@ -36,7 +65,11 @@ export const getCurrentArticle = async(slug)=>{
   try{
 
     const userApi = 'https://node-express-conduit.appspot.com/api/articles/' + slug;
-    const res = await axios.get(userApi);
+    const res = await axios.get(userApi, {
+      headers: {
+        'Authorization': 'Token '+localStorage.getItem('token')
+      }
+    });
     return res.data;
   }
   catch(error){
@@ -70,6 +103,8 @@ export const setFavoriteArticle = async(slug)=>{
     console.log(error);
   }
 }
+
+
 
 export const unsetFavoriteArticle = async(slug)=>{
   try{
@@ -146,7 +181,21 @@ export const updateArticle = async(slug, newArticle) =>{
 }
 
 
+export const getCurrentFavoriteStatus = async(username)=>{
+  try{
 
+    const userApi = 'https://node-express-conduit.appspot.com/api/profiles/' + username;
+    const res = await axios.get(userApi, {
+      headers: {
+        'Authorization': 'Bearer '+localStorage.getItem('token')
+      }
+    });
+    return res.data;
+  }
+  catch(error){
+    console.log(error);
+  }
+}
 
 
 

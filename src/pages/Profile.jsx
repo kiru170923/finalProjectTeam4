@@ -1,33 +1,41 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import CurrentComment from '../component/CurrentComment';
 import CurrentPost from '../component/CurrentPost';
+import EditProfileModal from '../component/ChangeProfileForm';
+import { ThemeContext } from '../App';
 
 const Profile = () => {
-    // set xem section nào sẽ hiển thị.
+        const {reload, setReload} = useContext(ThemeContext);
+        const [currentUser, setCurrentUser] = useState(null)
+    
     const [section, setSection] = useState('Current Post');
+   useEffect(()=>{
+    const user = JSON.parse(localStorage.getItem('user'));//
+    setCurrentUser(user)
+   }, [reload])
+// 
 
     function getSection(event) {
         const selectedSection = event.target.textContent;
         setSection(selectedSection);
     }
 
-    // Lấy ra profile hiện tại của mình. 
     return (
         <div className="d-flex justify-content-center mt-4">
             <div className="border rounded-4 p-4 shadow-sm bg-white" style={{ width: '600px' }}>
                 <div className="d-flex justify-content-between align-items-center">
                     <div>
-                        <p className="fw-bold mb-1">UserName</p>
-                        <p className="text-muted">Kieu Dinh Doan</p>
+                        <p className="fw-bold mb-1">{currentUser?.username}</p>
+                        <p className="text-muted">{currentUser?.bio}</p>
                     </div>
                     <img style={{ width: '50px', height: '50px' }} 
                          className="rounded-circle border"
-                         src="/src/assets/images/profile_logo.png" 
+                         src={currentUser?.image} 
                          alt="Profile Logo" />
                 </div>
 
                 <div className="text-center mt-3">
-                    <button className="btn btn-outline-primary px-4 fw-semibold">Edit Profile</button>
+                    <EditProfileModal/>
                 </div>
                 
                 <hr />

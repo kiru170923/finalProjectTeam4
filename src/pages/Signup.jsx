@@ -1,57 +1,99 @@
-import React, { useContext, useEffect, useState } from 'react';
-import {setUser} from '../service/user';
+import React, { useEffect, useState } from 'react';
+import { setUser } from '../service/user';
 import toast from 'react-hot-toast';
-
+import { useNavigate } from 'react-router-dom';
 
 const Signup = () => {
-
+    const nav = useNavigate();
     const [accountInfor, setAccountInfo] = useState({
-      user:{
-     username:'',
-        email:'',
-        password:''
-      }
+        user: {
+            username: '',
+            email: '',
+            password: ''
+        }
     });
-  
-    const [signup,setSignup] = useState(false);
-
-
-    // get new user ìnomation from input
-    function setAccountInformation(event){
+    const [signup, setSignup] = useState(false);
+    
+    // get new user information from input
+    function setAccountInformation(event) {
         setAccountInfo((prev) => ({
             user: { ...prev.user, [event.target.name]: event.target.value }
         }));
-        
     }
-
+    
     useEffect(() => {
         if (signup) {
-            setUser(accountInfor).then((user) => {
-                if (user.user) {
-                    setTimeout(()=>{
-                        toast.success("Sign Up Successfully.")
-                    }, 1000)
-                    
-                } 
-                else if(user.errors){
-                    user.errors.email === "is already taken." ? toast.error("This Email already taken."): toast.error("please input email information")
-                    user.errors.username === "is already taken." ? toast.error("This Username already taken."): toast.error("please input username information")
-                    
+            toast.promise(
+                setUser(accountInfor),
+                {
+                    loading: "Signing up...",
+                    success: (user) => {
+                        if (user.user) {
+                            setTimeout(() => {
+                                toast.success("Sign Up Successfully.");
+                                nav('/login');
+                            }, 1000);
+                            return "Sign Up Successfully.";
+                        } else {
+                            throw user.errors;
+                        }
+                    },
+                    error: (errors) => {
+                        if (errors.email === "is already taken.") {
+                            return "This Email is already taken.";
+                        }
+                        if (errors.username === "is already taken.") {
+                            return "This Username is already taken.";
+                        }
+                        return "Please input valid information.";
+                    }
                 }
-                setSignup(false);
+            ).finally(() => {
+                setSignup(false); 
             });
         }
     }, [signup]);
     
-    
-
     return (
-        <div>
-            <div>
-                <input required onChange={setAccountInformation}  type='text' className='form-control mt-3' name='username' placeholder='Enter UserName...'></input>
-                <input required onChange={setAccountInformation}  type='text' className='form-control mt-3' name='email' placeholder='Enter UserName...'></input>
-                <input required onChange={setAccountInformation}  type='password' className='form-control mt-3' name='password' placeholder='Enter Password...'></input>
-                <div><button type='button' className='mt-3' onClick={()=> setSignup(true)}>Sign up</button></div>
+        <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
+            <div className="d-flex flex-column align-items-center" style={{ marginTop: '-30vh' }}>
+                <h2>Sign Up</h2>
+                <input
+                    required
+                    onChange={setAccountInformation}
+                    type="text"
+                    className="form-control mb-3"
+                    name="username"
+                    placeholder="Enter Username..."
+                    style={{ width: '500px', padding: '8px', fontSize: '14px' }}
+                />
+                <input
+                    required
+                    onChange={setAccountInformation}
+                    type="text"
+                    className="form-control mb-3"
+                    name="email"
+                    placeholder="Enter Email..."
+                    style={{ width: '500px', padding: '8px', fontSize: '14px' }}
+                />
+                <input
+                    required
+                    onChange={setAccountInformation}
+                    type="password"
+                    className="form-control mb-3"
+                    name="password"
+                    placeholder="Enter Password..."
+                    style={{ width: '500px', padding: '8px', fontSize: '14px' }}
+                />
+                <div>
+                    <button
+                        type="button"
+                        onClick={() => setSignup(true)}
+                        className="btn btn-dark"
+                    >
+                        Register
+                    </button>
+                </div>
             </div>
         </div>
     );

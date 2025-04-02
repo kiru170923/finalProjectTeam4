@@ -17,7 +17,7 @@ const SettingsMenu = ({DeleteThisArticle, slug}) => {
             </Dropdown.Toggle>
 
             <Dropdown.Menu>
-                <Dropdown.Item href="#/action-1" onClick={()=>DeleteThisArticle(slug)}>Delete</Dropdown.Item>
+                <Dropdown.Item href="#/action-1" onClick={(e)=>DeleteThisArticle(slug, e)}>Delete</Dropdown.Item>
                 <Dropdown.Item href="#/action-2">Edit</Dropdown.Item>
             </Dropdown.Menu>
         </Dropdown>

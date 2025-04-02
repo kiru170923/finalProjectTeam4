@@ -11,6 +11,8 @@ import Articles from './pages/Articles'
 import Favorite from './pages/Favorite'
 import { Toaster } from "react-hot-toast";
 import { differenceInMinutes, format } from "date-fns"
+import SearchComponent from './pages/SearchComponent';
+import Taskbar from './component/Taskbar';
 
 
 
@@ -47,6 +49,7 @@ function App() {
     <BrowserRouter>
     <Toaster/>
     <Header/>
+     <Taskbar/>
     <Routes>
       <Route path='/home' element={<Articles/>}></Route>
       <Route path='/articles/:slug' element={<ArticlesDetail/>}></Route>
@@ -55,6 +58,8 @@ function App() {
       <Route path='/signup' element={<Signup/>}></Route>
       <Route path='/profile' element={<Profile/>}></Route>
       <Route path='/favorite' element={<Favorite/>}></Route>
+      <Route path='/search' element={<SearchComponent/>}></Route>
+
 
     </Routes>
     </BrowserRouter>

@@ -29,7 +29,7 @@ const BootstrapModal = ({setArticles, articles}) => {
       ...prevState,
       article: {
         ...prevState.article,
-        [name]: value
+        [name]: value, tagList: "Mai"
       }
     }));
   };
@@ -48,15 +48,13 @@ const BootstrapModal = ({setArticles, articles}) => {
     }
   }
 
-
-
   return (
     <div>
       <div className='row d-flex justify-content-center align-items-center mb-4' >
                           {isLogin ? (
                               <div className='col-7 d-flex justify-content-center align-items-center first-title p-3 rounded' 
                                    style={{ backgroundColor: '#ffffff', border: '1px solid #ddd' }} onClick={()=>openTab()}>
-                                  <img src={currentUser.image} style={{ width: '70px' }} onClick={(e) => e.stopPropagation()}  />
+                                  <img src={currentUser?.image} style={{ width: '70px' }} onClick={(e) => e.stopPropagation()}  />
                                   
                                   <div 
     className="input-homepage border-0"
@@ -109,16 +107,6 @@ const BootstrapModal = ({setArticles, articles}) => {
                 placeholder="Nội dung chính..."
                 name="body"
                 value={articleData.article.body}
-                onChange={handleChange}
-              />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Tag</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Tên Tag..."
-                name="tagList"
-                value={articleData.article.tagList}
                 onChange={handleChange}
               />
             </Form.Group>

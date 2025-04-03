@@ -61,7 +61,7 @@ function App() {
       <Route path='/favorite' element={<Favorite/>}></Route>
       <Route path='/search' element={<SearchComponent/>}></Route>
       <Route path='/:create' element={<BootstrapModal/>}></Route>
-      <Route path='/home/:favorite' element={<Favorite/>}></Route>
+      <Route path='/home/favorites' element={<Articles/>}></Route>
 
 
 

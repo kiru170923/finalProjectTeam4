@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { getArticles, setFavoriteArticle, unsetFavoriteArticle, DeleteArticle, getArticlesAsGuest } from '../service/articles';
+import { getArticles, setFavoriteArticle, unsetFavoriteArticle, DeleteArticle, getArticlesAsGuest, getArticlesFromUsersYouFollowed } from '../service/articles';
 import { ThemeContext } from '../App';
 import { useNavigate, useParams } from 'react-router-dom';
 import BootstrapModal from '../component/BootstrapModal';
@@ -8,7 +8,9 @@ import SettingsMenu from '../component/SettingMenu';
 import UserPreviewProfile from '../component/UserPreviewProfile';
 import ArticlesFollowed from './ArticlesFollowed';
 import Swal from 'sweetalert2';
+import { useLocation } from 'react-router-dom';
 import Taskbar from '../component/Taskbar';
+
 
 const Articles = () => {
     const [articles, setArticles] = useState([]);
@@ -17,20 +19,65 @@ const Articles = () => {
     const currentUser = JSON.parse(localStorage.getItem('user'));
     const [reload, sReload] = useState(false);
     const nav = useNavigate();
-    const { article } = useParams();
+    const location = useLocation();
+
+    const isFavoritePage = location.pathname === "/home/favorites";
+    const isHomepage = location.pathname === "/home";
+    const isHomepagee = location.pathname === "/";
+
+   
+    console.log(isFavoritePage)
+    
 
     useEffect(() => {
+
+
+        if (isFavoritePage) {
+            toast.promise(
+                getArticlesFromUsersYouFollowed(currentUser.token),
+                {
+                    loading: 'Đang tải bài viết...',
+                    success: (res) => {
+                        setArticles(res?.articles || []);
+                        return 'Tải bài viết thành công!';
+                    },
+                    error: 'Không thể tải bài viết, vui lòng thử lại sau!'
+                }
+            );
+        }
+
+        else{
         (currentUser ? getArticles(currentUser.token) : getArticlesAsGuest())
-            .then(data => {
-                setArticles(data.articles);
-                setLoading(false);
-            })
-            .catch(error => {
-                console.error("Error fetching articles:", error);
-                setArticles([]);
-                setLoading(false);
-            });
-    }, [reload]);
+        .then(data => {
+            setArticles(data.articles);
+            setLoading(false);
+        })
+        .catch(error => {
+            console.error("Error fetching articles:", error);
+            setArticles([]);
+            setLoading(false);
+        });
+        }
+    }, [reload, isHomepage, isHomepagee, isFavoritePage]);
+
+
+    // useEffect(() => {
+    //     if (isFavoritePage) {
+    //         toast.promise(
+    //             getArticlesFromUsersYouFollowed(currentUser.token),
+    //             {
+    //                 loading: 'Đang tải bài viết...',
+    //                 success: (res) => {
+    //                     setArticles(res?.articles || []);
+    //                     return 'Tải bài viết thành công!';
+    //                 },
+    //                 error: 'Không thể tải bài viết, vui lòng thử lại sau!'
+    //             }
+    //         );
+    //     }
+    // }, [isFavoritePage]);
+    
+
 
     function goToThisArticle(slug) {
         nav('/articles/' + slug);

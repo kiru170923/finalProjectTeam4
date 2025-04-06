@@ -1,16 +1,15 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { getArticles, setFavoriteArticle, unsetFavoriteArticle, DeleteArticle, getArticlesAsGuest, getArticlesFromUsersYouFollowed } from '../service/articles';
 import { ThemeContext } from '../App';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import BootstrapModal from '../component/BootstrapModal';
 import toast from 'react-hot-toast';
 import SettingsMenu from '../component/SettingMenu';
 import UserPreviewProfile from '../component/UserPreviewProfile';
 import ArticlesFollowed from './ArticlesFollowed';
 import Swal from 'sweetalert2';
-import { useLocation } from 'react-router-dom';
-import Taskbar from '../component/Taskbar';
-
+import { FiHeart, FiMessageSquare, FiRepeat, FiMoreHorizontal } from 'react-icons/fi';
+import { FaHeart } from 'react-icons/fa';
 
 const Articles = () => {
     const [articles, setArticles] = useState([]);
@@ -20,7 +19,6 @@ const Articles = () => {
     const [reload, sReload] = useState(false);
     const nav = useNavigate();
     const location = useLocation();
-
     const isFavoritePage = location.pathname === "/home/favorites";
     const isHomepage = location.pathname === "/home";
     const isHomepagee = location.pathname === "/";
@@ -99,7 +97,6 @@ const Articles = () => {
     };
 
     function DeleteThisArticle(slug, e) {
-        e.stopPropagation();
         // DeleteArticle(slug).then(res => {
         //     if (!res.errors) {
         //         toast.success("Delete successfully!");
@@ -139,68 +136,144 @@ const Articles = () => {
             unsetFavoriteArticle(slug);
         }
     }
-    return (
-        <div className='border rounded-top-4 shadow-sm p-3 pt-0 mt-0 bg-white'
-            style={{ width: '615px', margin: '20px auto', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <div className='d-flex justify-content-between w-100 mb-3'>
-               
-            </div>
-            <div className='articles' style={{ width: '590px' }}>
-                <BootstrapModal />
-                <hr />
-                {loading ? <div className="text-center"><img style={{width:'400px'}} src='/images/loading.gif'></img></div> : null}
-                {Array.isArray(articles) && articles.length > 0 ? (
-                    articles.map((article, index) => (
-                        <div key={article.slug || index}
-                            className='article_overview p-3 rounded mb-3 shadow-sm'
-                            onClick={(e) => { currentUser ? goToThisArticle(article.slug) : requireLogin(); e.stopPropagation(); }}
-                            style={{ cursor: 'pointer', transition: '0.3s', backgroundColor: '#fdfdfd' }}
-                            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f8f9fa'}
-                            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#fdfdfd'}>
 
-                            <div className='row align-items-center'>
-                                <div className='col-auto'>
-                                    <div className='d-flex justify-content-center align-items-start mt-0 rounded-circle'
-                                        onClick={(e) => e.stopPropagation()}>
-                                        {currentUser ? <UserPreviewProfile author={article?.author} /> : <div style={{ width: '40px', height: '40px' }}>
-                                            {<img style={{ width: '100%', height: '100%', borderRadius: '100%' }} src={article.author.image}></img>}</div>}
-                                    </div>
-                                </div>
-                                <div className='col-auto'>
-                                    <b>{article?.author?.username + (article?.author?.username === currentUser?.username ? ' (Bạn)' : '')}</b>
-                                    <p className='text-muted' style={{ fontSize: '12px' }}>
-                                        {article.createdAt ? getFormatTime(article.createdAt) : "Unknown time"}
-                                    </p>
-                                </div>
-                                <div className='col ms-auto d-flex justify-content-end align-items-center'>
-                                    {article?.author.username === currentUser?.username && (
-                                        <SettingsMenu DeleteThisArticle={DeleteThisArticle} slug={article.slug} />
-                                    )}
-                                </div>
-                            </div>
-                            <div className='mt-2'>
-                                <h6 className='fw-bold'>{article.title}</h6>
-                                <p className='text-muted'>{article.description}</p>
-                            </div>
-                            <div className='d-flex gap-2 mt-2'>
-                                {currentUser && (
-                                    <>
-                                        <button onClick={(e) => changeFavoriteStatus(e, article.favorited, article.slug)}
-                                            className='btn btn-outline-danger btn-sm'>
-                                            {article?.favorited ? <i className="bi bi-heart-fill text-danger"></i> : <i className="bi bi-heart"></i>} {article.favoritesCount}
-                                        </button>
-                                        <button className='btn btn-outline-secondary btn-sm'><i className="bi bi-chat"></i></button>
-                                        <button className='btn btn-outline-primary btn-sm'><i className="bi bi-arrow-repeat"></i></button>
-                                    </>
-                                )}
-                            </div>
-                        </div>
+    return (
+        <div className="articles-container">
+            {/* Header */}
+            <div className="articles-header">
+                <h2 className="articles-title">
+                    {isFavoritePage ? "Bài viết đã lưu" : "Bài viết mới nhất"}
+                </h2>
+                {currentUser && <BootstrapModal />}
+            </div>
+
+            {/* Loading State */}
+            {loading && (
+                <div className="loading-container">
+                    {[...Array(3)].map((_, i) => (
+                        <ArticleSkeleton key={i} />
+                    ))}
+                </div>
+            )}
+
+            {/* Articles List */}
+            <div className="articles-list">
+                {articles.length > 0 ? (
+                    articles.map((article) => (
+                        <ArticleItem
+                            key={article.slug}
+                            article={article}
+                            currentUser={currentUser}
+                            onArticleClick={currentUser ? () => goToThisArticle(article.slug) : requireLogin}
+                            onFavoriteClick={(e) => changeFavoriteStatus(e, article.favorited, article.slug)}
+                            onDeleteClick={(e) => DeleteThisArticle(article.slug, e)}
+                            getFormatTime={getFormatTime}
+                        />
                     ))
                 ) : (
-                    <p className="text-center"></p>
+                    <div className="empty-state">
+                        <div className="empty-icon">📭</div>
+                        <p className="empty-text">
+                            {isFavoritePage 
+                                ? "Bạn chưa lưu bài viết nào" 
+                                : "Không có bài viết nào để hiển thị"}
+                        </p>
+                    </div>
                 )}
             </div>
-            <div><ArticlesFollowed /></div>
+
+            {/* Sidebar (optional) */}
+            {isLogin && (
+                <div className="articles-sidebar">
+                    <ArticlesFollowed />
+                </div>
+            )}
+        </div>
+    );
+};
+
+// Component ArticleItem
+const ArticleItem = ({ article, currentUser, onArticleClick, onFavoriteClick, onDeleteClick, getFormatTime }) => {
+    return (
+        <div className="article-card" onClick={onArticleClick}>
+            {/* Article Header */}
+            <div className="article-header">
+                <div className="author-info">
+                    <UserPreviewProfile author={article.author} />
+                    <div className="author-details">
+                        <span className="author-name">
+                            {article.author.username}
+                            {currentUser?.username === article.author.username && (
+                                <span className="you-badge">Bạn</span>
+                            )}
+                        </span>
+                        <span className="article-time">
+                            {getFormatTime(article.createdAt)}
+                        </span>
+                    </div>
+                </div>
+                
+                {currentUser?.username === article.author.username && (
+                    <SettingsMenu 
+                        DeleteThisArticle={onDeleteClick} 
+                        slug={article.slug}
+                        icon={<FiMoreHorizontal />}
+                    />
+                )}
+            </div>
+
+            <div className="article-content">
+                <h3 className="article-title">{article.title}</h3>
+                <p className="article-description">{article.description}</p>
+            </div>
+
+            <div className="article-footer">
+                <button 
+                    className={`action-btn ${article.favorited ? 'active' : ''}`}
+                    onClick={(e) => onFavoriteClick(e)}
+                >
+                    {article.favorited ? (
+                        <FaHeart className="action-icon filled" />
+                    ) : (
+                        <FiHeart className="action-icon" />
+                    )}
+                    <span>{article.favoritesCount}</span>
+                </button>
+                
+                <button className="action-btn">
+                    <FiMessageSquare className="action-icon" />
+                    <span>Bình luận</span>
+                </button>
+                
+                <button className="action-btn">
+                    <FiRepeat className="action-icon" />
+                    <span>Chia sẻ</span>
+                </button>
+            </div>
+        </div>
+    );
+};
+
+// Component ArticleSkeleton (for loading state)
+const ArticleSkeleton = () => {
+    return (
+        <div className="article-skeleton">
+            <div className="skeleton-header">
+                <div className="skeleton-avatar"></div>
+                <div className="skeleton-author">
+                    <div className="skeleton-line short"></div>
+                    <div className="skeleton-line shorter"></div>
+                </div>
+            </div>
+            <div className="skeleton-content">
+                <div className="skeleton-line medium"></div>
+                <div className="skeleton-line long"></div>
+            </div>
+            <div className="skeleton-footer">
+                <div className="skeleton-action"></div>
+                <div className="skeleton-action"></div>
+                <div className="skeleton-action"></div>
+            </div>
         </div>
     );
 };

@@ -1,0 +1,270 @@
+/* Main Container */
+.chat-app-container {
+  display: flex;
+  flex-direction: column;
+  height: 75vh;
+  max-width: 1200px;
+  margin: 20px auto;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+}
+
+/* Header */
+.chat-header {
+  background-color: #4a76a8;
+  color: white;
+  padding: 15px 20px;
+  text-align: center;
+}
+
+.chat-header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.chat-tabs {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.tab-button {
+  background: transparent;
+  border: none;
+  color: white;
+  padding: 8px 20px;
+  margin: 0 5px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.tab-button.active {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.tab-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Main Content */
+.chat-main-container {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Contacts Sidebar */
+.contacts-sidebar {
+  width: 250px;
+  border-right: 1px solid #e1e1e1;
+  display: flex;
+  flex-direction: column;
+  background-color: #f9f9f9;
+}
+
+.contacts-header {
+  padding: 15px;
+  border-bottom: 1px solid #e1e1e1;
+  background-color: #f0f0f0;
+}
+
+.contacts-header h3 {
+  margin: 0;
+  font-size: 1rem;
+  color: #555;
+}
+
+.contacts-list {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 15px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  border-bottom: 1px solid #eee;
+}
+
+.contact-item:hover {
+  background-color: #f0f0f0;
+}
+
+.contact-item.active {
+  background-color: #e1e9f5;
+}
+
+.contact-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 10px;
+}
+
+.contact-info {
+  flex: 1;
+}
+
+.contact-name {
+  margin: 0;
+  font-weight: 500;
+  color: #333;
+}
+
+.contact-status {
+  margin: 2px 0 0;
+  font-size: 0.75rem;
+  color: #666;
+}
+
+/* Chat Area */
+.chat-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: #f5f5f5;
+}
+
+.messages-container {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  background-color: #e5ddd5;
+  background-image: url('https://web.whatsapp.com/img/bg-chat-tile-light_a4be8c74.png');
+  background-repeat: repeat;
+}
+
+.message {
+  display: flex;
+  margin-bottom: 15px;
+  max-width: 100%;
+}
+
+.message.sent {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+
+.message.received {
+  align-self: flex-start;
+}
+
+.message-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  align-self: flex-end;
+  margin: 0 8px;
+}
+
+.message-content {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 12px;
+  border-radius: 8px;
+  position: relative;
+}
+
+.message.sent .message-content {
+  background-color: #dcf8c6;
+  border-top-right-radius: 0;
+}
+
+.message.received .message-content {
+  background-color: white;
+  border-top-left-radius: 0;
+}
+
+.message-sender {
+  font-weight: 600;
+  font-size: 0.8rem;
+  color: #555;
+  margin-bottom: 3px;
+}
+
+.message-text {
+  font-size: 0.9rem;
+  line-height: 1.4;
+  word-wrap: break-word;
+}
+
+.message-time {
+  font-size: 0.7rem;
+  color: #999;
+  text-align: right;
+  margin-top: 3px;
+}
+
+/* Input Area */
+.message-input-container {
+  display: flex;
+  padding: 10px;
+  background-color: #f0f0f0;
+  border-top: 1px solid #ddd;
+  align-items: center;
+}
+
+.message-input {
+  flex: 1;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 20px;
+  outline: none;
+  font-size: 0.9rem;
+  background-color: white;
+}
+
+.send-button {
+  background-color: #4a76a8;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  margin-left: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+
+.send-button:hover {
+  background-color: #3a6a98;
+}
+
+.send-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.send-button svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}

@@ -4,6 +4,7 @@ import {createNewArticle} from "../service/articles"
 import toast from "react-hot-toast";
 import { useNavigate , Link, useParams} from "react-router-dom";
 import { ThemeContext } from "../App";
+import { Editor } from '@tinymce/tinymce-react';
 
 const BootstrapModal = ({setArticles, articles}) => {
   const {create} = useParams();
@@ -42,7 +43,7 @@ const BootstrapModal = ({setArticles, articles}) => {
     if(submit){
       createNewArticle(articleData).then((res)=>{
         toast.success("Đăng bài thành công !");
-        window.location.reload()
+        
       })
     }
   },[submit]);
@@ -106,7 +107,7 @@ const BootstrapModal = ({setArticles, articles}) => {
               />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label>Body</Form.Label>
+              {/* <Form.Label>Body</Form.Label>
               <Form.Control
               as="textarea" 
               cols="50"
@@ -116,7 +117,39 @@ const BootstrapModal = ({setArticles, articles}) => {
                 name="body"
                 value={articleData.article.body}
                 onChange={handleChange}
-              />
+              /> */}
+               <Editor
+               value={articleData.article.body}
+               onEditorChange={(content) => {
+                 setArticleData((prevState) => ({
+                  ...prevState,
+                   article: {
+                    ...prevState.article,
+                     body: content
+                   }
+                 }));
+               }}
+      apiKey='y0f3imxmaa0wqxm61c65jhugkcfy4ga379m31fkvwne16rky'
+      init={{
+        plugins: [
+          // Core editing features
+          'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'image', 'link', 'lists', 'media', 'searchreplace', 'table', 'visualblocks', 'wordcount',
+          // Your account includes a free trial of TinyMCE premium features
+          // Try the most popular premium features until Apr 20, 2025:
+          'checklist', 'mediaembed', 'casechange', 'formatpainter', 'pageembed', 'a11ychecker', 'tinymcespellchecker', 'permanentpen', 'powerpaste', 'advtable', 'advcode', 'editimage', 'advtemplate', 'ai', 'mentions', 'tinycomments', 'tableofcontents', 'footnotes', 'mergetags', 'autocorrect', 'typography', 'inlinecss', 'markdown','importword', 'exportword', 'exportpdf'
+        ],
+        
+        toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+        tinycomments_mode: 'embedded',
+        tinycomments_author: 'Author name',
+        mergetags_list: [
+          { value: 'First.Name', title: 'First Name' },
+          { value: 'Email', title: 'Email' },
+        ],
+        ai_request: (request, respondWith) => respondWith.string(() => Promise.reject('See docs to implement AI Assistant')),
+      }}
+      initialValue="Welcome to TinyMCE!"
+    />
             </Form.Group>
           </Form>
         </Modal.Body>

@@ -1,59 +1,50 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
-import { getCurrentArticle, getCurrentArticleComment ,setFavoriteArticle, unsetFavoriteArticle} from '../service/articles';
-import { useNavigate, useParams } from 'react-router-dom';
+import React, { useContext, useEffect, useState } from 'react';
+import { getCurrentArticle, getCurrentArticleComment, setFavoriteArticle, unsetFavoriteArticle } from '../service/articles';
+import { useParams } from 'react-router-dom';
 import Comment from '../component/Comment';
 import { ThemeContext } from '../App';
 import toast from 'react-hot-toast';
-import {deleteCurrentComment} from '../service/comments';
+import { deleteCurrentComment } from '../service/comments';
 import Viewer from "react-viewer";
-
+import { FiHeart, FiMessageSquare, FiRepeat, FiTrash2, FiClock } from 'react-icons/fi';
+import { FaHeart } from 'react-icons/fa';
+import '../Style/ArticleDetail.css'
 
 const ArticlesDetail = () => {
     const { slug } = useParams();
-    const [currentArticles, setCurrentArticles] = useState('');
+    const [currentArticle, setCurrentArticle] = useState(null);
     const [currentComments, setCurrentComments] = useState([]);
-    const nav = useNavigate();
-    const {setReload, reload, getFormatTime} = useContext(ThemeContext);
-    const currentUser = JSON.parse(localStorage.getItem('user'));
-    const [favorite, setFavorite] = useState(false); 
+    const [favorite, setFavorite] = useState(false);
     const [visible, setVisible] = useState(false);
-
-    
+    const { setReload, reload, getFormatTime } = useContext(ThemeContext);
+    const currentUser = JSON.parse(localStorage.getItem('user'));
 
     useEffect(() => {
         getCurrentArticle(slug).then(res => {
-            setCurrentArticles(res.article);
+            setCurrentArticle(res.article);
             setFavorite(res.article.favorited);
         });
-    
+
         getCurrentArticleComment(slug).then(res => {
             setCurrentComments(res.comments);
         });
     }, [slug, reload]);
 
-
-    
-
-    function changeFavoriteStatus(){
-        if (!favorite){
+    const changeFavoriteStatus = () => {
+        if (!favorite) {
             setFavorite(true);
             setFavoriteArticle(slug).then((res) => {
-                setCurrentArticles(res.article);
-               
+                setCurrentArticle(res.article);
             });
         } else {
             setFavorite(false);
             unsetFavoriteArticle(slug).then((res) => {
-                setCurrentArticles(res.article);
-               
+                setCurrentArticle(res.article);
             });
         }
-        console.log(favorite)
-    }
+    };
 
-
-
-    function parseCommentContent(content) {
+    const parseCommentContent = (content) => {
         const regex = /!\[image\]\((.*?)\)/g;
         const parts = [];
         let lastIndex = 0;
@@ -81,135 +72,195 @@ const ArticlesDetail = () => {
         }
 
         return parts;
-    }
+    };
 
-    function deleteComment(id){
-        deleteCurrentComment(slug, id).then(res =>{
-            toast.success("Delete succesfully")
+    const deleteComment = (id) => {
+        deleteCurrentComment(slug, id).then(res => {
+            toast.success("Xóa bình luận thành công");
             setReload((pre) => !pre);
-        })
+        });
+    };
+
+    if (!currentArticle) {
+        return <ArticleDetailSkeleton />;
     }
 
     return (
-        <div className="container mt-4">
-            <div className="article-card shadow-sm border rounded p-3" style={{
-                maxWidth: '700px',
-                margin: '0 auto',
-                borderRadius: '15px',
-                backgroundColor: '#fff'
-            }}>
-                <div className="d-flex justify-content-between align-items-center pb-2 border-bottom">
-                    <div className="d-flex align-items-center gap-3">
-                        <img src='/src/assets/images/logo.PNG' alt="logo" style={{
-                            width: '45px', height: '45px', borderRadius: '50%'
-                        }} />
-                        <b>{currentArticles.author ? currentArticles.author.username : 'Unknown'}</b>
+        <div className="article-detail-container">
+            {/* Article Card */}
+            <div className="article-detail-card">
+                {/* Article Header */}
+                <div className="article-header">
+                    <div className="author-info">
+                        <img 
+                            src={currentArticle.author?.image || '/default-avatar.png'} 
+                            alt={currentArticle.author?.username}
+                            className="author-avatar"
+                        />
+                        <div className="author-details">
+                            <span className="author-name">
+                                {currentArticle.author?.username || 'Unknown'}
+                                {currentArticle.author?.username === currentUser?.username && (
+                                    <span className="you-badge">Bạn</span>
+                                )}
+                            </span>
+                            <span className="article-time">
+                                <FiClock className="time-icon" />
+                                {getFormatTime(currentArticle.createdAt)}
+                            </span>
+                        </div>
                     </div>
-                    <div className="d-flex gap-2">
-                        <button onClick={()=>changeFavoriteStatus()} className="btn btn-light btn-sm">{currentArticles.favorited ? 
-                        <i className="bi bi-heart-fill text-danger"> {currentArticles.favoritesCount}</i>: <i className="bi bi-heart"> {currentArticles.favoritesCount}</i>}</button>
-                        <button className="btn btn-light btn-sm"><i className="bi bi-chat"></i></button>
-                        <button className="btn btn-light btn-sm"><i className="bi bi-arrow-repeat"></i></button>
+                    
+                    <div className="article-actions">
+                        <button 
+                            className={`action-btn ${favorite ? 'active' : ''}`}
+                            onClick={changeFavoriteStatus}
+                        >
+                            {favorite ? (
+                                <FaHeart className="action-icon" />
+                            ) : (
+                                <FiHeart className="action-icon" />
+                            )}
+                            <span>{currentArticle.favoritesCount}</span>
+                        </button>
+                        
+                        <button className="action-btn">
+                            <FiMessageSquare className="action-icon" />
+                        </button>
+                        
+                        <button className="action-btn">
+                            <FiRepeat className="action-icon" />
+                        </button>
                     </div>
                 </div>
 
-                <div className="mt-3">
-                    <h5 className="fw-bold">{currentArticles.title}</h5>
-                    <p className="text-muted">{currentArticles.body}</p>
+                {/* Article Content */}
+                <div className="article-content">
+                    <h2 className="article-title">{currentArticle.title}</h2>
+                    <div
+  className="article-body"
+  dangerouslySetInnerHTML={{ __html: currentArticle.body }}
+></div>
+
                 </div>
 
-                <hr />
-
-                <div className="comment-section mt-3">
-                    <h6 className="text-center fw-bold">Bình luận</h6>
-                    <hr />
-                    <div><Comment slug={slug} /></div>
-                    <hr></hr>
-                    {currentComments.map((comment, index) => {
+                {/* Comments Section */}
+                <div className="comments-section">
+                    <h3 className="section-title">
+                        <FiMessageSquare className="title-icon" />
+                        Bình luận
+                    </h3>
+                    
+                    <Comment slug={slug} />
+                    
+                    {currentComments.map((comment) => {
                         if (!comment.body) return null;
                         const parts = parseCommentContent(comment.body);
 
                         return (
-                            <div className="comment-card p-2 mb-3 rounded shadow-sm" style={{
-                                backgroundColor: '#f8f9fa'
-                            }} key={comment.id}>
-                                 <div/>
-
-                                <div className="row">
-                                   <div className='d-flex align-align-items-center gap-3 col-6'> <img src={comment.author.image} alt="" style={{
-                                        width: '35px', height: '35px', borderRadius: '50%'
-                                    }} />
-                                    <b className='d-flex justify-content-center align-items-center'>{comment.author.username + (comment.author.username === currentUser.username ? ' (Bạn)' : '')}</b>
-
-                                    <span className="text-muted d-flex justify-content-center align-items-center" style={{ fontSize: '12px' }}>{getFormatTime(comment.createdAt)}</span></div>
-                                    <div className='col-6'>{comment.author.username === currentUser.username ? (
-    <div className='w-100 text-end'><button style={{}} onClick={() => deleteComment(comment.id)}>Delete</button></div>
-) : null}</div>
+                            <div className="comment-card" key={comment.id}>
+                                <div className="comment-header">
+                                    <div className="comment-author">
+                                        <img 
+                                            src={comment.author.image || '/default-avatar.png'} 
+                                            alt={comment.author.username}
+                                            className="comment-avatar"
+                                        />
+                                        <div className="comment-author-info">
+                                            <span className="comment-author-name">
+                                                {comment.author.username}
+                                                {comment.author.username === currentUser?.username && (
+                                                    <span className="you-badge">Bạn</span>
+                                                )}
+                                            </span>
+                                            <span className="comment-time">
+                                                <FiClock className="time-icon" />
+                                                {getFormatTime(comment.createdAt)}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    
+                                    {comment.author.username === currentUser?.username && (
+                                        <button 
+                                            className="delete-comment-btn"
+                                            onClick={() => deleteComment(comment.id)}
+                                        >
+                                            <FiTrash2 />
+                                        </button>
+                                    )}
                                 </div>
-                                 
-                                <div className="mt-2">
+                                
+                                <div className="comment-content">
                                     {parts.some(part => part.type === 'text') && (
-                                        <p className="m-0" style={{
-                                            width: "95%",
-                                            overflowWrap: "break-word",
-                                            paddingLeft:'34px'
-                                        }}>
+                                        <p className="comment-text">
                                             {parts.filter(part => part.type === 'text').map(part => part.content).join(' ')}
                                         </p>
                                     )}
-                                </div>
-
-                                <div className="mt-2 d-flex flex-wrap gap-2">
-                                    {parts.filter(part => part.type === 'image').map((part, index) => (
-                                        <div key={index} className="image-box" style={{width:'150px'}}>
-                                           {/* <a href={part.content} target='_blank'> */}
-                                           <img src={part.content} alt="comment-img"
-                                                className="rounded img-thumbnail"
-                                                onClick={()=> setVisible(true)}
-                                                style={{
-                                                    height: '180px',
-                                                    objectFit: 'cover',
-                                                    cursor: 'pointer',
-                                                    transition: '0.3s',
-                                                    border: '1px solid #ddd',
-                                                    backgroundColor: '#fff'
-                                                }}
-                                                onMouseEnter={(e) => e.target.style.transform = 'scale(1.1)'}
-                                                onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
-                                            />
-                                            <Viewer
-                                            visible={visible}
-                                            onClose={()=> setVisible(false)}
-                                            images= {[{src: part.content, alt:'image'}]}
-                                            
-                                          
-                                            // zoomSpeed={0.5} // Điều chỉnh tốc độ zoom
-                                            // drag={false} // Không cho phép kéo ảnh
-                                            // downloadable // Hiển thị nút tải ảnh xuống
-                                            // toolbar={[
-                                            //     { key: "zoomIn", title: "Zoom In" },
-                                            //     { key: "zoomOut", title: "Zoom Out" },
-                                            //     { key: "rotateLeft", title: "Rotate Left" },
-                                            //     { key: "rotateRight", title: "Rotate Right" },
-                                            //     { key: "prev", title: "Previous" },
-                                            //     { key: "next", title: "Next" },
-                                            //     { key: "download", title: "Download" },
-                                            //   ]}
-                                            />
-                                           {/* </a> */}
+                                    
+                                    {parts.filter(part => part.type === 'image').length > 0 && (
+                                        <div className="comment-images">
+                                            {parts.filter(part => part.type === 'image').map((part, index) => (
+                                                <div key={index} className="comment-image-container">
+                                                    <img 
+                                                        src={part.content} 
+                                                        alt="comment" 
+                                                        className="comment-image"
+                                                        onClick={() => setVisible(true)}
+                                                    />
+                                                    <Viewer
+                                                        visible={visible}
+                                                        onClose={() => setVisible(false)}
+                                                        images={[{ src: part.content, alt: 'image' }]}
+                                                    />
+                                                </div>
+                                            ))}
                                         </div>
-                                    ))}
+                                    )}
                                 </div>
                             </div>
                         );
                     })}
-                    <hr />
                 </div>
             </div>
         </div>
     );
-    
-    
+};
+
+// Skeleton Loading Component
+const ArticleDetailSkeleton = () => {
+    return (
+        <div className="article-detail-skeleton">
+            <div className="skeleton-header">
+                <div className="skeleton-avatar"></div>
+                <div className="skeleton-author">
+                    <div className="skeleton-line short"></div>
+                    <div className="skeleton-line shorter"></div>
+                </div>
+            </div>
+            
+            <div className="skeleton-content">
+                <div className="skeleton-line long"></div>
+                <div className="skeleton-line medium"></div>
+                <div className="skeleton-line medium"></div>
+            </div>
+            
+            <div className="skeleton-comments">
+                <div className="skeleton-comment">
+                    <div className="skeleton-comment-header">
+                        <div className="skeleton-avatar small"></div>
+                        <div className="skeleton-comment-author">
+                            <div className="skeleton-line very-short"></div>
+                            <div className="skeleton-line shortest"></div>
+                        </div>
+                    </div>
+                    <div className="skeleton-comment-content">
+                        <div className="skeleton-line medium"></div>
+                        <div className="skeleton-line short"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
 };
 
 export default ArticlesDetail;

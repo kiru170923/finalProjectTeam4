@@ -14,6 +14,8 @@ import { differenceInMinutes, format } from "date-fns"
 import SearchComponent from './pages/SearchComponent';
 import Taskbar from './component/Taskbar';
 import BootstrapModal from './component/BootstrapModal';
+import AddData from './component/AddData';
+import RealTimeChat from './component/RealTimeChat';
 
 
 
@@ -62,6 +64,10 @@ function App() {
       <Route path='/search' element={<SearchComponent/>}></Route>
       <Route path='/:create' element={<BootstrapModal/>}></Route>
       <Route path='/home/favorites' element={<Articles/>}></Route>
+      <Route path='/data' element={<AddData/>}></Route>
+      <Route path='/chat' element={<RealTimeChat/>}></Route>
+
+
 
 
 

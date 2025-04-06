@@ -4,6 +4,8 @@ import toast from 'react-hot-toast';
 import {setLogin} from '../service/user'
 import { useNavigate } from 'react-router-dom';
 import { ThemeContext } from '../App';
+import LoginByGoogle from './LoginByGoogle';
+
 const Login = () => {
     const nav = useNavigate();
     const {setIsLogin} = useContext(ThemeContext);
@@ -18,25 +20,16 @@ const Login = () => {
 
     useEffect(()=>{
        if(isLogin){
-        const loading = toast.loading("Đang xác minh ...");
         setLogin(currentAccountInfo).then((res)=>{
             localStorage.setItem('token', res.user.token);
             console.log(res.errors)
             // setCurrentUser(res.user);
             localStorage.setItem('user', JSON.stringify(res.user));
-
-           
-        setTimeout(() => {
-            toast.dismiss(loading)
             toast.success("Login Successfull.")
-        setTimeout(() => {
             nav('/home'); 
-        }, 1000);
         
-        }, 2000);
         }).catch(errors=>{
             setIsLogin(false)
-            toast.dismiss(loading)
             toast.error("Invalid Email or Password.")
            
         })
@@ -56,6 +49,7 @@ const Login = () => {
     return (
         
         <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
+            {/* <LoginByGoogle/> */}
         <div className="d-flex flex-column align-items-center" style={{ marginTop: '-30vh' }}>
         <h2>Login</h2>
             <input

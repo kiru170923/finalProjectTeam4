@@ -18,8 +18,6 @@ const Comment = ({slug}) => {
           const link = await uploadImage(file);
           imageLinks.push(link);
         }
-
-
       } catch (err) {
         alert('Upload lỗi: ' + err.message);
         return;
@@ -52,7 +50,6 @@ const Comment = ({slug}) => {
     )
 
     setReload((pre) => !pre);
-
   };
 
   window.onkeydown = function (e) {
@@ -62,7 +59,12 @@ const Comment = ({slug}) => {
   }
 
   return (
-    <div>
+    <div style={{ 
+      backgroundColor: '#E6F3FA', // Màu nền xanh nhạt
+      padding: '15px',
+      borderRadius: '8px',
+      border: '1px solid #B3D9E6' // Viền xanh nhạt
+    }}>
       <TextField
         label="Nhập bình luận"
         fullWidth
@@ -70,24 +72,66 @@ const Comment = ({slug}) => {
         rows={3}
         value={comment}
         onChange={(e) => setComment(e.target.value)}
+        sx={{
+          '& .MuiOutlinedInput-root': {
+            '& fieldset': {
+              borderColor: '#80C4DE', // Viền xanh nhạt
+            },
+            '&:hover fieldset': {
+              borderColor: '#4DA8CC', // Hover xanh đậm hơn
+            },
+            '&.Mui-focused fieldset': {
+              borderColor: '#4DA8CC', // Focus xanh đậm hơn
+            },
+          },
+          '& .MuiInputLabel-root': {
+            color: '#4DA8CC', // Label xanh nhạt
+            '&.Mui-focused': {
+              color: '#4DA8CC', // Label khi focus
+            },
+          },
+          backgroundColor: 'white',
+          borderRadius: '4px',
+        }}
       />
       <input
-        type="file" id = "comment"
+        type="file" 
+        id="comment"
         multiple
         onChange={(e) => setFiles(Array.from(e.target.files))}
-        style={{ marginTop: '10px', display:'none' }}
+        style={{ marginTop: '10px', display: 'none' }}
       />
-      <div className='mt-2'><label htmlFor="comment" className="btn btn-light">
-  <i className="bi bi-image"></i>
-</label></div>
+      <div className='mt-2'>
+        <label 
+          htmlFor="comment" 
+          className="btn btn-light"
+          style={{
+            backgroundColor: '#B3D9E6', // Nút chọn file xanh nhạt
+            color: '#4DA8CC',
+            border: 'none',
+            '&:hover': {
+              backgroundColor: '#80C4DE', // Hover đậm hơn
+            }
+          }}
+        >
+          <i className="bi bi-image"></i>
+        </label>
+      </div>
       <div className='text-center'>
-      <Button
-        variant="contained"
-        onClick={handleSubmit}
-        style={{ marginTop: '10px' }}
-      >
-        Gửi Comment
-      </Button>
+        <Button
+          variant="contained"
+          onClick={handleSubmit}
+          style={{ 
+            marginTop: '10px',
+            backgroundColor: '#4DA8CC', 
+            color: 'white',
+            '&:hover': {
+              backgroundColor: '#3D8AA6', 
+            }
+          }}
+        >
+          Gửi Comment
+        </Button>
       </div>
     </div>
   );

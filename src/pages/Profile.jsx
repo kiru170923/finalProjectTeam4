@@ -30,13 +30,14 @@ const Profile = () => {
 
     return (
         <div 
-            className="d-flex justify-content-center mt-4" 
+            className="d-flex justify-content-center pt-4" 
             style={{ 
                 background: 'linear-gradient(135deg, #E6F3FA 0%, #F0F8FC 100%)', // Gradient xanh nhạt
                 minHeight: '100vh', 
                 padding: '20px'
             }}
         >
+            
             <div 
                 className="border rounded-4 p-4 shadow-sm" 
                 style={{ 

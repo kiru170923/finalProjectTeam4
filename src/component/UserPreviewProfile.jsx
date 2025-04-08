@@ -1,9 +1,10 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
 import { Popover, OverlayTrigger } from "react-bootstrap";
 import { followAnUser, unFollowAnUser } from '../service/user';
 import { getArticlesFromUsersYouFollowed, getCurrentFavoriteStatus } from '../service/articles';
+import { ThemeContext } from "@emotion/react";
 
 const UserPreviewProfile = ({ author }) => {
     const [show, setShow] = useState(false);
@@ -11,17 +12,19 @@ const UserPreviewProfile = ({ author }) => {
     const [follow, setFollow] = useState(false);
     const target = useRef(null);
     const token = localStorage.getItem('token') || '';
+    const { isLogin, setReload, getFormatTime } = useContext(ThemeContext);
+    
 
     useEffect(() => {
         getArticlesFromUsersYouFollowed(token).then(res => {
-            setFollowingArticlesList(res.articles);
-            console.log(res.articles);
+            setFollowingArticlesList(res?.articles);
+            console.log(res?.articles);
         });
     }, []);
 
     useEffect(() => {
         getCurrentFavoriteStatus(author.username).then(res => {
-            setFollow(res.profile.following);
+            setFollow(res?.profile.following);
         });
     }, [author?.username]);
 
@@ -29,7 +32,7 @@ const UserPreviewProfile = ({ author }) => {
         <Popover 
             id="popover-basic" 
             className="custom-popover"
-            onMouseEnter={() => setShow(true)}
+            onMouseEnter={() =>setShow(true)}
             onMouseLeave={() => setShow(false)}
             style={{
                 backgroundColor: '#E6F3FA', // Nền xanh nhạt
@@ -56,7 +59,7 @@ const UserPreviewProfile = ({ author }) => {
                     <b 
                         className="d-flex justify-content-center align-items-center" 
                         style={{ 
-                            color: '#4DA8CC', // Username xanh đậm
+                            color: '#4DA8CC', 
                             fontSize: '1.1rem',
                         }}
                     >
@@ -65,7 +68,7 @@ const UserPreviewProfile = ({ author }) => {
                     <br />
                     <div 
                         className="d-flex justify-content-around align-items-center" 
-                        style={{ color: '#4DA8CC' }} // Chữ xanh đậm
+                        style={{ color: '#4DA8CC' }} 
                     >
                         <div>Frontend Developer</div>
                         <div>
@@ -75,14 +78,14 @@ const UserPreviewProfile = ({ author }) => {
                                     width: '40px', 
                                     height: '40px', 
                                     borderRadius: '50%', 
-                                    border: '2px solid #80C4DE', // Viền ảnh xanh nhạt
+                                    border: '2px solid #80C4DE', 
                                 }} 
                             />
                         </div>
                     </div>
                     <br />
                     <div style={{ 
-                        color: '#3D8AA6', // Bio xanh đậm nhẹ
+                        color: '#3D8AA6', 
                         fontSize: '0.9rem',
                         textAlign: 'center',
                     }}>
@@ -92,7 +95,7 @@ const UserPreviewProfile = ({ author }) => {
                         <button 
                             style={{ 
                                 width: '100%', 
-                                backgroundColor: follow ? '#F28C8C' : '#4DA8CC', // Unfollow đỏ nhạt, Follow xanh nhạt
+                                backgroundColor: follow ? '#F28C8C' : '#4DA8CC', 
                                 color: 'white',
                                 border: 'none',
                                 borderRadius: '4px',
@@ -102,7 +105,7 @@ const UserPreviewProfile = ({ author }) => {
                             }} 
                             className={follow ? "btn btn-sm mt-2" : "btn btn-sm mt-2"}
                             onClick={() => setFollowUser()}
-                            onMouseEnter={(e) => e.target.style.backgroundColor = follow ? '#E67E7E' : '#3D8AA6'} // Hover đậm hơn
+                            onMouseEnter={(e) => e.target.style.backgroundColor = follow ? '#E67E7E' : '#3D8AA6'} 
                             onMouseLeave={(e) => e.target.style.backgroundColor = follow ? '#F28C8C' : '#4DA8CC'}
                         >
                             {follow ? 'Unfollow' : 'Follow'}
@@ -156,18 +159,18 @@ const UserPreviewProfile = ({ author }) => {
                 style={{ 
                     cursor: "pointer",
                     borderRadius: '50%',
-                    border: '2px solid #80C4DE', // Viền ảnh ngoài xanh nhạt
+                    border: '2px solid #80C4DE',
                     transition: 'transform 0.2s',
                 }}
                 onMouseEnter={(e) => {
                     setShow(true);
-                    e.target.style.transform = 'scale(1.1)'; // Phóng to nhẹ khi hover
+                    e.target.style.transform = 'scale(1.1)';
                 }}
                 onMouseLeave={(e) => {
                     if (!e.relatedTarget || !e.relatedTarget.closest(".popover")) {
                         setShow(false);
                     }
-                    e.target.style.transform = 'scale(1)'; // Trở lại kích thước ban đầu
+                    e.target.style.transform = 'scale(1)'; 
                 }}
             />
         </OverlayTrigger>

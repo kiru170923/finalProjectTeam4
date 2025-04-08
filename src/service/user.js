@@ -1,4 +1,5 @@
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 
 const API_URL = 'https://node-express-conduit.appspot.com/api';
@@ -52,6 +53,8 @@ export const getCurrentUser = async () => {
 
 
 export const followAnUser = async (userName) => {
+
+  
   try {
     const token = localStorage.getItem('token');
     const res = await axios.post(API_URL + '/profiles/'+ userName + '/follow', {

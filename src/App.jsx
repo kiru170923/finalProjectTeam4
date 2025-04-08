@@ -22,7 +22,7 @@ import RealTimeChat from './component/RealTimeChat';
 export const ThemeContext = createContext();
 function App() {
 
-  
+
   const [reload,setReload] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
 

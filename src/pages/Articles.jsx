@@ -30,7 +30,7 @@ const Articles = () => {
     useEffect(() => {
 
 
-        if (isFavoritePage) {
+        if (isFavoritePage && isLogin) {
             toast.promise(
                 getArticlesFromUsersYouFollowed(currentUser.token),
                 {
@@ -168,6 +168,7 @@ const Articles = () => {
                             onFavoriteClick={(e) => changeFavoriteStatus(e, article.favorited, article.slug)}
                             onDeleteClick={(e) => DeleteThisArticle(article.slug, e)}
                             getFormatTime={getFormatTime}
+                            isLogin = {isLogin}
                         />
                     ))
                 ) : (
@@ -193,9 +194,9 @@ const Articles = () => {
 };
 
 // Component ArticleItem
-const ArticleItem = ({ article, currentUser, onArticleClick, onFavoriteClick, onDeleteClick, getFormatTime }) => {
+const ArticleItem = ({ article, currentUser, onArticleClick, onFavoriteClick, onDeleteClick, getFormatTime, isLogin }) => {
     return (
-        <div className="article-card" onClick={onArticleClick}>
+        <div className="article-card" onClick={onArticleClick} style={{backgroundColor:'#faffff'}}>
             {/* Article Header */}
             <div className="article-header">
                 <div className="author-info">
@@ -228,7 +229,7 @@ const ArticleItem = ({ article, currentUser, onArticleClick, onFavoriteClick, on
             </div>
 
             <div className="article-footer">
-                <button 
+                {isLogin? <button 
                     className={`action-btn ${article.favorited ? 'active' : ''}`}
                     onClick={(e) => onFavoriteClick(e)}
                 >
@@ -238,7 +239,7 @@ const ArticleItem = ({ article, currentUser, onArticleClick, onFavoriteClick, on
                         <FiHeart className="action-icon" />
                     )}
                     <span>{article.favoritesCount}</span>
-                </button>
+                </button>: <></>}
                 
                 <button className="action-btn">
                     <FiMessageSquare className="action-icon" />

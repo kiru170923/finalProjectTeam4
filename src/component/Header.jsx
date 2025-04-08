@@ -1,9 +1,11 @@
 import React, { useContext, useEffect } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useLocation } from 'react-router-dom';
 import { ThemeContext } from '../App';
 
 const Header = () => {
     const { isLogin, setIsLogin } = useContext(ThemeContext);
+    const location = useLocation();
+    const chat = location.pathname === "/chat";
 
     // Lấy token để duy trì đăng nhập
     useEffect(() => {
@@ -13,21 +15,52 @@ const Header = () => {
     }, []);
 
     return (
-        <div 
-            className='header' 
+        <>
+        {!chat?  <div 
+            
+            className='header pt-0' 
             style={{ 
-                width: '95vw', 
-                background: 'linear-gradient(135deg, #E6F3FA 0%, #F0F8FC 100%)', // Gradient xanh nhạt
-                borderBottom: '1px solid #B3D9E6', // Viền dưới nhẹ
+                width: '96vw', 
+                background: 'linear-gradient(135deg, #E6F3FA 0%, #F0F8FC 100%)', 
+                borderBottom: '1px solid #B3D9E6', 
                 padding: '10px 0',
-                position: 'relative'
+                position: 'sticky', top:'0px', zIndex:'999',
+                marginLeft:'28px'
             }}
         >
+             <div className="header-text d-flex justify-content-center align-items-center mb-1" style={{ color: '#6dc7d6' }}>
+  <div style={{ position: 'absolute', top: '70px', left: '42%', transform: 'translate(-50%, -50%)' }}>
+    <h3 style={{ fontFamily: "Nanum Brush Script", fontSize: '80px' }}>T</h3>
+  </div>
+  <div style={{ position: 'absolute', top: '70px', left: '44%', transform: 'translate(-50%, -50%)' }}>
+    <h3 style={{ fontFamily: "Nanum Brush Script", fontSize: '80px' }}>h</h3>
+  </div>
+  <div style={{ position: 'absolute', top: '70px', left: '46%', transform: 'translate(-50%, -50%)' }}>
+    <h3 style={{ fontFamily: "Nanum Brush Script", fontSize: '80px' }}>r</h3>
+  </div>
+  <div style={{ position: 'absolute', top: '70px', left: '48%', transform: 'translate(-50%, -50%)' }}>
+    <h3 style={{ fontFamily: "Nanum Brush Script", fontSize: '80px' }}>e</h3>
+  </div>
+  <div style={{ position: 'absolute', top: '70px', left: '50%', transform: 'translate(-50%, -50%)' }}>
+    <h3 style={{ fontFamily: "Nanum Brush Script", fontSize: '80px' }}>a</h3>
+  </div>
+  <div style={{ position: 'absolute', top: '70px', left: '52%', transform: 'translate(-50%, -50%)' }}>
+    <h3 style={{ fontFamily: "Nanum Brush Script", fontSize: '80px' }}>d</h3>
+  </div>
+  <div style={{ position: 'absolute', top: '70px', left: '54%', transform: 'translate(-50%, -50%)' }}>
+    <h3 style={{ fontFamily: "Nanum Brush Script", fontSize: '80px' }}>e</h3>
+  </div>
+  <div style={{ position: 'absolute', top: '70px', left: '56%', transform: 'translate(-50%, -50%)' }}>
+    <h3 style={{ fontFamily: "Nanum Brush Script", fontSize: '80px' }}>r</h3>
+  </div>
+</div>
             <header>
+                
                 <ul 
                     className='gap-4 list-unstyled justify-content-center row pt-3 pb-2' 
                     style={{ margin: 0 }}
                 >
+                    
                     <div className='col-12 d-flex gap-5 justify-content-end p-4 pb-0 pt-0'>
                         {!isLogin ? (
                             <div className='d-flex gap-5 justify-content-center align-items-center'>
@@ -55,7 +88,9 @@ const Header = () => {
                                     >
                                         Sign Up
                                     </li>
+                                    
                                 </NavLink>
+                                
                                 <NavLink to={'/login'}>
                                     <li 
                                         className='btn'
@@ -82,12 +117,14 @@ const Header = () => {
                                         Login
                                     </li>
                                 </NavLink>
+                                
                             </div>
                         ) : (
                             <div className='d-flex gap-2'>
-                                <div>
+                                <div >
                                     <NavLink to={'/login'}>
-                                        <li 
+                                        <li ss
+                                            
                                             onClick={() => {
                                                 setIsLogin(false);
                                            
@@ -107,7 +144,7 @@ const Header = () => {
                                                 transition: 'background-color 0.3s, transform 0.2s',
                                             }}
                                             onMouseEnter={(e) => {
-                                                e.target.style.backgroundColor = '#E67E7E'; // Hover đỏ đậm hơn
+                                                e.target.style.backgroundColor = '#E67E7E'; 
                                                 e.target.style.transform = 'scale(1.05)';
                                             }}
                                             onMouseLeave={(e) => {
@@ -123,15 +160,16 @@ const Header = () => {
                         )}
                     </div>
                     <Link to={'/home'}>
+                    
                         <div>
-                            <img 
+                            <img className='logo'
                                 src='/images/logo.png' 
                                 style={{ 
-                                    width: '90px', 
+                                    width: '70px', 
                                     borderRadius: '10px', 
                                     position: 'absolute', 
                                     top: '10px', 
-                                    left: '80px',
+                                    left: '37%',
                                     transition: 'transform 0.3s',
                                 }}
                                 onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'}
@@ -142,7 +180,10 @@ const Header = () => {
                     </Link>
                 </ul>
             </header>
-        </div>
+        </div>:<div></div> }
+       
+
+        </>
     );
 };
 

@@ -15,6 +15,9 @@
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@mui/material": "^7.0.0",
+    "@react-three/drei": "^10.0.6",
+    "@react-three/fiber": "^9.1.2",
+    "@react-three/rapier": "^2.1.0",
     "@supabase/supabase-js": "^2.49.3",
     "@tinymce/tinymce-react": "^6.1.0",
     "@tippyjs/react": "^4.2.6",
@@ -22,6 +25,7 @@
     "bootstrap": "^5.3.4",
     "date-fns": "^4.1.0",
     "firebase": "^11.6.0",
+    "meshline": "^3.3.1",
     "react": "^19.0.0",
     "react-bootstrap": "^2.10.9",
     "react-dom": "^19.0.0",
@@ -29,7 +33,8 @@
     "react-icons": "^5.5.0",
     "react-router-dom": "^7.4.0",
     "react-viewer": "^3.2.2",
-    "sweetalert2": "^11.17.2"
+    "sweetalert2": "^11.17.2",
+    "three": "^0.175.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",

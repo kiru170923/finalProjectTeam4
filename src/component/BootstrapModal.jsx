@@ -5,12 +5,14 @@ import toast from "react-hot-toast";
 import { useNavigate , Link, useParams} from "react-router-dom";
 import { ThemeContext } from "../App";
 import { Editor } from '@tinymce/tinymce-react';
+import { set } from "date-fns";
 
-const BootstrapModal = ({setArticles, articles}) => {
+const BootstrapModal = ({setArticles, articles, setReload}) => {
   const {create} = useParams();
   const [show, setShow] = useState(false);
   const nav = useNavigate();
   const [submit,setSubmit] = useState(false);
+
   const [articleData, setArticleData] = useState({
     article: {
       title: '',
@@ -43,7 +45,9 @@ const BootstrapModal = ({setArticles, articles}) => {
     if(submit){
       createNewArticle(articleData).then((res)=>{
         toast.success("Đăng bài thành công !");
-        
+        setReload((pre) => !pre);
+        nav('/home');
+        setSubmit(false);
       })
     }
   },[submit]);
@@ -80,7 +84,7 @@ const BootstrapModal = ({setArticles, articles}) => {
                           )}
                       </div>
 
-      <Modal show={show} onHide={() => setShow(false)} centered size="xl">
+      <Modal show={show}  centered size="xl">
         <Modal.Header closeButton>
           <Modal.Title>Nhập thông tin</Modal.Title>
         </Modal.Header>
@@ -157,7 +161,7 @@ const BootstrapModal = ({setArticles, articles}) => {
           <Button variant="secondary" onClick={() => {setShow(false), create? nav('/home'): <></>}}>
             Đóng
           </Button>
-          <Button onClick={()=>{setSubmit(true), setShow(false),setShow(false), create? nav('/home'): <></> }} variant="primary">Lưu</Button>
+          <Button onClick={()=>{setSubmit(true), setShow(false), create? nav('/home'): <></> }} variant="primary">Lưu</Button>
         </Modal.Footer>
       </Modal>
     </div>

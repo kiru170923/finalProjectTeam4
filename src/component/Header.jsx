@@ -25,7 +25,7 @@ const Header = () => {
                 borderBottom: '1px solid #B3D9E6', 
                 padding: '10px 0',
                 position: 'sticky', top:'0px', zIndex:'999',
-                marginLeft:'28px'
+                marginLeft:'4%'
             }}
         >
              <div className="header-text d-flex justify-content-center align-items-center mb-1" style={{ color: '#6dc7d6' }}>
@@ -54,11 +54,11 @@ const Header = () => {
     <h3 style={{ fontFamily: "Nanum Brush Script", fontSize: '80px' }}>r</h3>
   </div>
 </div>
-            <header>
+            <header> 
                 
                 <ul 
                     className='gap-4 list-unstyled justify-content-center row pt-3 pb-2' 
-                    style={{ margin: 0 }}
+                   
                 >
                     
                     <div className='col-12 d-flex gap-5 justify-content-end p-4 pb-0 pt-0'>
@@ -163,7 +163,7 @@ const Header = () => {
                     
                         <div>
                             <img className='logo'
-                                src='images/logo.png' 
+                                src='/images/logo.png' 
                                 style={{ 
                                     width: '70px', 
                                     borderRadius: '10px', 

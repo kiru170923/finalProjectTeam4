@@ -5,14 +5,16 @@ import { Popover, OverlayTrigger } from "react-bootstrap";
 import { followAnUser, unFollowAnUser } from '../service/user';
 import { getArticlesFromUsersYouFollowed, getCurrentFavoriteStatus } from '../service/articles';
 import { ThemeContext } from "@emotion/react";
+import { useNavigate } from "react-router-dom";
 
-const UserPreviewProfile = ({ author }) => {
+const UserPreviewProfile = ({ author, e }) => {
     const [show, setShow] = useState(false);
     const [followingArticlesList, setFollowingArticlesList] = useState([]);
     const [follow, setFollow] = useState(false);
     const target = useRef(null);
     const token = localStorage.getItem('token') || '';
     const { isLogin, setReload, getFormatTime } = useContext(ThemeContext);
+    const nav = useNavigate();
     
 
     useEffect(() => {
@@ -75,8 +77,9 @@ const UserPreviewProfile = ({ author }) => {
                             <img 
                                 src={author.image} 
                                 style={{ 
-                                    width: '40px', 
-                                    height: '40px', 
+                                    objectFit: 'cover',
+                                    width: '50px', 
+                                    height: '50px', 
                                     borderRadius: '50%', 
                                     border: '2px solid #80C4DE', 
                                 }} 
@@ -104,7 +107,7 @@ const UserPreviewProfile = ({ author }) => {
                                 transition: 'background-color 0.3s',
                             }} 
                             className={follow ? "btn btn-sm mt-2" : "btn btn-sm mt-2"}
-                            onClick={() => setFollowUser()}
+                            onClick={(e) => {setFollowUser(); e.stopPropagation()}}
                             onMouseEnter={(e) => e.target.style.backgroundColor = follow ? '#E67E7E' : '#3D8AA6'} 
                             onMouseLeave={(e) => e.target.style.backgroundColor = follow ? '#F28C8C' : '#4DA8CC'}
                         >
@@ -123,6 +126,7 @@ const UserPreviewProfile = ({ author }) => {
             console.log(res);
             setShow(false);
         });
+
     }
 
     function unFollowUser() { 
@@ -134,11 +138,11 @@ const UserPreviewProfile = ({ author }) => {
         });
     }
 
-    function setFollowUser() {
+    function setFollowUser(e) {
         if (follow) {
-            unFollowUser();
+            unFollowUser(e);
         } else {
-            followUser();
+            followUser(e);
         }
     }
 
@@ -150,17 +154,22 @@ const UserPreviewProfile = ({ author }) => {
             show={show}
             delay={{ show: 200, hide: 400 }}
         >
-            <img
+            <img onClick={(e)=> {nav("/profile", {
+              state: author
+            }); e.stopPropagation()} }
+            
                 ref={target}
                 src={author.image}
-                width="40"
-                height="40"
+                width="50"
+                height="50"
                 alt="User Avatar"
                 style={{ 
                     cursor: "pointer",
                     borderRadius: '50%',
                     border: '2px solid #80C4DE',
                     transition: 'transform 0.2s',
+                    objectFit: 'cover',
+
                 }}
                 onMouseEnter={(e) => {
                     setShow(true);

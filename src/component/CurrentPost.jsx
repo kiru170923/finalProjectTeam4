@@ -51,7 +51,7 @@ const CurrentPost = ({ currentUser }) => {
                         </div>
                     ))
                 ) : (
-                    <p className="text-center"></p>
+                   <div><img src='/images/nothing.png' width={'300px'}></img></div>
                 )}
             </div>
         </div>

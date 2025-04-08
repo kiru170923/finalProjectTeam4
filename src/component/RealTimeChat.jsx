@@ -17,9 +17,10 @@ function RealTimeChat() {
   const [option, setOption] = useState('global');
   const [image, setNewImage] = useState('');
   const [loading, setLoading] = useState(false);
-  const [privateRoomName, setPrivateRoomName] = useState('');
   const [useFollow, setUserFollow] = useState([]);
   const token = localStorage.getItem('token');
+  const [friendData, setFriendata] = useState(null)
+  const [selectedIndex, setSelectedIndex] = useState(-1)
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('user'));
@@ -30,7 +31,7 @@ function RealTimeChat() {
     if (endOfMessagesRef.current) {
       endOfMessagesRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  }, [globalMessages]);
+  }, [globalMessages, privateMessage]);
 
   function changeChatOption(chatType){
     setOption(chatType);
@@ -47,8 +48,8 @@ function RealTimeChat() {
       });
       return () => unsubscribe();
     }
-    else if(option==="private"){
-      const q = query(collection(db, privateRoomName), orderBy('timestamp'));
+    if(option==="private"){
+      const q = query(collection(db, setRoomName(friendData)), orderBy('timestamp'));
       const unsubscribe = onSnapshot(q, snapshot => {
         setPrivateMessage(snapshot.docs.map(doc => ({
           id: doc.id,
@@ -57,7 +58,15 @@ function RealTimeChat() {
       });
       return () => unsubscribe();
     }
-  }, []);
+  }, [option,friendData ]);
+  console.log(privateMessage)
+
+  function setRoomName(friendName) {
+    const usernames = [friendName?.username, userData?.username];
+    usernames.sort();
+    return usernames.join('_'); 
+  }
+  
 
   const sendMessage = async () => {
     if(loading) return;
@@ -74,7 +83,7 @@ function RealTimeChat() {
       });
     }
     else if(option==="private"){
-      await addDoc(collection(db, privateRoomName), {
+      await addDoc(collection(db, setRoomName(friendData)), {
         uid: userData.username,
         photoURL: userData.image || '',
         displayName: userData.username,
@@ -92,6 +101,10 @@ function RealTimeChat() {
       sendMessage();
     }
   };
+
+  function setChoosen(index){
+    setSelectedIndex(index);
+  }
 
   async function handleImage(e){
     const file = e.target.files[0];
@@ -141,20 +154,24 @@ function RealTimeChat() {
       </div>
 
       <div className="chat-main-container">
-        <div className="chat-area row g-0"> {/* g-0 để loại bỏ gutter mặc định */}
+        <div className="chat-area row g-0"> 
           {option === 'private' && (
             <div className="col-3" style={{ 
               backgroundColor: 'white', 
-              height: '650px', 
+              height: '100vh', 
+              paddingTop: "4%",
               overflowY: 'auto',
               borderRight: '1px solid #ddd'
             }}>
               {useFollow.map((user, index) => (
                 <div 
+                  
                   key={index}
                   className="p-3 border-bottom"
-                  style={{ cursor: 'pointer' }}
-                  onClick={() => {/* Thêm logic chọn user ở đây */}}
+                  style={{ cursor: 'pointer',
+                    backgroundColor: selectedIndex === index? "#c6f8ff": ""
+                  }}
+                  onClick={(e) => {setFriendata(user); setChoosen(index) }}
                 >
                   <div className="d-flex align-items-center">
                     <img 

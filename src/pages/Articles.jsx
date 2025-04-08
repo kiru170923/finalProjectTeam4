@@ -8,15 +8,15 @@ import SettingsMenu from '../component/SettingMenu';
 import UserPreviewProfile from '../component/UserPreviewProfile';
 import ArticlesFollowed from './ArticlesFollowed';
 import Swal from 'sweetalert2';
-import { FiHeart, FiMessageSquare, FiRepeat, FiMoreHorizontal } from 'react-icons/fi';
+import { FiHeart, FiMessageSquare, FiRepeat, FiMoreHorizontal, FiClock } from 'react-icons/fi';
 import { FaHeart } from 'react-icons/fa';
+
 
 const Articles = () => {
     const [articles, setArticles] = useState([]);
     const [loading, setLoading] = useState(true);
-    const { isLogin, setReload, getFormatTime } = useContext(ThemeContext);
+    const { isLogin, setReload, getFormatTime, reload } = useContext(ThemeContext);
     const currentUser = JSON.parse(localStorage.getItem('user'));
-    const [reload, sReload] = useState(false);
     const nav = useNavigate();
     const location = useLocation();
     const isFavoritePage = location.pathname === "/home/favorites";
@@ -144,7 +144,7 @@ const Articles = () => {
                 <h2 className="articles-title">
                     {isFavoritePage ? "Bài viết đã lưu" : "Bài viết mới nhất"}
                 </h2>
-                {currentUser && <BootstrapModal />}
+                {currentUser && <BootstrapModal setReload = {setReload} />}
             </div>
 
             {/* Loading State */}
@@ -208,8 +208,8 @@ const ArticleItem = ({ article, currentUser, onArticleClick, onFavoriteClick, on
                                 <span className="you-badge">Bạn</span>
                             )}
                         </span>
-                        <span className="article-time">
-                            {getFormatTime(article.createdAt)}
+                        <span className="article-time mt-0">
+                                                           <FiClock className="time-icon" /> {getFormatTime(article.createdAt)}
                         </span>
                     </div>
                 </div>

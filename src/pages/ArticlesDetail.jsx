@@ -9,6 +9,7 @@ import Viewer from "react-viewer";
 import { FiHeart, FiMessageSquare, FiRepeat, FiTrash2, FiClock } from 'react-icons/fi';
 import { FaHeart } from 'react-icons/fa';
 import '../Style/ArticleDetail.css'
+import UserPreviewProfile from '../component/UserPreviewProfile';
 
 const ArticlesDetail = () => {
     const { slug } = useParams();
@@ -92,11 +93,7 @@ const ArticlesDetail = () => {
                 {/* Article Header */}
                 <div className="article-header">
                     <div className="author-info">
-                        <img 
-                            src={currentArticle.author?.image || '/default-avatar.png'} 
-                            alt={currentArticle.author?.username}
-                            className="author-avatar"
-                        />
+                        <UserPreviewProfile author = {currentArticle.author}/>
                         <div className="author-details">
                             <span className="author-name">
                                 {currentArticle.author?.username || 'Unknown'}

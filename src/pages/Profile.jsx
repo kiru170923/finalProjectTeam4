@@ -79,7 +79,7 @@ const Profile = () => {
                             width: '60px', 
                             height: '60px', 
                             borderRadius: '50%', 
-                            border: '3px solid #80C4DE', // Viền xanh nhạt
+                            border: '3px solid #80C4DE', 
                             objectFit: 'cover', 
                             transition: 'transform 0.3s' 
                         }} 
@@ -93,7 +93,7 @@ const Profile = () => {
 
                 <div className="text-center mt-3">
                     {userData ? <></> : (
-                        <EditProfileModal /> // Giả định đây là button hoặc modal
+                        <EditProfileModal /> 
                     )}
                 </div>
 
@@ -145,7 +145,7 @@ const Profile = () => {
 
                 <div 
                     style={{ 
-                        padding: '0 15px', 
+                        padding: '0', 
                         backgroundColor: '#F0F8FC', 
                         borderRadius: '8px', 
                         minHeight: '200px' 

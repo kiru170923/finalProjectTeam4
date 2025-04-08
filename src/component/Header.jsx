@@ -163,7 +163,7 @@ const Header = () => {
                     
                         <div>
                             <img className='logo'
-                                src='/images/logo.png' 
+                                src='images/logo.png' 
                                 style={{ 
                                     width: '70px', 
                                     borderRadius: '10px', 

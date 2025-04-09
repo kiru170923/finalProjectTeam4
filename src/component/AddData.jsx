@@ -3,6 +3,11 @@ import React, { useState } from 'react';
 import { collection, addDoc, getDocs } from 'firebase/firestore';
 import { db } from '../config/firebaseConfig';  // Named import
 
+
+
+
+
+// CODE MẪU / 
 const AddData = () => {
   const [name, setName] = useState('');
   const [age, setAge] = useState('');

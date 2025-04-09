@@ -35,17 +35,17 @@ const EditProfileModal = () => {
                 variant="primary"
                 onClick={() => setShow(true)}
                 style={{
-                    backgroundColor: '#4DA8CC', // Nền xanh nhạt
+                    backgroundColor: '#4DA8CC', 
                     border: 'none',
-                    borderRadius: '20px', // Bo tròn mạnh
+                    borderRadius: '20px',
                     padding: '8px 20px',
                     fontSize: '0.9rem',
                     fontWeight: '500',
-                    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', // Bóng nhẹ
+                    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', 
                     transition: 'background-color 0.3s, transform 0.2s',
                 }}
                 onMouseEnter={(e) => {
-                    e.target.style.backgroundColor = '#3D8AA6'; // Hover đậm hơn
+                    e.target.style.backgroundColor = '#3D8AA6'; 
                     e.target.style.transform = 'scale(1.05)';
                 }}
                 onMouseLeave={(e) => {
@@ -61,14 +61,14 @@ const EditProfileModal = () => {
                 onHide={() => setShow(false)} 
                 centered
                 style={{ 
-                    '--bs-modal-bg': '#E6F3FA', // Nền modal xanh nhạt
-                    '--bs-modal-border-color': '#B3D9E6', // Viền xanh nhạt
+                    '--bs-modal-bg': '#E6F3FA',
+                    '--bs-modal-border-color': '#B3D9E6', 
                 }}
             >
                 <Modal.Header 
                     closeButton 
                     style={{ 
-                        backgroundColor: '#B3D9E6', // Header xanh nhạt hơn
+                        backgroundColor: '#B3D9E6', 
                         borderBottom: 'none', 
                         padding: '15px 20px' 
                     }}
@@ -85,7 +85,7 @@ const EditProfileModal = () => {
                 </Modal.Header>
                 <Modal.Body 
                     style={{ 
-                        backgroundColor: '#F0F8FC', // Nội dung xanh nhạt nhã nhặn
+                        backgroundColor: '#F0F8FC', 
                         padding: '20px' 
                     }}
                 >
@@ -149,7 +149,7 @@ const EditProfileModal = () => {
                             <Form.Control 
                                 onChange={(e) => updateProfile(e)} 
                                 name='image' 
-                                type="text" // Sửa type từ "email" thành "text" cho URL hình ảnh
+                                type="text" 
                                 placeholder="Enter new image URL" 
                                 value={accountInfo.image} 
                                 style={{

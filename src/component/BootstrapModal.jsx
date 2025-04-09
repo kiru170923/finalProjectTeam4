@@ -6,12 +6,25 @@ import { useNavigate , Link, useParams} from "react-router-dom";
 import { ThemeContext } from "../App";
 import { Editor } from '@tinymce/tinymce-react';
 import { set } from "date-fns";
+import {uploadImageAndGetUrl} from '../component/UpImageToFireBase';
+import { collection, addDoc, serverTimestamp, onSnapshot, query, orderBy } from 'firebase/firestore';
+import { db } from '../config/firebaseConfig';
 
+
+/**
+ * Component này để hiển thị một cái icon và khi người dùng nhấp
+ * vào thì sẽ hiển thị cái icon đó
+ * @param {*} param0 
+ * @returns A template để handle data cho article
+ */
 const BootstrapModal = ({setArticles, articles, setReload}) => {
   const {create} = useParams();
   const [show, setShow] = useState(false);
   const nav = useNavigate();
   const [submit,setSubmit] = useState(false);
+  const [imageList, setImageList] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [responseArticleSlug, setResponseArticleSlug] = useState(null)
 
   const [articleData, setArticleData] = useState({
     article: {
@@ -21,8 +34,10 @@ const BootstrapModal = ({setArticles, articles, setReload}) => {
       tagList: ''
     }
   });
-  const currentUser = JSON.parse(localStorage.getItem('user'));
+  const currentUser = JSON.parse(localStorage.getItem('user')); // lấy data ng dùng htai
 
+
+  //nếu tạo bài viết = cách nhấn vào nút thì sẽ set show= true để hiển thị template
   useEffect(() => {
     if (create) {
       setShow(true);
@@ -31,20 +46,26 @@ const BootstrapModal = ({setArticles, articles, setReload}) => {
   
   const {isLogin, setIsLogin} = useContext(ThemeContext);
 
+
+  //lưu dữ liệu của người dùng mỗi khi sự kiện onchange trên từng 
+  // input field xảy ra, tagList mặc định sẽ là "Mai"
   const handleChange = (e) => {
     const { name, value } = e.target;
     setArticleData((prevState) => ({
       ...prevState,
       article: {
-        ...prevState.article,
+        ...prevState?.article,
         [name]: value, tagList: "Mai"
       }
     }));
   };
+
+  //tải dữ liệu lên api nếu nhấp lưu
   useEffect(()=>{
     if(submit){
       createNewArticle(articleData).then((res)=>{
         toast.success("Đăng bài thành công !");
+        setResponseArticleSlug(res.article.slug)
         setReload((pre) => !pre);
         nav('/home');
         setSubmit(false);
@@ -57,7 +78,48 @@ const BootstrapModal = ({setArticles, articles, setReload}) => {
       setShow(true);
     }
   }
+  // useEffect(()=>{
+  //   const q = query(collection(db, ))
 
+  // }, [])
+  async function sendNewArticle (){
+
+    createNewArticle(articleData).then((res)=>{
+      toast.success("Đăng bài thành công !");
+        addDoc(collection(db, 'articlesImage'), {
+        slug: res.article.slug,
+        image: imageList,
+        timestamp: serverTimestamp()
+        
+      });
+      setImageList([]);
+      setReload((pre) => !pre);
+      nav('/home');
+      setSubmit(false);
+    })
+    
+  }
+
+  
+   async function handleImage(e){
+      const files = e.target.files;
+      if(!files) return; 
+      setLoading(true);
+      try{
+        for(const file of files){
+          const imageUrl = await uploadImageAndGetUrl(file); //tải ẳh lên firestore rồi lấy link ze
+        setImageList((pre) => [...pre, imageUrl]);
+        }
+        
+      }catch(error){
+        console.log(error);
+      }
+      finally{
+        setLoading(false);
+      }
+    }
+
+  
   return (
     <div>
       <div className='row d-flex justify-content-center align-items-center mb-4' >
@@ -96,7 +158,7 @@ const BootstrapModal = ({setArticles, articles, setReload}) => {
                 type="text"
                 placeholder="Tiêu đề..."
                 name="title"
-                value={articleData.article.title}
+                value={articleData?.article?.title}
                 onChange={handleChange}
               />
             </Form.Group>
@@ -106,8 +168,18 @@ const BootstrapModal = ({setArticles, articles, setReload}) => {
                 type="text"
                 placeholder="Mô tả..."
                 name="description"
-                value={articleData.article.description}
+                value={articleData?.article?.description}
                 onChange={handleChange}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Description</Form.Label>
+              <Form.Control
+                type="file"
+                placeholder="Chọn ảnh..."
+                name="description"
+                multiple
+                onChange={(e) => handleImage(e)}
               />
             </Form.Group>
             <Form.Group className="mb-3">
@@ -122,13 +194,16 @@ const BootstrapModal = ({setArticles, articles, setReload}) => {
                 value={articleData.article.body}
                 onChange={handleChange}
               /> */}
+
+
+              {/* Cái này là tích hợp thư viện texteditor tinymce*/}
                <Editor
-               value={articleData.article.body}
+               value={articleData?.article?.body}
                onEditorChange={(content) => {
                  setArticleData((prevState) => ({
                   ...prevState,
                    article: {
-                    ...prevState.article,
+                    ...prevState?.article,
                      body: content
                    }
                  }));
@@ -161,7 +236,7 @@ const BootstrapModal = ({setArticles, articles, setReload}) => {
           <Button variant="secondary" onClick={() => {setShow(false), create? nav('/home'): <></>}}>
             Đóng
           </Button>
-          <Button onClick={()=>{setSubmit(true), setShow(false), create? nav('/home'): <></> }} variant="primary">Lưu</Button>
+        {loading? <></>:<Button onClick={()=>{ sendNewArticle(); setShow(false); create? nav('/home'): <></> }} variant="primary">Đăng</Button> }  
         </Modal.Footer>
       </Modal>
     </div>

@@ -6,8 +6,9 @@ import '../Style/Chat.css';
 import {uploadImageAndGetUrl} from '../component/UpImageToFireBase';
 import { Link } from 'react-router-dom';
 import { getArticlesFromUsersYouFollowed } from '../service/articles';
-
+  
 function RealTimeChat() {
+  
   const [userData, setUserData] = useState(null);
   const [globalMessages, setGlobalMessages] = useState([]);
   const [privateMessage, setPrivateMessage] = useState([]);
@@ -22,11 +23,13 @@ function RealTimeChat() {
   const [friendData, setFriendata] = useState(null)
   const [selectedIndex, setSelectedIndex] = useState(-1)
 
+  //lấy user data
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('user'));
     setUserData(user);
   }, []);
 
+  //cuộn xuống dưới cùng khi có tin nhắn mới
   useEffect(() => {
     if (endOfMessagesRef.current) {
       endOfMessagesRef.current.scrollIntoView({ behavior: "smooth" });
@@ -61,6 +64,7 @@ function RealTimeChat() {
   }, [option,friendData ]);
   console.log(privateMessage)
 
+  //tạo tên collection trên firebase = tên của 2 người, sắp xếp theo a - z
   function setRoomName(friendName) {
     const usernames = [friendName?.username, userData?.username];
     usernames.sort();
@@ -68,10 +72,12 @@ function RealTimeChat() {
   }
   
 
+  //gửi tin nhắn
   const sendMessage = async () => {
     if(loading) return;
-    if (!newMessage.trim() && !image.trim() || !userData) return;
+    if (!newMessage.trim() && !image.trim() || !userData) return; // rỗng thì ko gửi, thoát luôn
 
+    //gửi tin nhắn khi chat global
     if(option==="global"){
       await addDoc(collection(db, 'globalMessages'), {
         uid: userData.username,
@@ -82,6 +88,7 @@ function RealTimeChat() {
         timestamp: serverTimestamp()
       });
     }
+    //gửi tin nhắn ở private
     else if(option==="private"){
       await addDoc(collection(db, setRoomName(friendData)), {
         uid: userData.username,
@@ -96,6 +103,7 @@ function RealTimeChat() {
     setNewImage('');
   };
 
+  //kích hoạt gửi tin nhắn khi nhấp enter
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
       sendMessage();
@@ -103,15 +111,16 @@ function RealTimeChat() {
   };
 
   function setChoosen(index){
-    setSelectedIndex(index);
+    setSelectedIndex(index); // xác định index của user mình định nhắn để chuyển màu hội thoại
   }
 
+  //xử lý ảnh tải lên.
   async function handleImage(e){
-    const file = e.target.files[0];
-    if(!file) return;
+    const file = e.target.files[0]; // láy ảnh 1
+    if(!file) return; // ko có file thì ko tải
     setLoading(true);
     try{
-      const imageUrl = await uploadImageAndGetUrl(file);
+      const imageUrl = await uploadImageAndGetUrl(file); //tải ẳh lên firestore rồi lấy link ze
       setNewImage(imageUrl);
     }catch(error){
       console.log(error);

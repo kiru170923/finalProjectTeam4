@@ -60,10 +60,10 @@ const Comment = ({slug}) => {
 
   return (
     <div style={{ 
-      backgroundColor: '#E6F3FA', // Màu nền xanh nhạt
+      backgroundColor: '#E6F3FA', 
       padding: '15px',
       borderRadius: '8px',
-      border: '1px solid #B3D9E6' // Viền xanh nhạt
+      border: '1px solid #B3D9E6' 
     }}>
       <TextField
         label="Nhập bình luận"
@@ -75,19 +75,19 @@ const Comment = ({slug}) => {
         sx={{
           '& .MuiOutlinedInput-root': {
             '& fieldset': {
-              borderColor: '#80C4DE', // Viền xanh nhạt
+              borderColor: '#80C4DE', 
             },
             '&:hover fieldset': {
-              borderColor: '#4DA8CC', // Hover xanh đậm hơn
+              borderColor: '#4DA8CC', 
             },
             '&.Mui-focused fieldset': {
-              borderColor: '#4DA8CC', // Focus xanh đậm hơn
+              borderColor: '#4DA8CC', 
             },
           },
           '& .MuiInputLabel-root': {
-            color: '#4DA8CC', // Label xanh nhạt
+            color: '#4DA8CC',
             '&.Mui-focused': {
-              color: '#4DA8CC', // Label khi focus
+              color: '#4DA8CC', 
             },
           },
           backgroundColor: 'white',
@@ -106,11 +106,11 @@ const Comment = ({slug}) => {
           htmlFor="comment" 
           className="btn btn-light"
           style={{
-            backgroundColor: '#B3D9E6', // Nút chọn file xanh nhạt
+            backgroundColor: '#B3D9E6', 
             color: '#4DA8CC',
             border: 'none',
             '&:hover': {
-              backgroundColor: '#80C4DE', // Hover đậm hơn
+              backgroundColor: '#80C4DE', 
             }
           }}
         >

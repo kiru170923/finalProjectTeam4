@@ -11,6 +11,8 @@ import Swal from 'sweetalert2';
 import { FiHeart, FiMessageSquare, FiRepeat, FiMoreHorizontal, FiClock } from 'react-icons/fi';
 import { FaHeart } from 'react-icons/fa';
 import Share from '../component/Share';
+import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
+import { db } from '../config/firebaseConfig';
 
 
 const Articles = () => {
@@ -23,11 +25,31 @@ const Articles = () => {
     const isFavoritePage = location.pathname === "/home/favorites";
     const isHomepage = location.pathname === "/home";
     const isHomepagee = location.pathname === "/";
+    const [articlePicture, setArticlePicture] = useState([])
 
    
     console.log(isFavoritePage)
     
 
+
+    useEffect(()=>{
+        const q = query(collection(db, 'articlesImage'));
+              const unsubscribe = onSnapshot(q, snapshot => {
+                setArticlePicture(snapshot.docs.map(doc => ({
+                  id: doc.id,
+                  data: doc.data()
+                })));
+              }
+            ); 
+              return () => unsubscribe();
+
+    }, [])
+
+   function getImageForArticle(slug){
+     const imageList = articlePicture.filter((msg) => msg.data.slug === slug )
+     return imageList.length > 0 ? imageList[0].data.image : [];
+   }
+   
     useEffect(() => {
 
 
@@ -167,6 +189,7 @@ const Articles = () => {
                             onDeleteClick={(e) => DeleteThisArticle(article.slug, e)}
                             getFormatTime={getFormatTime}
                             isLogin = {isLogin}
+                            getImageForArticle = {getImageForArticle}
                         />
                     ))
                 ) : (
@@ -192,7 +215,7 @@ const Articles = () => {
     );
 };
 
-const ArticleItem = ({ article, currentUser, onArticleClick, onFavoriteClick, onDeleteClick, getFormatTime, isLogin }) => {
+const ArticleItem = ({ article, currentUser, onArticleClick, onFavoriteClick, onDeleteClick, getFormatTime, isLogin, getImageForArticle }) => {
     return (
         <div className="article-card" onClick={onArticleClick} style={{backgroundColor:'#faffff'}}>
             <div className="article-header">
@@ -221,8 +244,16 @@ const ArticleItem = ({ article, currentUser, onArticleClick, onFavoriteClick, on
             </div>
 
             <div className="article-content">
-                <h3 className="article-title">{article.title}</h3>
+                <p className="article-title">{article.title}</p>
                 <p className="article-description">{article.description}</p>
+                <div className='image-section d-flex justify-content-start gap-1' style={{ maxWidth:'672px',overflow:'auto', height:'280px', display:'flex',
+                flexDirection:'row'
+                    
+                 }}>{getImageForArticle(article.slug).map((image) => {
+                    return(
+                        <img style={{width:'200px', objectFit:'cover', borderRadius:'9px', border:'3px solid #ededed'}} src={image}></img>
+                    )
+                })}</div>
             </div>
 
             <div className="article-footer">

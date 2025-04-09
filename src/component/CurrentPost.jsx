@@ -7,6 +7,8 @@ const CurrentPost = ({ currentUser }) => {
     const [loading, setLoading] = useState(true);
     const nav = useNavigate();
 
+
+    // lọc post của bản thân từ list all post
     useEffect(() => {
         getAllArticles().then(res => {
             setCurrentUserArticles(

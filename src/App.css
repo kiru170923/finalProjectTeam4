@@ -396,8 +396,8 @@ hr {
 }
 
 .article-title {
-  font-size: 18px;
-  font-weight: 600;
+  font-size: 16px !important;
+  font-weight: 400 !important; 
   margin: 0 0 8px 0;
   color: var(--text-color);
 }
@@ -613,4 +613,7 @@ hr {
   cursor: pointer;
   background-image: url('/images/newArticleChange.png') !important;
 
+}
+
+.image-section::-webkit-scrollbar{
 }

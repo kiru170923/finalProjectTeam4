@@ -15,7 +15,7 @@ const Header = () => {
     }, []);
 
     return (
-        <>
+        <div style={{position:'relative'}}>
         {!chat?  <div 
             
             className='header pt-0' 
@@ -24,7 +24,6 @@ const Header = () => {
                 background: 'linear-gradient(135deg, #E6F3FA 0%, #F0F8FC 100%)', 
                 borderBottom: '1px solid #B3D9E6', 
                 padding: '10px 0',
-                position: 'sticky', top:'0px', zIndex:'999',
                 marginLeft:'4%'
             }}
         >
@@ -61,7 +60,7 @@ const Header = () => {
                    
                 >
                     
-                    <div className='col-12 d-flex gap-5 justify-content-end p-4 pb-0 pt-0'>
+                    <div className='col-12 d-flex gap-5 justify-content-end p-4 pb-0 pt-0' >
                         {!isLogin ? (
                             <div className='d-flex gap-5 justify-content-center align-items-center'>
                                 <NavLink to={'/signup'}>
@@ -133,7 +132,7 @@ const Header = () => {
                                             }} 
                                             className='btn'
                                             style={{
-                                                backgroundColor: '#F28C8C', // Đỏ nhạt cho Sign Out
+                                                backgroundColor: '#4382ddbd', 
                                                 color: 'white',
                                                 border: 'none',
                                                 borderRadius: '10px',
@@ -144,11 +143,11 @@ const Header = () => {
                                                 transition: 'background-color 0.3s, transform 0.2s',
                                             }}
                                             onMouseEnter={(e) => {
-                                                e.target.style.backgroundColor = '#E67E7E'; 
+                                                e.target.style.backgroundColor = '#46d5c0cf'; 
                                                 e.target.style.transform = 'scale(1.05)';
                                             }}
                                             onMouseLeave={(e) => {
-                                                e.target.style.backgroundColor = '#F28C8C';
+                                                e.target.style.backgroundColor = '#4382ddbd';
                                                 e.target.style.transform = 'scale(1)';
                                             }}
                                         >
@@ -169,7 +168,7 @@ const Header = () => {
                                     borderRadius: '10px', 
                                     position: 'absolute', 
                                     top: '10px', 
-                                    left: '37%',
+                                    left: '40%',
                                     transition: 'transform 0.3s',
                                 }}
                                 onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'}
@@ -183,7 +182,7 @@ const Header = () => {
         </div>:<div></div> }
        
 
-        </>
+        </div>
     );
 };
 

@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { getArticles, setFavoriteArticle, unsetFavoriteArticle, DeleteArticle, getArticlesAsGuest, getArticlesFromUsersYouFollowed } from '../service/articles';
 import { ThemeContext } from '../App';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import BootstrapModal from '../component/BootstrapModal';
 import toast from 'react-hot-toast';
 import SettingsMenu from '../component/SettingMenu';
@@ -10,6 +10,7 @@ import ArticlesFollowed from './ArticlesFollowed';
 import Swal from 'sweetalert2';
 import { FiHeart, FiMessageSquare, FiRepeat, FiMoreHorizontal, FiClock } from 'react-icons/fi';
 import { FaHeart } from 'react-icons/fa';
+import Share from '../component/Share';
 
 
 const Articles = () => {
@@ -139,15 +140,13 @@ const Articles = () => {
 
     return (
         <div className="articles-container">
-            {/* Header */}
             <div className="articles-header">
                 <h2 className="articles-title">
-                    {isFavoritePage ? "Bài viết đã lưu" : "Bài viết mới nhất"}
+                    {isFavoritePage ? "Bài viết của những người đã theo dõi" : "Bài viết mới nhất"}
                 </h2>
                 {currentUser && <BootstrapModal setReload = {setReload} />}
             </div>
 
-            {/* Loading State */}
             {loading && (
                 <div className="loading-container">
                     {[...Array(3)].map((_, i) => (
@@ -156,7 +155,6 @@ const Articles = () => {
                 </div>
             )}
 
-            {/* Articles List */}
             <div className="articles-list">
                 {articles.length > 0 ? (
                     articles.map((article) => (
@@ -183,27 +181,26 @@ const Articles = () => {
                 )}
             </div>
 
-            {/* Sidebar (optional) */}
             {isLogin && (
                 <div className="articles-sidebar">
                     <ArticlesFollowed />
                 </div>
             )}
+            {isFavoritePage? <div>    <Link to={'/home'}><div title='Quay lại' className='back-button'></div></Link>
+            </div>: <></>}
         </div>
     );
 };
 
-// Component ArticleItem
 const ArticleItem = ({ article, currentUser, onArticleClick, onFavoriteClick, onDeleteClick, getFormatTime, isLogin }) => {
     return (
         <div className="article-card" onClick={onArticleClick} style={{backgroundColor:'#faffff'}}>
-            {/* Article Header */}
             <div className="article-header">
                 <div className="author-info">
-                    <UserPreviewProfile author={article.author} />
+                    <div><UserPreviewProfile author={article.author}/></div>
                     <div className="author-details">
                         <span className="author-name">
-                            {article.author.username}
+                           <label onClick={(e) => e.stopPropagation()} > {article.author.username}</label>
                             {currentUser?.username === article.author.username && (
                                 <span className="you-badge">Bạn</span>
                             )}
@@ -229,26 +226,25 @@ const ArticleItem = ({ article, currentUser, onArticleClick, onFavoriteClick, on
             </div>
 
             <div className="article-footer">
-                {isLogin? <button 
+                {isLogin? <button title='Thích bài viết'
                     className={`action-btn ${article.favorited ? 'active' : ''}`}
                     onClick={(e) => onFavoriteClick(e)}
                 >
                     {article.favorited ? (
-                        <FaHeart className="action-icon filled" />
+                        <FaHeart  className="action-icon filled" />
                     ) : (
                         <FiHeart className="action-icon" />
                     )}
                     <span>{article.favoritesCount}</span>
                 </button>: <></>}
                 
-                <button className="action-btn">
+                <button title='Bình luận' className="action-btn">
                     <FiMessageSquare className="action-icon" />
                     <span>Bình luận</span>
                 </button>
                 
-                <button className="action-btn">
-                    <FiRepeat className="action-icon" />
-                    <span>Chia sẻ</span>
+                <button title='Chia sẻ bài viết' className="action-btn">
+                    <span><Share postUrl={`https://final-project-team4.vercel.app/articles/${article.slug}`} postTitle = {article.title}/></span>
                 </button>
             </div>
         </div>

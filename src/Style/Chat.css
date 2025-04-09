@@ -13,7 +13,7 @@
 
 /* Header */
 .chat-header {
-  background-color: #4a76a8;
+  background-color: #98b7da;
   color: white;
   padding: 15px 20px;
   text-align: center;
@@ -239,7 +239,7 @@ box-shadow:
 }
 
 .message.sent .message-content {
-  background-color: #b0ebfc;
+  background-color: #c8eef9;
   border-top-right-radius: 0;
 }
 

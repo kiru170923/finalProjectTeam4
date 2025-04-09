@@ -137,7 +137,7 @@ function RealTimeChat() {
         <h1>Chat Application</h1>
         <div className='option_in_chat'>
           <div className='funny'>
-            <div 
+            <div title='Chat tổng'
               className="chat-tabs active global" 
               onClick={() => changeChatOption('global')}
               style={{backgroundImage: option === "global" ? "url('/images/global.png')" : 'none'}}
@@ -145,6 +145,7 @@ function RealTimeChat() {
           </div>
           <div className='funny'>
             <div 
+            title='Chat với bạn bè đã theo dõi'
               className="chat-tabs active private" 
               onClick={() => changeChatOption('private')}
               style={{backgroundImage: option === "private" ? "url('/images/global.png')" : 'none'}}
@@ -154,7 +155,7 @@ function RealTimeChat() {
       </div>
 
       <div className="chat-main-container">
-        <div className="chat-area row g-0"> 
+        <div className="chat-area row"> 
           {option === 'private' && (
             <div className="col-3" style={{ 
               backgroundColor: 'white', 
@@ -248,6 +249,7 @@ function RealTimeChat() {
 
             <div className="message-input-container d-flex align-items-center p-3 border-top">
               <input
+               title='Nhập tin nhắn để gửi'
                 type="text"
                 className="message-input flex-grow-1 me-3"
                 placeholder="Type your message..."
@@ -256,8 +258,9 @@ function RealTimeChat() {
                 onChange={(e) => setNewMessage(e.target.value)}
                 onKeyPress={handleKeyPress}
               />
-              <div>
+              <div title='Chọn ảnh để gửi'>
                 <input
+                
                   id='imageUpload'
                   style={{display: 'none'}}
                   type="file"
@@ -267,6 +270,7 @@ function RealTimeChat() {
                 <label htmlFor='imageUpload' className='image-button me-3'></label>
               </div>
               <div 
+              title='Gửi tin nhắn'
                 onClick={sendMessage} 
                 className={`button-send ${loading ? 'disable' : ''}`}  
                 style={{
@@ -281,7 +285,7 @@ function RealTimeChat() {
           </div>
         </div>
       </div>
-      <Link to={'/home'}><div className='back-button'></div></Link>
+      <Link to={'/home'}><div title='Quay lại' className='back-button'></div></Link>
     </div>
   );
 }

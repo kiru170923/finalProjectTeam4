@@ -63,9 +63,9 @@ const BootstrapModal = ({setArticles, articles, setReload}) => {
       <div className='row d-flex justify-content-center align-items-center mb-4' >
                           {isLogin ? (
                               <div className='col-7 d-flex justify-content-center align-items-center first-title p-3 rounded' 
-                                   style={{ backgroundColor: '#ffffff', border: '1px solid #ddd' }}  onClick={()=>openTab()}>
+                                   style={{ backgroundColor: '#ffffff' }}  onClick={()=>openTab()}>
                                   {/* <img src={currentUser?.image} style={{ width: '60px',height:'60px', borderRadius:'50%' }} onClick={(e) => e.stopPropagation()}  /> */}
-                                  <p style={{position:'absolute'}}>Write new article !</p>
+                                  <div title="Đăng 1 bài viết mới" className="post-button" style={{position:'absolute'}}></div>
                                   <div 
     className="input-homepage border-0"
     placeholder="What's new?"
@@ -85,7 +85,7 @@ const BootstrapModal = ({setArticles, articles, setReload}) => {
                       </div>
 
       <Modal show={show}  centered size="xl">
-        <Modal.Header closeButton>
+        <Modal.Header >
           <Modal.Title>Nhập thông tin</Modal.Title>
         </Modal.Header>
         <Modal.Body>

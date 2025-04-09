@@ -8,16 +8,16 @@ const Taskbar = () => {
     
     return (
         <div className="taskbar">
-            <NavLink to="/home" className="icon icon-home" />
+            <NavLink title='Trang chủ' to="/home" className="icon icon-home" />
           
             
             {isLogin && (
                 <>
-                  <NavLink to="/search" className="icon icon-search" />
-                <NavLink to="/chat" className="icon icon-chat" />
-                    <NavLink to="/create" className="icon icon-create" />
-                    <NavLink to="/home/favorites" className="icon icon-favorites" />
-                    <NavLink to="/profile" className="icon icon-profile" />
+                  <NavLink title='Tìm kiếm bạn bè' to="/search" className="icon icon-search" />
+                <NavLink title='Chat với bạn' to="/chat" className="icon icon-chat" />
+                    <NavLink title='Tạo 1 bài viết' to="/create" className="icon icon-create" />
+                    <NavLink title='Xem bài viết của những người đã thích' to="/home/favorites" className="icon icon-favorites" />
+                    <NavLink title='Trang cá nhân' to="/profile" className="icon icon-profile" />
                 </>
             )}
         </div>

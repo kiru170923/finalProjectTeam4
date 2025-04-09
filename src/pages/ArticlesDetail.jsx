@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { getCurrentArticle, getCurrentArticleComment, setFavoriteArticle, unsetFavoriteArticle } from '../service/articles';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import Comment from '../component/Comment';
 import { ThemeContext } from '../App';
 import toast from 'react-hot-toast';
@@ -88,9 +88,7 @@ const ArticlesDetail = () => {
 
     return (
         <div className="article-detail-container">
-            {/* Article Card */}
             <div className="article-detail-card">
-                {/* Article Header */}
                 <div className="article-header">
                     <div className="author-info">
                         <UserPreviewProfile author = {currentArticle.author}/>
@@ -121,9 +119,9 @@ const ArticlesDetail = () => {
                             <span>{currentArticle.favoritesCount}</span>
                         </button>
                         
-                        <button className="action-btn">
+                        <Link to={''}><button className="action-btn">
                             <FiMessageSquare className="action-icon" />
-                        </button>
+                        </button></Link>
                         
                         <button className="action-btn">
                             <FiRepeat className="action-icon" />
@@ -131,7 +129,6 @@ const ArticlesDetail = () => {
                     </div>
                 </div>
 
-                {/* Article Content */}
                 <div className="article-content">
                     <h2 className="article-title">{currentArticle.title}</h2>
                     <div
@@ -141,7 +138,6 @@ const ArticlesDetail = () => {
 
                 </div>
 
-                {/* Comments Section */}
                 <div className="comments-section">
                     <h3 className="section-title">
                         <FiMessageSquare className="title-icon" />

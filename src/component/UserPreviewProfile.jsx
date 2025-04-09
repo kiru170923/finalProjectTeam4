@@ -4,7 +4,7 @@ import "bootstrap/dist/js/bootstrap.bundle.min";
 import { Popover, OverlayTrigger } from "react-bootstrap";
 import { followAnUser, unFollowAnUser } from '../service/user';
 import { getArticlesFromUsersYouFollowed, getCurrentFavoriteStatus } from '../service/articles';
-import { ThemeContext } from "@emotion/react";
+import { ThemeContext } from "../App";
 import { useNavigate } from "react-router-dom";
 
 const UserPreviewProfile = ({ author, e }) => {

@@ -5,7 +5,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 const SettingsMenu = ({DeleteThisArticle, slug}) => {
     return (
         <Dropdown onClick={(e) => e.stopPropagation()}>
-            <Dropdown.Toggle as="button" bsPrefix="custom-toggle" id="dropdown-basic" style={{
+            <Dropdown.Toggle title="Cài đặt" as="button" bsPrefix="custom-toggle" id="dropdown-basic" style={{
                 padding: '10px',
                 paddingTop: '0px',
                 borderRadius: '5px',

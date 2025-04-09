@@ -3,7 +3,7 @@ import CurrentComment from '../component/CurrentComment';
 import CurrentPost from '../component/CurrentPost';
 import EditProfileModal from '../component/ChangeProfileForm';
 import { ThemeContext } from '../App';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 const Profile = () => {
     const location = useLocation();
@@ -157,6 +157,8 @@ const Profile = () => {
                         <CurrentComment />
                     )}
                 </div>
+            </div>
+            <div>    <Link to={'/home'}><div title='Quay lại' className='back-button'></div></Link>
             </div>
         </div>
     );

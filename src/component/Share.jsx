@@ -9,23 +9,22 @@ import {
     LinkedinIcon
 } from "react-share";
 
-const Share = ({ postUrl, postTitle }) => {
-    const [show, setShow] = useState(false);
+const Share = ({ postUrl, postTitle, setShow, show}) => {
     
     return (
-        <div className="share-container">
+        <div className="share-container"
+    >
             <div 
                 className="share-trigger"
-                onMouseEnter={() => setShow(true)}
-                onMouseLeave={() => setShow(false)}
-                onClick={() => setShow(!show)}
+               
+                
             >
                 <FiRepeat className="share-icon" />
                 <span className="share-text">Share</span>
             </div>
             
             {show && (
-                <div className="share-popup">
+                <div className="share-popup" >
                     <div className="share-buttons">
                         <FacebookShareButton 
                             url={postUrl} 

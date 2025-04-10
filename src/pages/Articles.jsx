@@ -13,7 +13,8 @@ import { FaHeart } from 'react-icons/fa';
 import Share from '../component/Share';
 import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 import { db } from '../config/firebaseConfig';
-
+import LightGallery from 'lightgallery/react';
+import 'lightgallery/css/lightgallery.css';
 
 const Articles = () => {
     const [articles, setArticles] = useState([]);
@@ -27,8 +28,8 @@ const Articles = () => {
     const isHomepagee = location.pathname === "/";
     const [articlePicture, setArticlePicture] = useState([])
     const [litmitArticleDisplay, setLimitArticleDisplay] = useState(5)
-
-   
+    const [typeArticle, setTypeArticle] = useState('thread')
+    const [show, setShow] = useState(false)
     console.log(isFavoritePage)
     
 
@@ -171,6 +172,11 @@ const Articles = () => {
 
     return (
         <div className="articles-container">
+            <div className='switch-article_type d-flex justify-content-between gap-1' style={{backgroundColor:'#d0ecfa',
+                 width:'20%', margin:'0 auto', borderRadius:'12px'}} >
+                <div className='thread-section p-1' onClick={()=>setTypeArticle('thread')} ><img style={{width:'25px', height:'25px', opacity: typeArticle==='twitter' ? '0.2':'1'}} src='/images/thread.svg'></img></div>
+                <div className='twitter-section p-1'  onClick={()=>setTypeArticle('twitter')}><img style={{width:'25px', height:'25px', opacity: typeArticle==='thread' ? '0.2':'1'}} src='/images/twitter.svg'></img></div>
+            </div>
             <div className="articles-header">
                 <h2 className="articles-title">
                     {isFavoritePage ? "Bài viết của những người đã theo dõi" : "Bài viết mới nhất"}
@@ -189,7 +195,7 @@ const Articles = () => {
             <div className="articles-list">
                 {articles.length > 0 ? (
                     articles.map((article) => (
-                        !article.body ?
+                        !article.body&&typeArticle==='thread' ?
                         <ArticleItem
                             key={article.slug}
                             article={article}
@@ -200,7 +206,22 @@ const Articles = () => {
                             getFormatTime={getFormatTime}
                             isLogin = {isLogin}
                             getImageForArticle = {getImageForArticle}
-                        /> : <></>
+                            setShow = {setShow}
+                            show = {show}
+                        /> : article.body && typeArticle === 'twitter'?<ArticleItem
+                        key={article.slug}
+                        article={article}
+                        currentUser={currentUser}
+                        onArticleClick={currentUser ? () => goToThisArticle(article.slug) : requireLogin}
+                        onFavoriteClick={(e) => changeFavoriteStatus(e, article.favorited, article.slug)}
+                        onDeleteClick={(e) => DeleteThisArticle(article.slug, e)}
+                        getFormatTime={getFormatTime}
+                        isLogin = {isLogin}
+                        getImageForArticle = {getImageForArticle}
+                        setShow = {setShow}
+                        show = {show}
+                    />:<></>
+                        
                         
                     ))
                 ) : (
@@ -226,7 +247,7 @@ const Articles = () => {
     );
 };
 
-const ArticleItem = ({ article, currentUser, onArticleClick, onFavoriteClick, onDeleteClick, getFormatTime, isLogin, getImageForArticle }) => {
+const ArticleItem = ({ article, currentUser, onArticleClick, onFavoriteClick, onDeleteClick, getFormatTime, isLogin, getImageForArticle, show, setShow }) => {
     return (
         <div className="article-card" onClick={onArticleClick} style={{backgroundColor:'#faffff'}}>
             <div className="article-header">
@@ -256,16 +277,39 @@ const ArticleItem = ({ article, currentUser, onArticleClick, onFavoriteClick, on
 
             <div className="article-content">
                 <p className="article-title">{article.title}</p>
-                <p className="article-description">{article.description}</p>
-                <div className='image-section d-flex justify-content-start gap-1' style={{ maxWidth:'672px',overflow:'auto', height:'280px', display:'flex',
+                <p  className="article-description pt-2 pb-2">{article.description}</p>
+            { !getImageForArticle(article.slug).length == 0 ?
+            <div className='image-section d-flex justify-content-start gap-1' style={{ maxWidth:'672px',overflow:'auto', height:'280px', display:'flex',
                 flexDirection:'row'
                     
-                 }}>{getImageForArticle(article.slug).map((image) => {
-                    return(
-                       <a target='_blank' style={{display:'inline-block', textDecoration:'none'}} href={image}> <img loading="lazy" onLoad={(e)=>{
-                       }} onClick={(e) => e.stopPropagation()} style={{width:"210px", height:'100%', objectFit:'cover', borderRadius:'9px', border:'3px solid #ededed'}} src={image}></img></a>
-                    )
-                })}</div>
+                 }}><LightGallery speed={100} elementClassNames="d-flex gap-1" style={{
+                    maxWidth: '692px',
+                    height: '280px',
+                    display: 'flex',
+                    flexDirection: 'row'
+                  }}>
+                    {getImageForArticle(article.slug).map((image, index) => (
+                      <a
+                        key={index}
+                        href={image}
+                        target="_blank"
+                        style={{ display: 'inline-block', textDecoration: 'none' }}
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <img
+                          src={image}
+                          alt={`image-${index}`}
+                          loading="lazy"
+                          style={{
+                            width: "210px",
+                            height: "100%",
+                            objectFit: "cover",
+                            borderRadius: "9px"
+                          }}
+                        />
+                      </a>
+                    ))}
+                  </LightGallery></div>: <></>}
             </div>
 
             <div className="article-footer">
@@ -286,9 +330,14 @@ const ArticleItem = ({ article, currentUser, onArticleClick, onFavoriteClick, on
                     <span>Bình luận</span>
                 </button>
                 
-                <button title='Chia sẻ bài viết' className="action-btn">
-                    <span><Share postUrl={`https://final-project-team4.vercel.app/articles/${article.slug}`} postTitle = {article.title}/></span>
-                </button>
+                <div
+                        onMouseEnter={() => setShow(true)}
+                        onMouseLeave={() => setShow(false)}
+                        onClick={() => setShow(!show)}
+                
+                title='Chia sẻ bài viết' className="action-btn">
+                    <span><Share  postUrl={`https://final-project-team4.vercel.app/articles/${article.slug}`} postTitle = {article.title} show = {show} setShow = {setShow}/></span>
+                </div>
             </div>
         </div>
     );

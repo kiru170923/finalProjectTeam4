@@ -709,5 +709,16 @@ hr {
   font-weight: 300 !important;
   font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
   animation: slideLeftFadeIn 0.6s ease-in;
-
+}
+.thread-section, .twitter-section{
+  cursor: pointer;
+}
+.switch-article_type:checked ~ .thread-section{
+  display: none;
+}
+.switch-article_type:checked ~ .thread-section::after{
+  transform: translateX(100px);
+}
+.share-button:hover{
+  background-color: white !important;
 }

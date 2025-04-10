@@ -1,9 +1,9 @@
 import axios from 'axios';
 
-export const getArticles = async (token)=>{
+export const getArticles = async (token, limit)=>{
 
   try{
-    const userApi = 'https://node-express-conduit.appspot.com/api/articles'
+    const userApi = 'https://node-express-conduit.appspot.com/api/articles?limit=' + limit
     const res = await axios.get(userApi, {
       headers: {
         'Authorization': 'Bearer '+ token
@@ -20,7 +20,7 @@ export const getArticles = async (token)=>{
 export const getAllArticles = async ()=>{
 
   try{
-    const userApi = 'https://node-express-conduit.appspot.com/api/articles/?limit=450'
+    const userApi = 'https://node-express-conduit.appspot.com/api/articles'
     const res = await axios.get(userApi);
     return res.data;
   }

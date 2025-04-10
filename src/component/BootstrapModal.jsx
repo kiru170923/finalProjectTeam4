@@ -25,7 +25,8 @@ const BootstrapModal = ({setArticles, articles, setReload}) => {
   const [imageList, setImageList] = useState([])
   const [loading, setLoading] = useState(false)
   const [responseArticleSlug, setResponseArticleSlug] = useState(null)
-
+  const [firstShow, setFirstShow] = useState(false)
+  const [typePost, setTypePost] = useState('');
   const [articleData, setArticleData] = useState({
     article: {
       title: '',
@@ -125,7 +126,7 @@ const BootstrapModal = ({setArticles, articles, setReload}) => {
       <div className='row d-flex justify-content-center align-items-center mb-4' >
                           {isLogin ? (
                               <div className='col-7 d-flex justify-content-center align-items-center first-title p-3 rounded' 
-                                   style={{ backgroundColor: '#ffffff' }}  onClick={()=>openTab()}>
+                                   style={{ backgroundColor: '#ffffff' }}  onClick={()=>{openTab();setFirstShow(true)}}>
                                   {/* <img src={currentUser?.image} style={{ width: '60px',height:'60px', borderRadius:'50%' }} onClick={(e) => e.stopPropagation()}  /> */}
                                   <div title="Đăng 1 bài viết mới" className="post-button" style={{position:'absolute'}}></div>
                                   <div 
@@ -146,34 +147,47 @@ const BootstrapModal = ({setArticles, articles, setReload}) => {
                           )}
                       </div>
 
-      <Modal show={show}  centered size="xl">
-        <Modal.Header >
-          <Modal.Title>Nhập thông tin</Modal.Title>
+      <Modal show={firstShow} centered >
+<div style={{width:'104%'}} className="d-flex justify-content-center align-items-center text-center row p-4">
+<h4 className="text-center w-100 p-3 post_mode">Chọn chế độ đăng bài </h4>
+<div className="col-6 pb-4 pt-4 post_mode-thread d-flex justify-content-center align-items-center"  
+onClick={()=> {setTypePost('thread');; setShow(true)}}><img src="/images/thread.svg" style={{width:'30px', height:'30px'}}></img><h5 className="m-0">Thread </h5></div>
+      <div className="col-6 pb-4 pt-4 post_mode-twitter d-flex justify-content-center align-items-center text-center" 
+       onClick={()=> {setTypePost('twitter'); setShow(true)}}><img src="/images/twitter.svg" style={{width:'30px', height:'30px'}}></img><h5 className="m-0">Twitter </h5></div>
+       <div onClick={()=>{setFirstShow(false)}} title='Quay lại' className='back-button'></div>
+</div>
+      </Modal>
+
+      <Modal show={typePost? show : false} centered size="xl" style={{backgroundColor:typePost==="thread"?  '#d9eaef': '#dde3fc'}}>
+      <Modal.Header >
+          <Modal.Title>{typePost==='thread' ? "Bạn muốn chia sẻ điều gì ?": "Bạn muốn bàn luận về vấn đề gì ?"}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
             <Form.Group className="mb-3">
-              <Form.Label>Title</Form.Label>
+              <Form.Label>{typePost==='thread'? "Bạn đang nghĩ gì ?": "Tiêu đề của bài viết"}</Form.Label>
               <Form.Control
+                style={{border: typePost==='thread' ? 'none': '1px solid gray', outline:'none', boxShadow:'none'}}
                 type="text"
-                placeholder="Tiêu đề..."
+                placeholder="viết gì đó..."
                 name="title"
                 value={articleData?.article?.title}
                 onChange={handleChange}
               />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label>Description</Form.Label>
+              <Form.Label>{typePost==='thread'? "Hashtag: ":"Mô tả bài viết"}</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Mô tả..."
+                style={{border: typePost==='thread' ? 'none': '1px solid gray', outline:'none', boxShadow:'none'}}
+                placeholder= {typePost ==='thread' ? "#Motchieuhanoi": "Mô tả..."}
                 name="description"
                 value={articleData?.article?.description}
                 onChange={handleChange}
               />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label>Description</Form.Label>
+              <Form.Label>Chọn Ảnh</Form.Label>
               <Form.Control
                 type="file"
                 placeholder="Chọn ảnh..."
@@ -182,62 +196,64 @@ const BootstrapModal = ({setArticles, articles, setReload}) => {
                 onChange={(e) => handleImage(e)}
               />
             </Form.Group>
+            {typePost === 'twitter' ? 
             <Form.Group className="mb-3">
-              {/* <Form.Label>Body</Form.Label>
-              <Form.Control
-              as="textarea" 
-              cols="50"
-              rows="4"
-                type="text"
-                placeholder="Nội dung chính..."
-                name="body"
-                value={articleData.article.body}
-                onChange={handleChange}
-              /> */}
+            {/* <Form.Label>Body</Form.Label>
+            <Form.Control
+            as="textarea" 
+            cols="50"
+            rows="4"
+              type="text"
+              placeholder="Nội dung chính..."
+              name="body"
+              value={articleData.article.body}
+              onChange={handleChange}
+            /> */}
 
 
-              {/* Cái này là tích hợp thư viện texteditor tinymce*/}
-               <Editor
-               value={articleData?.article?.body}
-               onEditorChange={(content) => {
-                 setArticleData((prevState) => ({
-                  ...prevState,
-                   article: {
-                    ...prevState?.article,
-                     body: content
-                   }
-                 }));
-               }}
-      apiKey='y0f3imxmaa0wqxm61c65jhugkcfy4ga379m31fkvwne16rky'
-      init={{
-        plugins: [
-          // Core editing features
-          'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'image', 'link', 'lists', 'media', 'searchreplace', 'table', 'visualblocks', 'wordcount',
-          // Your account includes a free trial of TinyMCE premium features
-          // Try the most popular premium features until Apr 20, 2025:
-          'checklist', 'mediaembed', 'casechange', 'formatpainter', 'pageembed', 'a11ychecker', 'tinymcespellchecker', 'permanentpen', 'powerpaste', 'advtable', 'advcode', 'editimage', 'advtemplate', 'ai', 'mentions', 'tinycomments', 'tableofcontents', 'footnotes', 'mergetags', 'autocorrect', 'typography', 'inlinecss', 'markdown','importword', 'exportword', 'exportpdf'
-        ],
-        
-        toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
-        tinycomments_mode: 'embedded',
-        tinycomments_author: 'Author name',
-        mergetags_list: [
-          { value: 'First.Name', title: 'First Name' },
-          { value: 'Email', title: 'Email' },
-        ],
-        ai_request: (request, respondWith) => respondWith.string(() => Promise.reject('See docs to implement AI Assistant')),
-      }}
-      initialValue="Welcome to TinyMCE!"
-    />
-            </Form.Group>
+            {/* Cái này là tích hợp thư viện texteditor tinymce*/}
+             <Editor
+             value={articleData?.article?.body}
+             onEditorChange={(content) => {
+               setArticleData((prevState) => ({
+                ...prevState,
+                 article: {
+                  ...prevState?.article,
+                   body: content
+                 }
+               }));
+             }}
+    apiKey='y0f3imxmaa0wqxm61c65jhugkcfy4ga379m31fkvwne16rky'
+    init={{
+      plugins: [
+        // Core editing features
+        'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'image', 'link', 'lists', 'media', 'searchreplace', 'table', 'visualblocks', 'wordcount',
+        // Your account includes a free trial of TinyMCE premium features
+        // Try the most popular premium features until Apr 20, 2025:
+        'checklist', 'mediaembed', 'casechange', 'formatpainter', 'pageembed', 'a11ychecker', 'tinymcespellchecker', 'permanentpen', 'powerpaste', 'advtable', 'advcode', 'editimage', 'advtemplate', 'ai', 'mentions', 'tinycomments', 'tableofcontents', 'footnotes', 'mergetags', 'autocorrect', 'typography', 'inlinecss', 'markdown','importword', 'exportword', 'exportpdf'
+      ],
+      
+      toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+      tinycomments_mode: 'embedded',
+      tinycomments_author: 'Author name',
+      mergetags_list: [
+        { value: 'First.Name', title: 'First Name' },
+        { value: 'Email', title: 'Email' },
+      ],
+      ai_request: (request, respondWith) => respondWith.string(() => Promise.reject('See docs to implement AI Assistant')),
+    }}
+  />
+          </Form.Group>: <></>}
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => {setShow(false), create? nav('/home'): <></>}}>
+          <Button variant="secondary" onClick={() => {setShow(false); create? nav('/home'): <></>;  setTypePost('')}}>
             Đóng
           </Button>
-        {loading? <></>:<Button onClick={()=>{ sendNewArticle(); setShow(false); create? nav('/home'): <></> }} variant="primary">Đăng</Button> }  
+        {loading? <></>:<Button onClick={()=>{ sendNewArticle(); setShow(false);
+           create? nav('/home'): <></>; setTypePost(''); setFirstShow(false)}} variant="primary">Đăng</Button> }  
         </Modal.Footer>
+
       </Modal>
     </div>
   );

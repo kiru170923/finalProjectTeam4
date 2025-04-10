@@ -26,6 +26,7 @@ const Articles = () => {
     const isHomepage = location.pathname === "/home";
     const isHomepagee = location.pathname === "/";
     const [articlePicture, setArticlePicture] = useState([])
+    const [litmitArticleDisplay, setLimitArticleDisplay] = useState(5)
 
    
     console.log(isFavoritePage)
@@ -68,7 +69,7 @@ const Articles = () => {
         }
 
         else{
-        (currentUser ? getArticles(currentUser.token) : getArticlesAsGuest())
+        (currentUser ? getArticles(currentUser.token, litmitArticleDisplay) : getArticlesAsGuest())
         .then(data => {
             setArticles(data.articles);
             setLoading(false);
@@ -79,7 +80,7 @@ const Articles = () => {
             setLoading(false);
         });
         }
-    }, [reload, isHomepage, isHomepagee, isFavoritePage]);
+    }, [reload, isHomepage, isHomepagee, isFavoritePage, litmitArticleDisplay]);
 
 
     // useEffect(() => {
@@ -160,6 +161,14 @@ const Articles = () => {
         }
     }
 
+    window.addEventListener('scroll', () => {
+        if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 10  ) {
+          console.log('Đã cuộn đến cuối trang!');
+          setLimitArticleDisplay((pre) => pre + 4)
+        }
+      });
+      
+
     return (
         <div className="articles-container">
             <div className="articles-header">
@@ -180,6 +189,7 @@ const Articles = () => {
             <div className="articles-list">
                 {articles.length > 0 ? (
                     articles.map((article) => (
+                        !article.body ?
                         <ArticleItem
                             key={article.slug}
                             article={article}
@@ -190,7 +200,8 @@ const Articles = () => {
                             getFormatTime={getFormatTime}
                             isLogin = {isLogin}
                             getImageForArticle = {getImageForArticle}
-                        />
+                        /> : <></>
+                        
                     ))
                 ) : (
                     <div className="empty-state">
@@ -251,7 +262,8 @@ const ArticleItem = ({ article, currentUser, onArticleClick, onFavoriteClick, on
                     
                  }}>{getImageForArticle(article.slug).map((image) => {
                     return(
-                        <img style={{width:'200px', objectFit:'cover', borderRadius:'9px', border:'3px solid #ededed'}} src={image}></img>
+                       <a target='_blank' style={{display:'inline-block', textDecoration:'none'}} href={image}> <img loading="lazy" onLoad={(e)=>{
+                       }} onClick={(e) => e.stopPropagation()} style={{width:"210px", height:'100%', objectFit:'cover', borderRadius:'9px', border:'3px solid #ededed'}} src={image}></img></a>
                     )
                 })}</div>
             </div>

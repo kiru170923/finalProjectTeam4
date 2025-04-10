@@ -10,6 +10,9 @@ import { FiHeart, FiMessageSquare, FiRepeat, FiTrash2, FiClock } from 'react-ico
 import { FaHeart } from 'react-icons/fa';
 import '../Style/ArticleDetail.css'
 import UserPreviewProfile from '../component/UserPreviewProfile';
+import { db } from '../config/firebaseConfig';
+import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
+
 
 const ArticlesDetail = () => {
     const { slug } = useParams();
@@ -19,6 +22,8 @@ const ArticlesDetail = () => {
     const [visible, setVisible] = useState(false);
     const { setReload, reload, getFormatTime } = useContext(ThemeContext);
     const currentUser = JSON.parse(localStorage.getItem('user'));
+   const [articlePicture, setArticlePicture] = useState([])
+    
 
     useEffect(() => {
         getCurrentArticle(slug).then(res => {
@@ -44,6 +49,24 @@ const ArticlesDetail = () => {
             });
         }
     };
+
+    function getImageForArticle(slug){
+        const imageList = articlePicture.filter((msg) => msg.data.slug === slug )
+        return imageList.length > 0 ? imageList[0].data.image : [];
+      }
+          useEffect(()=>{
+              const q = query(collection(db, 'articlesImage'));
+                    const unsubscribe = onSnapshot(q, snapshot => {
+                      setArticlePicture(snapshot.docs.map(doc => ({
+                        id: doc.id,
+                        data: doc.data()
+                      })));
+                    }
+                  ); 
+                    return () => unsubscribe();
+      
+          }, [])
+      
 
     const parseCommentContent = (content) => {
         const regex = /!\[image\]\((.*?)\)/g;
@@ -135,6 +158,15 @@ const ArticlesDetail = () => {
   className="article-body"
   dangerouslySetInnerHTML={{ __html: currentArticle.body }}
 ></div>
+ <div className='image-section d-flex justify-content-start gap-1' style={{ maxWidth:'672px',overflow:'auto', height:'280px', display:'flex',
+                flexDirection:'row'
+                    
+                 }}>{getImageForArticle(currentArticle.slug).map((image) => {
+                    return(
+                       <a target='_blank' style={{display:'inline-block', textDecoration:'none'}} href={image}> <img onLoad={(e)=>{
+                       }} onClick={(e) => e.stopPropagation()} style={{width:"210px", height:'100%', objectFit:'cover', borderRadius:'9px', border:'3px solid #ededed'}} src={image}></img></a>
+                    )
+                })}</div>
 
                 </div>
 

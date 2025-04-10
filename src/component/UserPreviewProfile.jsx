@@ -20,7 +20,6 @@ const UserPreviewProfile = ({ author, e }) => {
     useEffect(() => {
         getArticlesFromUsersYouFollowed(token).then(res => {
             setFollowingArticlesList(res?.articles);
-            console.log(res?.articles);
         });
     }, []);
 

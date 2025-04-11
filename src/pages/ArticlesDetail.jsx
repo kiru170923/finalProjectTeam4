@@ -247,6 +247,7 @@ const ArticlesDetail = () => {
                     })}
                 </div>
             </div>
+             <Link to={'/home'}><div title='Quay lại' className='back-button'></div></Link>
         </div>
     );
 };
@@ -284,6 +285,7 @@ const ArticleDetailSkeleton = () => {
                     </div>
                 </div>
             </div>
+            
         </div>
     );
 };

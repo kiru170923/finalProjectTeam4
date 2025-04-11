@@ -27,32 +27,33 @@ const Header = () => {
                 marginLeft:'4%'
             }}
         >
-             <div className="header-text d-flex justify-content-center align-items-center mb-1" style={{ color: '#6dc7d6' }}>
-  <div style={{ position: 'absolute', top: '70px', left: '42%', transform: 'translate(-50%, -50%)' }}>
+            <div className="header-text d-flex justify-content-center align-items-center mb-1" style={{ color: '#6dc7d6', width: "100%" }}>
+  <div style={{ position: 'absolute', top: '70px', left: 'calc(50% - 120px)', transform: 'translate(-50%, -50%)' }}>
     <h3 style={{ fontFamily: "Nanum Brush Script", fontSize: '80px' }}>T</h3>
   </div>
-  <div style={{ position: 'absolute', top: '70px', left: '44%', transform: 'translate(-50%, -50%)' }}>
+  <div style={{ position: 'absolute', top: '70px', left: 'calc(50% - 90px)', transform: 'translate(-50%, -50%)' }}>
     <h3 style={{ fontFamily: "Nanum Brush Script", fontSize: '80px' }}>h</h3>
   </div>
-  <div style={{ position: 'absolute', top: '70px', left: '46%', transform: 'translate(-50%, -50%)' }}>
+  <div style={{ position: 'absolute', top: '70px', left: 'calc(50% - 60px)', transform: 'translate(-50%, -50%)' }}>
     <h3 style={{ fontFamily: "Nanum Brush Script", fontSize: '80px' }}>r</h3>
   </div>
-  <div style={{ position: 'absolute', top: '70px', left: '48%', transform: 'translate(-50%, -50%)' }}>
+  <div style={{ position: 'absolute', top: '70px', left: 'calc(50% - 30px)', transform: 'translate(-50%, -50%)' }}>
     <h3 style={{ fontFamily: "Nanum Brush Script", fontSize: '80px' }}>e</h3>
   </div>
-  <div style={{ position: 'absolute', top: '70px', left: '50%', transform: 'translate(-50%, -50%)' }}>
+  <div style={{ position: 'absolute', top: '70px', left: 'calc(50% )', transform: 'translate(-50%, -50%)' }}>
     <h3 style={{ fontFamily: "Nanum Brush Script", fontSize: '80px' }}>a</h3>
   </div>
-  <div style={{ position: 'absolute', top: '70px', left: '52%', transform: 'translate(-50%, -50%)' }}>
+  <div style={{ position: 'absolute', top: '70px', left: 'calc(50% + 30px)', transform: 'translate(-50%, -50%)' }}>
     <h3 style={{ fontFamily: "Nanum Brush Script", fontSize: '80px' }}>d</h3>
   </div>
-  <div style={{ position: 'absolute', top: '70px', left: '54%', transform: 'translate(-50%, -50%)' }}>
+  <div style={{ position: 'absolute', top: '70px', left: 'calc(50% + 60px)', transform: 'translate(-50%, -50%)' }}>
     <h3 style={{ fontFamily: "Nanum Brush Script", fontSize: '80px' }}>e</h3>
   </div>
-  <div style={{ position: 'absolute', top: '70px', left: '56%', transform: 'translate(-50%, -50%)' }}>
+  <div style={{ position: 'absolute', top: '70px', left: 'calc(50% + 90px)', transform: 'translate(-50%, -50%)' }}>
     <h3 style={{ fontFamily: "Nanum Brush Script", fontSize: '80px' }}>r</h3>
   </div>
 </div>
+
             <header> 
                 
                 <ul 
@@ -168,7 +169,7 @@ const Header = () => {
                                     borderRadius: '10px', 
                                     position: 'absolute', 
                                     top: '10px', 
-                                    left: '40%',
+                                    left: 'calc(50% - 170px)',
                                     transition: 'transform 0.3s',
                                 }}
                                 onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'}

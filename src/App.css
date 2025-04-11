@@ -722,3 +722,13 @@ hr {
 .share-button:hover{
   background-color: white !important;
 }
+
+
+
+
+@media (max-width: 576px) {
+.taskbar{
+  display: none;
+}
+
+}

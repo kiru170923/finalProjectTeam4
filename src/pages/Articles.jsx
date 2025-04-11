@@ -15,6 +15,7 @@ import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 import { db } from '../config/firebaseConfig';
 import LightGallery from 'lightgallery/react';
 import 'lightgallery/css/lightgallery.css';
+import LoadingOverlay from '../component/LoadingOverlay';
 
 const Articles = () => {
     const [articles, setArticles] = useState([]);
@@ -172,6 +173,7 @@ const Articles = () => {
 
     return (
         <div className="articles-container">
+             <LoadingOverlay/>
             <div className='switch-article_type d-flex justify-content-between gap-1' style={{backgroundColor:'#d0ecfa',
                  width:'20%', margin:'0 auto', borderRadius:'12px'}} >
                 <div className='thread-section p-1' onClick={()=>setTypeArticle('thread')} ><img style={{width:'25px', height:'25px', opacity: typeArticle==='twitter' ? '0.2':'1'}} src='/images/thread.svg'></img></div>

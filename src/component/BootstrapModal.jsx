@@ -158,11 +158,14 @@ onClick={()=> {setTypePost('thread');; setShow(true)}}><img src="/images/thread.
 </div>
       </Modal>
 
-      <Modal show={typePost? show : false} centered size="xl" style={{backgroundColor:typePost==="thread"?  '#d9eaef': '#dde3fc'}}>
+      <Modal show={typePost? show : false} centered size="lg" style={{backgroundColor:typePost==="thread"?  ' rgba(206, 235, 247, 0.15)': 'rgba(255, 255, 255, 0.1)',
+        
+        backdropFilter: 'blur(1px)'}}>
       <Modal.Header >
           <Modal.Title>{typePost==='thread' ? "Bạn muốn chia sẻ điều gì ?": "Bạn muốn bàn luận về vấn đề gì ?"}</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body 
+>
           <Form>
             <Form.Group className="mb-3">
               <Form.Label>{typePost==='thread'? "Bạn đang nghĩ gì ?": "Tiêu đề của bài viết"}</Form.Label>
@@ -174,6 +177,7 @@ onClick={()=> {setTypePost('thread');; setShow(true)}}><img src="/images/thread.
                 value={articleData?.article?.title}
                 onChange={handleChange}
               />
+              <hr></hr>
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>{typePost==='thread'? "Hashtag: ":"Mô tả bài viết"}</Form.Label>
@@ -185,6 +189,7 @@ onClick={()=> {setTypePost('thread');; setShow(true)}}><img src="/images/thread.
                 value={articleData?.article?.description}
                 onChange={handleChange}
               />
+              <hr></hr>
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Chọn Ảnh</Form.Label>
@@ -225,6 +230,7 @@ onClick={()=> {setTypePost('thread');; setShow(true)}}><img src="/images/thread.
              }}
     apiKey='y0f3imxmaa0wqxm61c65jhugkcfy4ga379m31fkvwne16rky'
     init={{
+      height: 200,
       plugins: [
         // Core editing features
         'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'image', 'link', 'lists', 'media', 'searchreplace', 'table', 'visualblocks', 'wordcount',

@@ -16,6 +16,7 @@ import Taskbar from './component/Taskbar';
 import BootstrapModal from './component/BootstrapModal';
 import AddData from './component/AddData';
 import RealTimeChat from './component/RealTimeChat';
+import LoadingOverlay from './component/LoadingOverlay';
 
 
 
@@ -51,6 +52,7 @@ function App() {
       <ThemeContext.Provider value={{isLogin, setIsLogin, setReload, reload, getFormatTime} }>
     <BrowserRouter>
     <Toaster/>
+    <LoadingOverlay/>
     <Header/>
      <Taskbar/>
     <Routes>

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { setUser } from '../service/user';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
+import LoadingOverlay from '../component/LoadingOverlay';
 
 const Signup = () => {
     const nav = useNavigate();
@@ -95,6 +96,7 @@ const Signup = () => {
                     </button>
                 </div>
             </div>
+             <LoadingOverlay/>
         </div>
     );
 };

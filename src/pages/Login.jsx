@@ -5,6 +5,7 @@ import {setLogin} from '../service/user'
 import { useNavigate } from 'react-router-dom';
 import { ThemeContext } from '../App';
 import LoginByGoogle from './LoginByGoogle';
+import LoadingOverlay from '../component/LoadingOverlay';
 
 const Login = () => {
     const nav = useNavigate();
@@ -20,6 +21,7 @@ const Login = () => {
 
     useEffect(()=>{
        if(isLogin){
+        
         setLogin(currentAccountInfo).then((res)=>{
             localStorage.setItem('token', res.user.token);
             console.log(res.errors)
@@ -27,7 +29,7 @@ const Login = () => {
             localStorage.setItem('user', JSON.stringify(res.user));
             toast.success("Login Successfull.")
             nav('/home'); 
-        
+            
         }).catch(errors=>{
             setIsLogin(false)
             toast.error("Invalid Email or Password.")
@@ -68,6 +70,7 @@ const Login = () => {
                 placeholder="Enter Password..."
                 style={{ width: '500px', padding: '8px', fontSize: '14px' }}
             />
+             <LoadingOverlay/>
             <div className="d-flex gap-3">
                 <button
                     type="button"

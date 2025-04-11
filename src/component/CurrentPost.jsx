@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getAllArticles } from '../service/articles';
+import { getAllArticles, getArticlesByUsername } from '../service/articles';
 import { useNavigate } from 'react-router-dom';
 
 const CurrentPost = ({ currentUser }) => {
@@ -10,12 +10,20 @@ const CurrentPost = ({ currentUser }) => {
 
     // lọc post của bản thân từ list all post
     useEffect(() => {
-        getAllArticles().then(res => {
-            setCurrentUserArticles(
-                res.articles.filter(article => article?.author?.username === currentUser?.username)
-            );
+
+        if(currentUser){
+            
+        getArticlesByUsername(currentUser.username).then((res)=>{
+            setCurrentUserArticles(res.articles)
             setLoading(false);
-        });
+        })
+        }
+        // getAllArticles().then(res => {
+        //     setCurrentUserArticles(
+        //         res.articles.filter(article => article?.author?.username === currentUser?.username)
+        //     );
+        //     
+        // });
     }, [currentUser]);
 
     return (

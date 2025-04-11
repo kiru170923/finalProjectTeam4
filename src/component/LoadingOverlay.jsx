@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import '../Style/LoadingOverlay.css';
 
-const LoadingOverlay = () => {
+const LoadingOverlay = ({loadingProfile, setLoadingProfile}) => {
   const [loading, setLoading] = useState(true);
+  
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1000);
+    const timer = setTimeout(() => setLoading(false), loadingProfile? 3000: 1400);
     return () => clearTimeout(timer);
   }, []);
 

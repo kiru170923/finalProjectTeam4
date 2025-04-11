@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { ThemeContext } from '../App';
 
@@ -6,6 +6,10 @@ const Header = () => {
     const { isLogin, setIsLogin } = useContext(ThemeContext);
     const location = useLocation();
     const chat = location.pathname === "/chat";
+    const [showLogo, setShowLogo] = useState(false);
+    const [showGun,setShowGun] = useState(false)
+    const [dan, setDan] = useState(false);
+    const [ logoCung, setLogoCung] = useState(false);
 
     // Lấy token để duy trì đăng nhập
     useEffect(() => {
@@ -13,6 +17,34 @@ const Header = () => {
             setIsLogin(true);
         }
     }, []);
+
+    useEffect(()=>{
+        setTimeout(() => {
+            setLogoCung(true)
+        }, 8230);
+        
+    }, [])
+   
+   useEffect(()=>{
+    setTimeout(() => {
+        setShowLogo(true);
+    }, 1400);
+   },[])
+
+   useEffect(()=>{
+    setTimeout(() => {
+        setDan(true)
+    }, 5600);
+   }, [])
+
+   useEffect(()=>{
+    setTimeout(() => {
+        setShowGun(true)
+    }, 4200);
+    setTimeout(() => {
+        setShowGun(false)
+    }, 8100);
+   },[])
 
     return (
         <div style={{position:'relative'}}>
@@ -27,7 +59,19 @@ const Header = () => {
                 marginLeft:'4%'
             }}
         >
-            <div className="header-text d-flex justify-content-center align-items-center mb-1" style={{ color: '#6dc7d6', width: "100%" }}>
+             {showGun && <div className='gun0' style={{width:"120px",height:"70px", backgroundSize:'cover' , position:'absolute', left:'0px', top:'10px'
+    , backgroundImage: 'url("/images/gun0.png")'
+
+ }}></div>}
+
+{dan && <img className='dan' width={'20px'} style={{position:'absolute', top:'40px', left:"150px"}} src='/images/thread.svg'/> }
+            
+            
+<div className="header-text d-flex justify-content-center align-items-center mb-1" style={{ color: '#6dc7d6', width: "100%", minHeight:'28px' }}>
+            {showLogo && 
+ <>
+ {/* {showGun && <img style={{width:"120px", position:'absolute', left:'0px', top:'10px'}} src='/images/gun.gif'></img>} */}
+
   <div style={{ position: 'absolute', top: '70px', left: 'calc(50% - 120px)', transform: 'translate(-50%, -50%)' }}>
     <h3 style={{ fontFamily: "Nanum Brush Script", fontSize: '80px' }}>T</h3>
   </div>
@@ -51,9 +95,8 @@ const Header = () => {
   </div>
   <div style={{ position: 'absolute', top: '70px', left: 'calc(50% + 90px)', transform: 'translate(-50%, -50%)' }}>
     <h3 style={{ fontFamily: "Nanum Brush Script", fontSize: '80px' }}>r</h3>
-  </div>
+  </div></>}
 </div>
-
             <header> 
                 
                 <ul 
@@ -159,25 +202,29 @@ const Header = () => {
                             </div>
                         )}
                     </div>
-                    <Link to={'/home'}>
+{showLogo &&                     <Link to={'/home'}>
                     
-                        <div>
-                            <img className='logo'
-                                src='/images/logo.png' 
-                                style={{ 
-                                    width: '70px', 
-                                    borderRadius: '10px', 
-                                    position: 'absolute', 
-                                    top: '10px', 
-                                    left: 'calc(50% - 170px)',
-                                    transition: 'transform 0.3s',
-                                }}
-                                onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'}
-                                onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
-                                alt="Logo"
-                            />
-                        </div>
-                    </Link>
+                    <div>
+                        <div className='logo'
+                             
+                            style={{ 
+                                width: '70px', 
+                                borderRadius: '10px', 
+                                position: 'absolute', 
+                                top: '10px', 
+                                left: 'calc(50% - 170px)',
+                                transition: 'transform 0.3s',
+                                backgroundImage: !logoCung? 'url("/images/twitterLogo.gif")': 'url("/images/logo.png")',
+                                backgroundSize:'cover',
+                                height:'70px'
+                            
+                            }}
+                            onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'}
+                            onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
+                            alt="Logo"
+                        />
+                    </div>
+                </Link>}
                 </ul>
             </header>
         </div>:<div></div> }

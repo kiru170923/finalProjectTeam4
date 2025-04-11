@@ -24,16 +24,24 @@ const Articles = () => {
     const currentUser = JSON.parse(localStorage.getItem('user'));
     const nav = useNavigate();
     const location = useLocation();
-    const isFavoritePage = location.pathname === "/home/favorites";
     const isHomepage = location.pathname === "/home";
     const isHomepagee = location.pathname === "/";
     const [articlePicture, setArticlePicture] = useState([])
     const [litmitArticleDisplay, setLimitArticleDisplay] = useState(5)
     const [typeArticle, setTypeArticle] = useState('thread')
     const [show, setShow] = useState(false)
-    console.log(isFavoritePage)
+    const [loadTrang,setLoadTrang] = useState(false);
     
 
+
+    useEffect(()=>{
+        if(typeArticle==='thread'){
+            setLimitArticleDisplay(5);
+        }
+        else if(typeArticle==="twitter"){
+            setLimitArticleDisplay(5);
+        }
+    }, [typeArticle])
 
     useEffect(()=>{
         const q = query(collection(db, 'articlesImage'));
@@ -52,37 +60,43 @@ const Articles = () => {
      const imageList = articlePicture.filter((msg) => msg.data.slug === slug )
      return imageList.length > 0 ? imageList[0].data.image : [];
    }
+
+
+   useEffect(()=>{
+    if (location.pathname === "/home/favorites" && isLogin) {
+        toast.promise(
+            getArticlesFromUsersYouFollowed(currentUser.token),
+            {
+                loading: 'Đang tải bài viết...',
+                success: (res) => {
+                    setArticles(res?.articles || []);
+                    setLoading(false)
+                    return 'Tải bài viết thành công!';
+                },
+                error: 'Không thể tải bài viết, vui lòng thử lại sau!'
+            }
+        );
+        
+    }
+   },[location.pathname === "/home/favorites"])
    
     useEffect(() => {
 
-
-        if (isFavoritePage && isLogin) {
-            toast.promise(
-                getArticlesFromUsersYouFollowed(currentUser.token),
-                {
-                    loading: 'Đang tải bài viết...',
-                    success: (res) => {
-                        setArticles(res?.articles || []);
-                        return 'Tải bài viết thành công!';
-                    },
-                    error: 'Không thể tải bài viết, vui lòng thử lại sau!'
-                }
-            );
-        }
-
-        else{
+      
         (currentUser ? getArticles(currentUser.token, litmitArticleDisplay) : getArticlesAsGuest())
         .then(data => {
-            setArticles(data.articles);
             setLoading(false);
+            setArticles(data.articles);
+           
         })
         .catch(error => {
+            setLoading(false);
             console.error("Error fetching articles:", error);
             setArticles([]);
-            setLoading(false);
+            
         });
-        }
-    }, [reload, isHomepage, isHomepagee, isFavoritePage, litmitArticleDisplay]);
+        
+    }, [reload, isHomepage, isHomepagee, litmitArticleDisplay]);
 
 
     // useEffect(() => {
@@ -121,6 +135,27 @@ const Articles = () => {
             }
         });
     };
+
+    useEffect(() => {
+        const handleScroll = () => {
+          const scrollTop = window.scrollY;
+          const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+          const percent = (scrollTop / totalHeight) * 100;
+          console.log(`Cuộn được: ${percent}%`);
+          if(percent.toFixed(2)> 99){
+            console.log('đang load')
+            setLoadTrang(true)
+            setTimeout(() => {
+                setLoadTrang(false)
+            }, 4000);
+            setLimitArticleDisplay((pre) => pre + 4 )
+            }
+        };
+      
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+      }, []);
+      
 
     function DeleteThisArticle(slug, e) {
         // DeleteArticle(slug).then(res => {
@@ -163,17 +198,8 @@ const Articles = () => {
         }
     }
 
-    window.addEventListener('scroll', () => {
-        if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 10  ) {
-          console.log('Đã cuộn đến cuối trang!');
-          setLimitArticleDisplay((pre) => pre + 4)
-        }
-      });
-      
-
     return (
         <div className="articles-container">
-             <LoadingOverlay/>
             <div className='switch-article_type d-flex justify-content-between gap-1' style={{backgroundColor:'#d0ecfa',
                  width:'20%', margin:'0 auto', borderRadius:'12px'}} >
                 <div className='thread-section p-1' onClick={()=>setTypeArticle('thread')} ><img style={{width:'25px', height:'25px', opacity: typeArticle==='twitter' ? '0.2':'1'}} src='/images/thread.svg'></img></div>
@@ -181,7 +207,7 @@ const Articles = () => {
             </div>
             <div className="articles-header">
                 <h2 className="articles-title">
-                    {isFavoritePage ? "Bài viết của những người đã theo dõi" : "Bài viết mới nhất"}
+                    {location.pathname === "/home/favorites" ? "Bài viết của những người đã theo dõi" : "Bài viết mới nhất"}
                 </h2>
                 {currentUser && <BootstrapModal setReload = {setReload} />}
             </div>
@@ -230,7 +256,7 @@ const Articles = () => {
                     <div className="empty-state">
                         <div className="empty-icon">📭</div>
                         <p className="empty-text">
-                            {isFavoritePage 
+                            {location.pathname === "/home/favorites" 
                                 ? "Bạn chưa lưu bài viết nào" 
                                 : "Không có bài viết nào để hiển thị"}
                         </p>
@@ -238,12 +264,16 @@ const Articles = () => {
                 )}
             </div>
 
-            {isLogin && (
+            {/* {isLogin && (
                 <div className="articles-sidebar">
                     <ArticlesFollowed />
                 </div>
-            )}
-            {isFavoritePage? <div>    <Link to={'/home'}><div title='Quay lại' className='back-button'></div></Link>
+            )} */}
+            {location.pathname === "/home/favorites"? <div>    <Link to={'/home'}><div title='Quay lại' className='back-button'></div></Link>
+            </div>: <></>}
+            
+            {loadTrang?<div>
+                <img src='/images/loading.gif'></img>
             </div>: <></>}
         </div>
     );

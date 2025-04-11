@@ -51,8 +51,8 @@ function App() {
     <>
       <ThemeContext.Provider value={{isLogin, setIsLogin, setReload, reload, getFormatTime} }>
     <BrowserRouter>
-    <Toaster/>
     <LoadingOverlay/>
+    <Toaster/>
     <Header/>
      <Taskbar/>
     <Routes>
@@ -70,10 +70,6 @@ function App() {
       <Route path='/chat' element={<RealTimeChat/>}></Route>
 
 
-
-
-
-      BootstrapModal
     </Routes>
     </BrowserRouter>
     </ThemeContext.Provider>

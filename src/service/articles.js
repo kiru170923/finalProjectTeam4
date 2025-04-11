@@ -32,7 +32,7 @@ export const getAllArticles = async ()=>{
 export const getArticlesAsGuest = async ()=>{
 
   try{
-    const userApi = 'https://node-express-conduit.appspot.com/api/articles'
+    const userApi = 'https://node-express-conduit.appspot.com/api/articles?tag=Mai'
     const res = await axios.get(userApi
     );
     return res.data;
@@ -51,6 +51,22 @@ export const getArticlesFromUsersYouFollowed = async (token)=>{
       headers: {
         'Authorization': 'Token '+ token
       }
+    });
+    return res.data;
+  }
+  catch(error){
+    console.log('error')
+    return null;
+  }
+  
+} 
+
+export const getArticlesByUsername = async (name)=>{
+
+  try{
+    const userApi = 'https://node-express-conduit.appspot.com/api/articles?author='+  name
+    const res = await axios.get(userApi, {
+
     });
     return res.data;
   }

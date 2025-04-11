@@ -547,7 +547,6 @@ hr {
 @keyframes drop {
   0% {
     transform: translateY(-100px);
-    
     opacity: 0.2;
   }
   100% {
@@ -555,24 +554,123 @@ hr {
     
   }
 }
-@keyframes fly {
-  10% {
+@keyframes drop2 {
+  0% {
     opacity: 1;
+    background-image: url('/images/twitterLogo.gif') ;
+    transform: translateX(-550px);
+  }
+  69%{
+    opacity: 1;
+  }
+  70% {
+    opacity: 0;
+  }
+  71%{
+    opacity: 1;
+  }
+  83%{
+    opacity: 1;
+  }
+  84% {
+    opacity: 0;
+  }
+  85%{
+    opacity: 1;
+  }
+  97%{
+    opacity: 1;
+  }
+  98% {
+    opacity: 0;
+  }
+  99%{
+    opacity: 1;
+    background-image: url('/images/logo.png') !important;
+  }
+
+
+  
+  100% {
+    opacity: 1;
+    background-image: url('/images/logo.png') !important;
+  }
+}
+
+@keyframes gunSlideIn {
+
+  
+  0% {
+    transform: translateX(-600px) rotate(0deg);
+     
+    opacity: 0;
+  }
+  50% {
+    opacity: 100;
+   
   }
   100% {
-    transform: translateY(-100px);
+    transform: translateX(40px) ;
+    background-image: url('/images/gun.gif');
     opacity: 1;
   }
- 
 }
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.gun0 {
+  animation: gunSlideIn 1.2s ease-out forwards;
+  transition: all 5s ease;
+}
+
+@keyframes fly-300deg {
+  0%, 10% {
+    opacity: 1;
+    transform: translate(0px, 0px);
+  }
+  25% {
+    transform: translate(220px, -10px);
+  }
+  30% {
+    opacity: 0;
+    transform: translate(0px, 0px);
+  }
+  35%, 40% {
+    opacity: 1;
+    transform: translate(0px, 0px);
+  }
+  55% {
+    transform: translate(290px, -10px);
+  }
+  60% {
+    opacity: 0;
+    transform: translate(0px, 0px);
+  }
+  65%, 70% {
+    opacity: 1;
+    transform: translate(0px, 0px);
+  }
+  99% {
+    transform: translate(500px, -10px);
+
+  }
+  100%{
+    opacity: 0;
+  }
+}
+
+.dan {
+  animation: fly-300deg 3s ease-out forwards;
+  transition: all 5s ease;
+}
+
+
 .logo{
-  animation: drop 1.6s ease-in forwards;
-  transition: all 0.5s ease-in;
+  animation: drop2 7s ease-in forwards;
 }
-.logo:hover{
-  animation: fly 1.6s ease-in forwards;
-  transition: all 0.5s ease-in;
-}
+
 .header-text {
   position: relative;
 }

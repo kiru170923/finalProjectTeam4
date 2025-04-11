@@ -9,6 +9,7 @@ const Comment = ({slug}) => {
   const {setReload, reload} = useContext(ThemeContext);
   const [comment, setComment] = useState('');
   const [files, setFiles] = useState([]);
+  const [choose, setChoose] = useState(false)
   const handleSubmit = async () => {
     let imageLinks = [];
 
@@ -71,7 +72,7 @@ const Comment = ({slug}) => {
         multiline
         rows={3}
         value={comment}
-        onChange={(e) => setComment(e.target.value)}
+        onChange={(e) => {setComment(e.target.value)}}
         sx={{
           '& .MuiOutlinedInput-root': {
             '& fieldset': {
@@ -98,7 +99,7 @@ const Comment = ({slug}) => {
         type="file" 
         id="comment"
         multiple
-        onChange={(e) => setFiles(Array.from(e.target.files))}
+        onChange={(e) =>{ setFiles(Array.from(e.target.files)); setChoose(true)}}
         style={{ marginTop: '10px', display: 'none' }}
       />
       <div className='mt-2'>
@@ -106,16 +107,15 @@ const Comment = ({slug}) => {
           htmlFor="comment" 
           className="btn btn-light"
           style={{
-            backgroundColor: '#B3D9E6', 
+            backgroundColor: choose ? '#85ffd9': '#a3d2dc', 
             color: '#4DA8CC',
             border: 'none',
-            '&:hover': {
-              backgroundColor: '#80C4DE', 
-            }
+            
           }}
         >
           <i className="bi bi-image"></i>
         </label>
+        {choose ? `choose: ${files[0].name}`: <></>}
       </div>
       <div className='text-center'>
         <Button

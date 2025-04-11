@@ -4,6 +4,7 @@ import CurrentPost from '../component/CurrentPost';
 import EditProfileModal from '../component/ChangeProfileForm';
 import { ThemeContext } from '../App';
 import { Link, useLocation } from 'react-router-dom';
+import LoadingOverlay from '../component/LoadingOverlay';
 
 const Profile = () => {
     const location = useLocation();
@@ -11,6 +12,7 @@ const Profile = () => {
     const { reload, setReload } = useContext(ThemeContext);
     const [currentUser, setCurrentUser] = useState(null);
     const [section, setSection] = useState('Current Post');
+    const [loadingProfile, setLoadingProfile] = useState(true);
 
     useEffect(() => {
         const user = JSON.parse(localStorage.getItem('user'));//
@@ -19,7 +21,7 @@ const Profile = () => {
         } else {
             setCurrentUser(user);
         }
-    }, [reload]);
+    }, []);
 
     console.log(currentUser);
 
@@ -37,6 +39,7 @@ const Profile = () => {
                 padding: '20px'
             }}
         >
+                {/* <LoadingOverlay setLoadingProfile ={setLoadingProfile} loadingProfile = {loadingProfile}/> */}
             
             <div 
                 className="border rounded-4 p-4 shadow-sm" 
@@ -159,6 +162,8 @@ const Profile = () => {
                 </div>
             </div>
             <div>    <Link to={'/home'}><div title='Quay lại' className='back-button'></div></Link>
+                     
+            
             </div>
         </div>
     );

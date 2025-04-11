@@ -272,7 +272,7 @@ const Articles = () => {
             {location.pathname === "/home/favorites"? <div>    <Link to={'/home'}><div title='Quay lại' className='back-button'></div></Link>
             </div>: <></>}
             
-            {loadTrang?<div>
+            {loadTrang?<div className='d-flex justify-content-center align-items-center'>
                 <img src='/images/loading.gif'></img>
             </div>: <></>}
         </div>

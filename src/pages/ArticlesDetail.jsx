@@ -12,10 +12,13 @@ import '../Style/ArticleDetail.css'
 import UserPreviewProfile from '../component/UserPreviewProfile';
 import { db } from '../config/firebaseConfig';
 import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
-
+import Share from '../component/Share';
+import LightGallery from 'lightgallery/react';
+import 'lightgallery/css/lightgallery.css';
 
 const ArticlesDetail = () => {
     const { slug } = useParams();
+        const [show, setShow] = useState(false)
     const [currentArticle, setCurrentArticle] = useState(null);
     const [currentComments, setCurrentComments] = useState([]);
     const [favorite, setFavorite] = useState(false);
@@ -142,33 +145,50 @@ const ArticlesDetail = () => {
                             <span>{currentArticle.favoritesCount}</span>
                         </button>
                         
-                        <Link to={''}><button className="action-btn">
-                            <FiMessageSquare className="action-icon" />
-                        </button></Link>
+                       
                         
-                        <button className="action-btn">
-                            <FiRepeat className="action-icon" />
+                        <button className="action-btn" onMouseEnter={()=>setShow(true)} onMouseLeave={()=> setShow(false)}>
+                            <Share  postUrl={`https://final-project-team4.vercel.app/articles/${currentArticle.slug}`} postTitle = {currentArticle.title} show = {show} setShow = {setShow}/>
                         </button>
                     </div>
                 </div>
 
                 <div className="article-content">
-                    <h2 className="article-title">{currentArticle.title}</h2>
-                    <div
-  className="article-body"
-  dangerouslySetInnerHTML={{ __html: currentArticle.body }}
-></div>
- <div className='image-section d-flex justify-content-start gap-1' style={{ maxWidth:'672px',overflow:'auto', height:'280px', display:'flex',
+                <p className="article-title">{currentArticle.title}</p>
+                <p  className="article-description pt-2 pb-2">{currentArticle.description}</p>
+            { !getImageForArticle(currentArticle.slug).length == 0 ?
+            <div className='image-section d-flex justify-content-start gap-1' style={{ maxWidth:'672px',overflow:'auto', height:'280px', display:'flex',
                 flexDirection:'row'
                     
-                 }}>{getImageForArticle(currentArticle.slug).map((image) => {
-                    return(
-                       <a target='_blank' style={{display:'inline-block', textDecoration:'none'}} href={image}> <img onLoad={(e)=>{
-                       }} onClick={(e) => e.stopPropagation()} style={{width:"210px", height:'100%', objectFit:'cover', borderRadius:'9px', border:'3px solid #ededed'}} src={image}></img></a>
-                    )
-                })}</div>
-
-                </div>
+                 }}><LightGallery speed={100} elementClassNames="d-flex gap-1" style={{
+                    maxWidth: '692px',
+                    height: '280px',
+                    display: 'flex',
+                    flexDirection: 'row'
+                  }}>
+                    {getImageForArticle(currentArticle.slug).map((image, index) => (
+                      <a
+                        key={index}
+                        href={image}
+                        target="_blank"
+                        style={{ display: 'inline-block', textDecoration: 'none' }}
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <img
+                          src={image}
+                          alt={`image-${index}`}
+                          loading="lazy"
+                          style={{
+                            width: "210px",
+                            height: "100%",
+                            objectFit: "cover",
+                            borderRadius: "9px"
+                          }}
+                        />
+                      </a>
+                    ))}
+                  </LightGallery></div>: <></>}
+            </div>
 
                 <div className="comments-section">
                     <h3 className="section-title">

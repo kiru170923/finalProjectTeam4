@@ -48,7 +48,7 @@ const Header = () => {
 
     return (
         <div style={{position:'relative'}}>
-        {!chat?  <div 
+        { <div 
             
             className='header pt-0' 
             style={{ 
@@ -166,7 +166,7 @@ const Header = () => {
                             <div className='d-flex gap-2'>
                                 <div >
                                     <NavLink to={'/login'}>
-                                        <li ss
+                                        <li
                                             
                                             onClick={() => {
                                                 setIsLogin(false);
@@ -227,7 +227,7 @@ const Header = () => {
                 </Link>}
                 </ul>
             </header>
-        </div>:<div></div> }
+        </div> }
        
 
         </div>

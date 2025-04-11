@@ -5,6 +5,7 @@ import EditProfileModal from '../component/ChangeProfileForm';
 import { ThemeContext } from '../App';
 import { Link, useLocation } from 'react-router-dom';
 import LoadingOverlay from '../component/LoadingOverlay';
+import UserPreviewProfile from '../component/UserPreviewProfile';
 
 const Profile = () => {
     const location = useLocation();
@@ -13,6 +14,7 @@ const Profile = () => {
     const [currentUser, setCurrentUser] = useState(null);
     const [section, setSection] = useState('Current Post');
     const [loadingProfile, setLoadingProfile] = useState(true);
+    const [profile, setProfile] = useState(true)
 
     useEffect(() => {
         const user = JSON.parse(localStorage.getItem('user'));//
@@ -21,7 +23,7 @@ const Profile = () => {
         } else {
             setCurrentUser(user);
         }
-    }, []);
+    }, [reload]);
 
     console.log(currentUser);
 
@@ -97,8 +99,10 @@ const Profile = () => {
                 <div className="text-center mt-3">
                     {userData ? <></> : (
                         <EditProfileModal /> 
+                        
                     )}
                 </div>
+                <UserPreviewProfile currentUser = {currentUser} profile = {profile} setProfile = {setProfile} />
 
                 <hr style={{ borderColor: '#B3D9E6', opacity: 0.5 }} />
 

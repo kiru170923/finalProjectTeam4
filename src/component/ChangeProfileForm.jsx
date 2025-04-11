@@ -3,32 +3,48 @@ import { Modal, Button, Form } from 'react-bootstrap';
 import toast from 'react-hot-toast';
 import { updateProfileInformation } from '../service/update';
 import { ThemeContext } from '../App';
+import { uploadImageAndGetUrl } from './UpImageToFireBase';
 
 const EditProfileModal = () => {
     const [show, setShow] = useState(false);
     let currentUser = JSON.parse(localStorage.getItem('user'));
     const [accountInfo, setAccountInfo] = useState(currentUser);
     const { setReload } = useContext(ThemeContext);
+    const [image,setImage ] = useState('')
 
-    function updateProfile(e) {
+    function updateProfile(e, imge) {
         setAccountInfo((pre) => {
             return {
                 ...pre,
-                [e.target.name]: e.target.value
+                [e.target.name]: e.target.value, img : imge? imge : null
             };
         });
     }
     console.log(accountInfo);
 
-    function setUpdateProfile() {
-        updateProfileInformation(accountInfo).then(res => {
+   async function setUpdateProfile() {
+       await updateProfileInformation(accountInfo).then(res => {
             localStorage.setItem("user", JSON.stringify(res.user));
             toast.success("Update successful!");
             setShow(false);
+            setAccountInfo(res.user)
             setReload((pre) => !pre);
+            localStorage.setItem("user", JSON.stringify(res.user));
         });
     }
-
+    async function handleImage(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+    
+        try {
+            const imageUrl = await uploadImageAndGetUrl(file);
+            setImage(imageUrl);
+            updateProfile({ target: { name: 'image', value: imageUrl } });
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    
     return (
         <>
             <Button
@@ -93,6 +109,7 @@ const EditProfileModal = () => {
                         <Form.Group className="mb-3">
                             <Form.Label style={{ color: '#4DA8CC', fontWeight: '500' }}>Username</Form.Label>
                             <Form.Control 
+                                required
                                 onChange={(e) => updateProfile(e)} 
                                 name='username' 
                                 type="text" 
@@ -111,6 +128,7 @@ const EditProfileModal = () => {
                         <Form.Group className="mb-3">
                             <Form.Label style={{ color: '#4DA8CC', fontWeight: '500' }}>Email</Form.Label>
                             <Form.Control 
+                            required
                                 onChange={(e) => updateProfile(e)} 
                                 name='email' 
                                 type="email" 
@@ -129,6 +147,7 @@ const EditProfileModal = () => {
                         <Form.Group className="mb-3">
                             <Form.Label style={{ color: '#4DA8CC', fontWeight: '500' }}>Bio</Form.Label>
                             <Form.Control 
+                            required
                                 onChange={(e) => updateProfile(e)} 
                                 name='bio' 
                                 type="text" // Sửa type từ "email" thành "text" cho bio
@@ -146,21 +165,20 @@ const EditProfileModal = () => {
                         </Form.Group>
                         <Form.Group className="mb-3">
                             <Form.Label style={{ color: '#4DA8CC', fontWeight: '500' }}>Image</Form.Label>
-                            <Form.Control 
-                                onChange={(e) => updateProfile(e)} 
-                                name='image' 
-                                type="text" 
-                                placeholder="Enter new image URL" 
-                                value={accountInfo.image} 
-                                style={{
-                                    borderColor: '#80C4DE',
-                                    borderRadius: '8px',
-                                    backgroundColor: 'white',
-                                    transition: 'border-color 0.3s',
-                                }}
-                                onFocus={(e) => e.target.style.borderColor = '#4DA8CC'}
-                                onBlur={(e) => e.target.style.borderColor = '#80C4DE'}
-                            />
+                           <Form.Control
+    required
+    onChange={handleImage}
+    name='image'
+    type="file"
+    accept='image/*'
+    style={{
+        borderColor: '#80C4DE',
+        borderRadius: '8px',
+        backgroundColor: 'white',
+        transition: 'border-color 0.3s',
+    }}
+/>
+
                         </Form.Group>
                     </Form>
                 </Modal.Body>

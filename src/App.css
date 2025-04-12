@@ -830,3 +830,16 @@ hr {
 }
 
 }
+.login-google{
+  transition: all 0.5s ease;
+  background-size: cover;
+  margin: 20px;
+}
+
+.login-google:hover{
+  transition: all 0.3s ease;
+  background-image: url('/images/googleChange.png') !important;
+  cursor: pointer;
+  width: 45px !important;
+  height: 45px  !important;
+}

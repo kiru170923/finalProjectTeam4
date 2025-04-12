@@ -22,7 +22,7 @@ const Login = () => {
     });
 
     useEffect(() => {
-        if (isLogin) {
+        if (isLogin && currentAccountInfo) {
             setLogin(currentAccountInfo).then((res) => {
                 localStorage.setItem('token', res.user.token);
                 localStorage.setItem('user', JSON.stringify(res.user));
@@ -149,7 +149,7 @@ const Login = () => {
                     >
                         Sign Up
                     </button>
-                    <div><LoginByGoogle/></div>
+                  
                 </div>
 
                 <div style={{
@@ -158,7 +158,7 @@ const Login = () => {
                     fontSize: '14px'
                 }}>
                     <p>Or continue with</p>
-                    {/* <LoginByGoogle /> */}
+                    <div><LoginByGoogle/></div>
                 </div>
             </div>
         </div>

@@ -3,81 +3,93 @@
 import {doc, setDoc, getFirestore, getDoc, onSnapshot, collection, addDoc, orderBy, query, serverTimestamp, Timestamp} from 'firebase/firestore'
 import {GoogleAuthProvider, onAuthStateChanged, signInWithPopup} from 'firebase/auth'
 import { auth, db } from '../config/firebaseConfig'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
+import { setLogin, setUser } from '../service/user';
+import { ThemeContext } from '../App';
+import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
 function LoginByGoogle() {
-  const [count, setCount] = useState(0)
-  const [user, setUser] = useState([]);
-  const [messages, setMessage] = useState([]);
-  const [newMessage, setNewMessage] = useState('')
-
-  useEffect(()=>{
-
-    const q = query(collection(db, "messages"), orderBy("timestamp"));
-    const unsubcribe = onSnapshot(q, snapshot => {
-      setMessage(snapshot.docs.map(doc => ({
-          id: doc.id,
-          data: doc.data(),
- 
-      })))
-    })
-    return () => unsubcribe();
-  }, [])
-
+  const nav = useNavigate();
+  const [user, setUserr] = useState([]);
+  const [userData, setUserData] = useState();
+      const { setIsLogin } = useContext(ThemeContext);
+  
 
   useEffect(()=>{
     onAuthStateChanged(auth, user =>{
       if(user){
-        setUser(user);
+        setUserr(user);
       }
       else{
-        setUser(null);
+        setUserr(null);
       }
     })
   }, [])
 
-  const sendMessage = async ()=>{
-    await addDoc(collection(db, "messages"),{
-      uid: user.uid,
-      photoURL: user.photoURL,
-      displayName: user.displayName,
-      text: newMessage,
-      timestamp : serverTimestamp()
-    })
-    setNewMessage("")
-  }
 
+  // function getName(name){
+  //   const nameAfterSplit = name.split(' ').join('')
+  //   return nameAfterSplit;
+  // }
+  function normalizeName(name) {
+    return name
+      .normalize("NFD")                     // Tách dấu ra khỏi ký tự gốc
+      .replace(/[\u0300-\u036f]/g, "")     // Xóa các dấu
+      .replace(/\s+/g, "")                 // Xóa khoảng trắng
+      .toLowerCase();                      // Viết thường
+  }
   const handleGoogleLogin = async ()=> {
-    
      const provider = new GoogleAuthProvider();
      try {
       const result = await signInWithPopup(auth, provider);
       console.log(result)
 
+    await setUser({
+        user: {
+          username: result.user.uid,
+          email: result.user.email,
+          password: result.user.uid
+        }
+      })
+
+        setUserData(
+          {
+            user: {
+              email: result.user.email,
+              password: result.user.uid
+            }
+          }
+        )
+      
      } catch (error) {
       console.log(error.message);
       
      }
   }
 
+  console.log(userData)
+
+  useEffect(()=>{
+    if(userData){
+      setLogin(userData).then(res =>{
+        if(res.user){
+          console.log(res)
+           nav('/home');
+           localStorage.setItem('token', res.user.token);
+            localStorage.setItem('user', JSON.stringify(res.user));
+            toast.success("Login Successful!");
+                          
+        }
+      })
+    }
+  },[userData])
+
   return (
     <div className=''>
      {user ?<div>Logged in as {user.displayName}
-      <input value={newMessage}
-      onChange={e => setNewMessage(e.target.value)}/>
-      <button onClick={sendMessage}>Send message</button>
       <button onClick={()=> auth.signOut()}>Logout</button>
-      {messages.map(msg => (
-        <div key={msg.id}>
-          <img src={msg.data.photoURL} alt="" />
-          {msg.data.text}
-        </div>
-      ))}
-
-
-
-      
-      </div>: <button onClick={handleGoogleLogin}>login with google</button>
+      </div>: <div onClick={handleGoogleLogin} className='d-flex justify-content-center align-items-center'><div className='login-google' style={{width:"40px", height:'40px', backgroundImage:'url("/images/google.svg")'}} ></div></div>
 }
 
     </div>
@@ -85,3 +97,19 @@ function LoginByGoogle() {
 }
 
 export default LoginByGoogle;
+
+
+
+
+// setLogin(
+//   {
+//     user: {
+//       email: res.email,
+//       password: result.user.uid
+//     }
+//   }
+
+
+// ).then(res2 =>{
+//   console.log('Thanh cong: ' + res2)
+// })

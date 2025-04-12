@@ -141,10 +141,7 @@ const BootstrapModal = ({setArticles, articles, setReload}) => {
                                   </div>
                               </div>
                           ) : (
-                              <div className='text-center'>
-                                  <p><Link to={'/login'}>Login</Link> to share your world</p>
-                                  <img src="/images/world.gif" style={{ width: '80px' }} alt="" />
-                              </div>
+                              <></>
                           )}
                       </div>
 

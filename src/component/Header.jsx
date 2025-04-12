@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { ThemeContext } from '../App';
+import { auth } from '../config/firebaseConfig';
 
 const Header = () => {
     const { isLogin, setIsLogin } = useContext(ThemeContext);
@@ -16,7 +17,8 @@ const Header = () => {
         if (localStorage.getItem('token')) {
             setIsLogin(true);
         }
-    }, []);
+    }, [localStorage.getItem('token')]);
+    // <button onClick={()=> auth.signOut()}>Logout</button>
 
     useEffect(()=>{
         setTimeout(() => {
@@ -170,7 +172,7 @@ const Header = () => {
                                             
                                             onClick={() => {
                                                 setIsLogin(false);
-                                           
+                                                auth.signOut();
                                                 localStorage.removeItem('token');
                                                 localStorage.removeItem('user');
                                             }} 

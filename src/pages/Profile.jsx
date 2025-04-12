@@ -102,7 +102,9 @@ const Profile = () => {
                         
                     )}
                 </div>
-                <UserPreviewProfile currentUser = {currentUser} profile = {profile} setProfile = {setProfile} />
+
+                {userData?<UserPreviewProfile currentUser = {currentUser} profile = {profile} setProfile = {setProfile} />: <></> }
+                
 
                 <hr style={{ borderColor: '#B3D9E6', opacity: 0.5 }} />
 

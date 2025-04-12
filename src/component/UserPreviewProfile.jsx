@@ -188,7 +188,7 @@ const UserPreviewProfile = ({ author, e}) => {
             </div>
           ) : (
             <div>
-              {currentUser.username !== author?.username && (
+              
                 <button
                   style={{
                     width: "100%",
@@ -214,7 +214,7 @@ const UserPreviewProfile = ({ author, e}) => {
                 >
                   {follow ? "Unfollow" : "Follow"}
                 </button>
-              )}
+              
             </div>
           )}
         </>

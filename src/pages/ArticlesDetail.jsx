@@ -154,8 +154,13 @@ const ArticlesDetail = () => {
                 </div>
 
                 <div className="article-content">
-                <p className="article-title">{currentArticle.title}</p>
-                <p  className="article-description pt-2 pb-2">{currentArticle.description}</p>
+                <p  className="article-title">{currentArticle.title}</p>
+                <p  style={{color:'black', fontSize:'15px'}}  className="article-description pt-2 pb-2">{currentArticle.description}</p>
+                <p  style={{color:'black', fontSize:'15px'}}
+  className="article-description pt-2 pb-2"
+  dangerouslySetInnerHTML={{ __html: currentArticle.body }}
+></p>
+
             { !getImageForArticle(currentArticle.slug).length == 0 ?
             <div className='image-section d-flex justify-content-start gap-1' style={{ maxWidth:'672px',overflow:'auto', height:'280px', display:'flex',
                 flexDirection:'row'

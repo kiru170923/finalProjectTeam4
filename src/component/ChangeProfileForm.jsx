@@ -27,9 +27,7 @@ const EditProfileModal = () => {
             localStorage.setItem("user", JSON.stringify(res.user));
             toast.success("Update successful!");
             setShow(false);
-            setAccountInfo(res.user)
             setReload((pre) => !pre);
-            localStorage.setItem("user", JSON.stringify(res.user));
         });
     }
     async function handleImage(e) {

@@ -62,41 +62,37 @@ const Articles = () => {
    }
 
 
-   useEffect(()=>{
+   useEffect(() => {
     if (location.pathname === "/home/favorites" && isLogin) {
-        toast.promise(
-            getArticlesFromUsersYouFollowed(currentUser.token),
-            {
-                loading: 'Đang tải bài viết...',
-                success: (res) => {
-                    setArticles(res?.articles || []);
-                    setLoading(false)
-                    return 'Tải bài viết thành công!';
-                },
-                error: 'Không thể tải bài viết, vui lòng thử lại sau!'
-            }
-        );
-        
-    }
-   },[location.pathname === "/home/favorites"])
-   
-    useEffect(() => {
+        setLoading(true); // Bắt đầu loading
 
-      
+        getArticlesFromUsersYouFollowed(currentUser.token)
+            .then(res => {
+                setArticles(res?.articles || []);
+                setLoading(false);
+                console.log('Tải bài viết thành công!');
+            })
+            .catch(err => {
+                console.error('Không thể tải bài viết:', err);
+                setLoading(false);
+                setArticles([]);
+            });
+    } else {
+        setLoading(true);
+
         (currentUser ? getArticles(currentUser.token, litmitArticleDisplay) : getArticlesAsGuest())
-        .then(data => {
-            setLoading(false);
-            setArticles(data.articles);
-           
-        })
-        .catch(error => {
-            setLoading(false);
-            console.error("Error fetching articles:", error);
-            setArticles([]);
-            
-        });
-        
-    }, [reload, isHomepage, isHomepagee, litmitArticleDisplay]);
+            .then(data => {
+                setArticles(data.articles);
+                setLoading(false);
+            })
+            .catch(error => {
+                console.error("Error fetching articles:", error);
+                setArticles([]);
+                setLoading(false);
+            });
+    }
+}, [reload, isHomepage, isHomepagee, typeArticle, location.pathname, litmitArticleDisplay]);
+
 
 
     // useEffect(() => {
@@ -136,25 +132,25 @@ const Articles = () => {
         });
     };
 
-    useEffect(() => {
-        const handleScroll = () => {
-          const scrollTop = window.scrollY;
-          const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
-          const percent = (scrollTop / totalHeight) * 100;
-          console.log(`Cuộn được: ${percent}%`);
-          if(percent.toFixed(2)> 99){
-            console.log('đang load')
-            setLoadTrang(true)
-            setTimeout(() => {
-                setLoadTrang(false)
-            }, 4000);
-            setLimitArticleDisplay((pre) => pre + 4 )
-            }
-        };
+    // useEffect(() => {
+    //     const handleScroll = () => {
+    //       const scrollTop = window.scrollY;
+    //       const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+    //       const percent = (scrollTop / totalHeight) * 100;
+    //       console.log(`Cuộn được: ${percent}%`);
+    //       if(percent.toFixed(2)> 99){
+    //         console.log('đang load')
+    //         setLoadTrang(true)
+    //         setTimeout(() => {
+    //             setLoadTrang(false)
+    //         }, 4000);
+    //         setLimitArticleDisplay((pre) => pre + 4 )
+    //         }
+    //     };
       
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-      }, []);
+    //     window.addEventListener('scroll', handleScroll);
+    //     return () => window.removeEventListener('scroll', handleScroll);
+    //   }, []);
       
 
     function DeleteThisArticle(slug, e) {
@@ -223,7 +219,7 @@ const Articles = () => {
             <div className="articles-list">
                 {articles.length > 0 ? (
                     articles.map((article) => (
-                        !article.body&&typeArticle==='thread' ?
+                        (typeArticle==='thread'&& !article.body) ?
                         <ArticleItem
                             key={article.slug}
                             article={article}
@@ -236,7 +232,7 @@ const Articles = () => {
                             getImageForArticle = {getImageForArticle}
                             setShow = {setShow}
                             show = {show}
-                        /> : article.body && typeArticle === 'twitter'?<ArticleItem
+                        /> :  typeArticle === 'twitter' && article.body ?<ArticleItem
                         key={article.slug}
                         article={article}
                         currentUser={currentUser}
@@ -269,12 +265,20 @@ const Articles = () => {
                     <ArticlesFollowed />
                 </div>
             )} */}
-            {location.pathname === "/home/favorites"? <div>    <Link to={'/home'}><div title='Quay lại' className='back-button'></div></Link>
+            {location.pathname == "/home/favorites"? <div>    <Link to={'/home'}><div title='Quay lại' className='back-button'></div></Link>
             </div>: <></>}
+         <div style={{width:"100%"}} className='d-flex justify-content-center align-items-center'>
+         <button 
+            onClick={(e) => {setLimitArticleDisplay((pre) => pre + 4 );   setLoadTrang(true)
+            setTimeout(() => {
+                setLoadTrang(false)
+            }, 4000);
+            }}>Tải thêm</button>
+         </div>
+
+
             
-            {loadTrang?<div className='d-flex justify-content-center align-items-center'>
-                <img src='/images/loading.gif'></img>
-            </div>: <></>}
+         
         </div>
     );
 };

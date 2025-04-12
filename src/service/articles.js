@@ -3,7 +3,7 @@ import axios from 'axios';
 export const getArticles = async (token, limit)=>{
 
   try{
-    const userApi = 'https://node-express-conduit.appspot.com/api/articles?limit=' + limit
+    const userApi = 'https://node-express-conduit.appspot.com/api/articles?limit=' + limit + "&tag=Mai"
     const res = await axios.get(userApi, {
       headers: {
         'Authorization': 'Bearer '+ token
@@ -20,7 +20,7 @@ export const getArticles = async (token, limit)=>{
 export const getAllArticles = async ()=>{
 
   try{
-    const userApi = 'https://node-express-conduit.appspot.com/api/articles'
+    const userApi = 'https://node-express-conduit.appspot.com/api/articles?tag=Mai'
     const res = await axios.get(userApi);
     return res.data;
   }
@@ -46,7 +46,7 @@ export const getArticlesAsGuest = async ()=>{
 export const getArticlesFromUsersYouFollowed = async (token)=>{
 
   try{
-    const userApi = 'https://node-express-conduit.appspot.com/api/articles/feed?limit='
+    const userApi = 'https://node-express-conduit.appspot.com/api/articles/feed'
     const res = await axios.get(userApi, {
       headers: {
         'Authorization': 'Token '+ token

@@ -16,10 +16,11 @@ const Profile = () => {
     const [loadingProfile, setLoadingProfile] = useState(true);
     const [profile, setProfile] = useState(true)
 
+
     useEffect(() => {
         const user = JSON.parse(localStorage.getItem('user'));//
         if (userData) {
-            setCurrentUser(userData);
+            setCurrentUser(userData.author);
         } else {
             setCurrentUser(user);
         }
@@ -103,7 +104,7 @@ const Profile = () => {
                     )}
                 </div>
 
-                {userData?<UserPreviewProfile currentUser = {currentUser} profile = {profile} setProfile = {setProfile} />: <></> }
+                {userData?<UserPreviewProfile current = {currentUser} profile = {profile} setProfile = {setProfile} followed = {userData.follow} />: <></> }
                 
 
                 <hr style={{ borderColor: '#B3D9E6', opacity: 0.5 }} />

@@ -6,6 +6,7 @@ import '../Style/Chat.css';
 import { uploadImageAndGetUrl } from '../component/UpImageToFireBase';
 import { Link } from 'react-router-dom';
 import { getArticlesFromUsersYouFollowed } from '../service/articles';
+import {deleteMessage} from '../service/firebase'
 
 function RealTimeChat() {
   const [userData, setUserData] = useState(null);
@@ -21,6 +22,9 @@ function RealTimeChat() {
   const token = localStorage.getItem('token');
   const [friendData, setFriendData] = useState(null);
   const [selectedIndex, setSelectedIndex] = useState(-1);
+  const [hoverId,setHoverId   ] = useState(null);
+  
+  
 
   //lấy user data
   useEffect(() => {
@@ -79,8 +83,8 @@ function RealTimeChat() {
     if (option === 'global') {
       await addDoc(collection(db, 'globalMessages'), {
         uid: userData.username,
-        photoURL: userData.image || '',
         displayName: userData.username,
+        photoURL: userData.image,
         image: image,
         text: newMessage,
         timestamp: serverTimestamp(),
@@ -90,8 +94,8 @@ function RealTimeChat() {
     else if (option === 'private' && friendData) {
       await addDoc(collection(db, setRoomName(friendData)), {
         uid: userData.username,
-        photoURL: userData.image || '',
         displayName: userData.username,
+        photoURL: userData.image,
         image: image,
         text: newMessage,
         timestamp: serverTimestamp(),
@@ -202,28 +206,45 @@ function RealTimeChat() {
 
               return (
                 <div
+                
                  style={{width: option === 'global' ? '95vw': ''}}
                   key={msg.id}
                   className={`message ${isCurrentUser ? 'sent' : 'received'}`}
+                
+                 
                 >
+                
                   {!isCurrentUser && (
                     <img
                       src={photoURL}
                       className="message-avatar"
                       alt={displayName}
                     />
+                    
                   )}
-                  <div className="message-bubble">
+                  
+                  <div className="message-bubble"
+                    onMouseEnter={()=>setHoverId(msg.id)}
+                    onMouseLeave={()=>setHoverId(null)}
+                    >
+                    
+                    
+                    
                     {!isCurrentUser && (
                       <span className="message-sender">{displayName}</span>
                     )}
-                    {msg.data.text && <p>{msg.data.text}</p>}
+                    <div className='d-flex gap-2'>
+                    {msg.data.text && <p>{msg.data.text}</p>}  
+                    </div>
+                    <div style={{display: 'flex', flexDirection:'column', position:'relative'}}>
+                    {isCurrentUser && hoverId === msg.id && <div style={{left:"100%", top:'100%'}} className='delete-button'  onClick={()=> deleteMessage(msg.id)}>Delete</div>}
                     {image && (
                       <a href={image} target="_blank" rel="noopener noreferrer">
                         <img src={image} alt="" className="message-image" />
                       </a>
                     )}
                     <span className="message-time">{timestamp}</span>
+                    </div>
                   </div>
                   {isCurrentUser && (
                     <img

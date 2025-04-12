@@ -233,10 +233,11 @@
 /* Input Area */
 .chat-input {
   display: flex;
-  align-items: center;
+  justify-content: center;
   padding: 15px;
   background: white;
   border-top: 1px solid #e0e0e0;
+  
 }
 
 .chat-input input {
@@ -247,6 +248,10 @@
   background: #f0f0f0;
   font-size: 0.95rem;
   outline: none;
+  width: 40% !important;
+  max-width: 500px !important;
+
+
 }
 
 .chat-input input:disabled {
@@ -340,4 +345,22 @@
   .message-bubble {
     max-width: 80%;
   }
+}
+
+.delete-button{
+  position: absolute !important;
+  top: -15px;
+  left: 110px;
+  background-color: rgb(255, 99, 75);
+  color: white;
+  border-radius: 12px;
+  padding: 2px;
+  font-size: 12px;
+  transition: all 0.4s ease !important;
+}
+.delete-button:hover{
+  cursor: pointer;
+  transform: scale(1.05);
+  background-color: rgb(255, 167, 140);
+
 }

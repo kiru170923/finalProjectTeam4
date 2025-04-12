@@ -247,7 +247,7 @@ hr {
   background-size: cover;
   background-position: center;
   cursor: pointer;
-  margin-bottom: 16px;
+  margin-bottom: 28px;
   margin-top: 15px;
   opacity: 0.5;
   transition: all 0.3s ease;
@@ -258,17 +258,16 @@ hr {
 .icon-bars {
   background-image: url('/images/fabar.png');
 }
-
 .icon-home {
   background-image: url('/images/home.png');
 }
 
 .icon-search {
-  background-image: url('/images/search.png');
+  background-image: url('/images/search.svg');
 } 
 
 .icon-create {
-  background-image: url('/images/dangbai.png');
+  background-image: url('/images/create.svg');
 }
 
 .icon-favorites {
@@ -285,7 +284,7 @@ hr {
 
 
 .icon-chat {
-  background-image: url('/images/chat.png');
+  background-image: url('/images/chat.svg');
 }
 
 /* Hover Effect for Icons */

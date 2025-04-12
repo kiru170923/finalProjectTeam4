@@ -27,12 +27,17 @@ const Articles = () => {
     const isHomepage = location.pathname === "/home";
     const isHomepagee = location.pathname === "/";
     const [articlePicture, setArticlePicture] = useState([])
-    const [litmitArticleDisplay, setLimitArticleDisplay] = useState(5)
+    const [litmitArticleDisplay, setLimitArticleDisplay] = useState(2)
     const [typeArticle, setTypeArticle] = useState('thread')
     const [show, setShow] = useState(false)
     const [loadTrang,setLoadTrang] = useState(false);
+    const  [favo, setFavo] = useState(false);
     
 
+    
+    useEffect(()=>{
+        setFavo(location.pathname === "/home/favorites");
+    },[])
 
     useEffect(()=>{
         if(typeArticle==='thread'){
@@ -91,7 +96,7 @@ const Articles = () => {
                 setLoading(false);
             });
     }
-}, [reload, isHomepage, isHomepagee, typeArticle, location.pathname, litmitArticleDisplay]);
+}, [reload, isHomepage, isHomepagee, typeArticle, location.pathname,favo, litmitArticleDisplay]);
 
 
 

@@ -48,9 +48,11 @@ function LoginByGoogle() {
   }
 
   const handleGoogleLogin = async ()=> {
+    
      const provider = new GoogleAuthProvider();
      try {
       const result = await signInWithPopup(auth, provider);
+      console.log(result)
 
      } catch (error) {
       console.log(error.message);

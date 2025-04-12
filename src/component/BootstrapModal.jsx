@@ -42,6 +42,7 @@ const BootstrapModal = ({setArticles, articles, setReload}) => {
   useEffect(() => {
     if (create) {
       setShow(true);
+      setFirstShow(true)
     }
   }, [create]);
   

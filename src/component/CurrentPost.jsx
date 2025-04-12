@@ -36,7 +36,7 @@ const CurrentPost = ({ currentUser }) => {
                         <img style={{ width: '400px' }} src='/images/loading.gif' alt="Loading..." />
                     </div>
                 ) : null}
-                {Array.isArray(currentUserArticles) && currentUserArticles.length > 0 ? (
+                {(currentUserArticles) && currentUserArticles.length > 0 ? (
                     currentUserArticles.map((article, index) => (
                         <div key={article.slug || index}
                         onClick={()=>nav('/articles/' + article?.slug )}

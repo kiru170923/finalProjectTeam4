@@ -51,6 +51,19 @@ export const getCurrentUser = async () => {
   }
 }
 
+export const getCurrentUserByName = async (name) => {
+  try {
+    const res = await axios.get(API_URL + '/profiles/' + name, {
+
+    });
+    return res.data.profile;
+  } catch (error) {
+    if (error.response) {
+      return { errors: error.response.data.errors };
+    }
+    console.log(error.message);
+  }
+}
 
 export const followAnUser = async (userName) => {
 

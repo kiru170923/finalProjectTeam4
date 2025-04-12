@@ -6,9 +6,10 @@ import { followAnUser, unFollowAnUser } from '../service/user';
 import { getArticlesFromUsersYouFollowed, getCurrentFavoriteStatus } from '../service/articles';
 import { ThemeContext } from "../App";
 import { useLocation, useNavigate } from "react-router-dom";
+import { set } from "date-fns";
 
 
-const UserPreviewProfile = ({ author, e}) => {
+const UserPreviewProfile = ({ author, e, followed}) => {
     const [followingArticlesList, setFollowingArticlesList] = useState([]);
     const [follow, setFollow] = useState(false);
     const target = useRef(null);
@@ -27,11 +28,19 @@ const UserPreviewProfile = ({ author, e}) => {
         });
     }, []);
 
+    useEffect(()=>{
+        if(followed){
+            setFollow(follow)
+        }
+    },[])
+
     useEffect(() => {
-        getCurrentFavoriteStatus(author?.username).then(res => {
-            setFollow(res?.profile.following);
-        });
-    }, [author?.username]);
+        if(author){
+            getCurrentFavoriteStatus(author.username).then(res => {
+                setFollow(res.profile.following);
+            });
+        }
+        }, [author?.following, author, followed ]);
 
     const popover = useMemo(()=>{
 
@@ -40,17 +49,17 @@ const UserPreviewProfile = ({ author, e}) => {
             id="popover-basic" 
             className="custom-popover"
             style={{
-                backgroundColor: '#E6F3FA', // Nền xanh nhạt
-                border: '1px solid #B3D9E6', // Viền xanh nhạt
+                backgroundColor: '#E6F3FA', 
+                border: '1px solid #B3D9E6', 
                 borderRadius: '8px',
-                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', // Bóng nhẹ
+                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', 
             }}
         >
             <Popover.Header 
                 as="h3" 
                 style={{ 
-                    backgroundColor: '#B3D9E6', // Header xanh nhạt hơn
-                    color: '#4DA8CC', // Chữ xanh đậm
+                    backgroundColor: '#B3D9E6',
+                    color: '#4DA8CC', 
                     borderBottom: 'none',
                     textAlign: 'center',
                     padding: '10px',
@@ -128,20 +137,23 @@ const UserPreviewProfile = ({ author, e}) => {
     },[author?.username, author?.image, author?.bio, follow])
 
     function followUser() {
-        setFollow(true);
+        
+     if(author ){
         followAnUser(author?.username).then((res) => {
-            console.log("Followed");
-            console.log(res);
+            setFollow(res.profile.following);
         });
+     }
 
     }
 
     function unFollowUser() { 
-        setFollow(false);
+       
+      if(author){
         unFollowAnUser(author?.username).then((res) => {
-            console.log("unFollowed");
-            console.log(res);
+            setFollow(res.profile.following);
+
         });
+      }
     }
 
     function setFollowUser(e) {
@@ -168,7 +180,10 @@ const UserPreviewProfile = ({ author, e}) => {
               >
                 <img
                   onClick={(e) => {
-                    nav("/profile", { state: author });
+                    author.username != currentUser.username && nav("/profile", { state:{
+                        author: author,
+                        follow: follow,
+                    }  });
                     e.stopPropagation();
                   }}
                   ref={target}
@@ -192,7 +207,7 @@ const UserPreviewProfile = ({ author, e}) => {
                 <button
                   style={{
                     width: "100%",
-                    backgroundColor: follow ? "#F28C8C" : "#4DA8CC",
+                    backgroundColor: followed ? "#F28C8C" : "#4DA8CC",
                     color: "white",
                     border: "none",
                     borderRadius: "4px",
@@ -203,16 +218,15 @@ const UserPreviewProfile = ({ author, e}) => {
                   className="btn btn-sm mt-2"
                   onClick={(e) => {
                     setFollowUser();
-                    e.stopPropagation();
                   }}
                   onMouseEnter={(e) =>
-                    (e.target.style.backgroundColor = follow ? "#E67E7E" : "#3D8AA6")
+                    (e.target.style.backgroundColor = followed ? "#E67E7E" : "#3D8AA6")
                   }
                   onMouseLeave={(e) =>
-                    (e.target.style.backgroundColor = follow ? "#F28C8C" : "#4DA8CC")
+                    (e.target.style.backgroundColor = followed ? "#F28C8C" : "#4DA8CC")
                   }
                 >
-                  {follow ? "Unfollow" : "Follow"}
+                  {followed ? "Unfollow" : "Follow"}
                 </button>
               
             </div>

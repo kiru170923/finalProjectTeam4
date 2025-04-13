@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react';
-import CurrentComment from '../component/CurrentComment';
 import CurrentPost from '../component/CurrentPost';
 import EditProfileModal from '../component/ChangeProfileForm';
 import { ThemeContext } from '../App';
 import { Link, useLocation } from 'react-router-dom';
 import LoadingOverlay from '../component/LoadingOverlay';
 import UserPreviewProfile from '../component/UserPreviewProfile';
+import FavoritedArticles from '../component/FavoritedArticles';
 
 const Profile = () => {
     const location = useLocation();
@@ -146,7 +146,7 @@ const Profile = () => {
                             onMouseEnter={(e) => e.target.style.color = '#4DA8CC'}
                             onMouseLeave={(e) => e.target.style.color = section === 'Current Comment' ? '#4DA8CC' : '#80C4DE'}
                         >
-                            Current Comment
+                            Bài viết đã thích
                         </li>
                     )}
                 </ul>
@@ -164,7 +164,7 @@ const Profile = () => {
                     {section === 'Current Post' ? (
                         <CurrentPost currentUser={currentUser} />
                     ) : (
-                        <CurrentComment />
+                       <FavoritedArticles/>
                     )}
                 </div>
             </div>

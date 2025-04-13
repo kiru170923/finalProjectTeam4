@@ -8,13 +8,14 @@ import { setLogin, setUser } from '../service/user';
 import { ThemeContext } from '../App';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
+import { updateProfileInformation2 } from '../service/update';
 
 function LoginByGoogle() {
   const nav = useNavigate();
   const [user, setUserr] = useState([]);
   const [userData, setUserData] = useState();
       const { setIsLogin } = useContext(ThemeContext);
-  
+  const [image, setImage] = useState('');
 
   useEffect(()=>{
     onAuthStateChanged(auth, user =>{
@@ -32,36 +33,42 @@ function LoginByGoogle() {
   //   const nameAfterSplit = name.split(' ').join('')
   //   return nameAfterSplit;
   // }
-  function normalizeName(name) {
-    return name
-      .normalize("NFD")                     // Tách dấu ra khỏi ký tự gốc
-      .replace(/[\u0300-\u036f]/g, "")     // Xóa các dấu
-      .replace(/\s+/g, "")                 // Xóa khoảng trắng
-      .toLowerCase();                      // Viết thường
-  }
+  // function normalizeName(name) {
+  //   if (!name || typeof name !== "string") return "";
+  
+  //   return name
+  //     .normalize("NFD") // Tách chữ và dấu
+  //     .replace(/[\u0300-\u036f]/g, "") // Loại bỏ dấu
+  //     .replace(/[^a-zA-Z0-9]/g, "") // Giữ lại chỉ chữ và số
+  //     .toLowerCase(); // Viết thường
+  // }
+  
+
+  // console.log(normalizeName('Kiều Đình Đoàn 2134'))
   const handleGoogleLogin = async ()=> {
      const provider = new GoogleAuthProvider();
      try {
       const result = await signInWithPopup(auth, provider);
-      console.log(result)
+      setImage(result.user.photoURL)
+      console.log(result.user.photoURL)
 
     await setUser({
         user: {
-          username: result.user.uid,
-          email: result.user.email,
-          password: result.user.uid
+          username:'018'+ result.user.uid,
+          email:'018'+  result.user.email ,
+          password: 'at'+ result.user.uid
         }
-      })
+      }).then(res => console.log(res))
 
-        setUserData(
+     setUserData(
           {
             user: {
-              email: result.user.email,
-              password: result.user.uid
+              email: '018'+ result.user.email ,
+              password: 'at'+  result.user.uid 
             }
           }
         )
-      
+
      } catch (error) {
       console.log(error.message);
       
@@ -71,7 +78,7 @@ function LoginByGoogle() {
   console.log(userData)
 
   useEffect(()=>{
-    if(userData){
+    if(userData && image){
       setLogin(userData).then(res =>{
         if(res.user){
           console.log(res)
@@ -79,11 +86,22 @@ function LoginByGoogle() {
            localStorage.setItem('token', res.user.token);
             localStorage.setItem('user', JSON.stringify(res.user));
             toast.success("Login Successful!");
+
+            updateProfileInformation2(
+              {
+                user: {
+                  image: image
+                }
+              }, res.user.token
+            ).then(res2 =>{
+              localStorage.setItem('user', JSON.stringify(res2.user));
+            })
                           
         }
       })
+      
     }
-  },[userData])
+  },[userData, image])
 
   return (
     <div className=''>

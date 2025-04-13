@@ -46,14 +46,16 @@ const CurrentPost = ({ currentUser }) => {
                             onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#fdfdfd'}>
                             <div className='row align-items-center'>
                                 <div className='col-auto'>
-                                    <img style={{ width: '40px', height: '40px', borderRadius: '100%' }}
+                                    <img style={{ width: '40px', height: '40px',objectFit:'cover', borderRadius: '100%' }}
                                         src={article.author.image} alt={article.author.username} />
                                 </div>
                                 <div className='col-auto'>
                                     <b>{article.author.username} {article.author.username === JSON.parse(localStorage.getItem('user')).username ? '(Bạn)' : ''}</b>
                                     <p className='text-muted' style={{ fontSize: '12px' }}>{article.createdAt}</p>
                                 </div>
+                                <hr></hr>
                             </div>
+                         
                             <div className='mt-2'>
                                 <h6 className='fw-bold'>{article.title}</h6>
                                 <p className='text-muted'>{article.description}</p>

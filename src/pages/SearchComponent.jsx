@@ -6,7 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 export const getAllArticles = async () => {
   try {
-    const userApi = "https://node-express-conduit.appspot.com/api/articles/?limit=450";
+    const userApi = "https://node-express-conduit.appspot.com/api/articles?page=1";
     const res = await axios.get(userApi);
     return res.data.articles; 
   } catch (error) {

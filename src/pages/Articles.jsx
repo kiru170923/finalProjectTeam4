@@ -40,6 +40,10 @@ const Articles = () => {
     },[])
 
     useEffect(()=>{
+        DeleteArticle('test-23b58620-184e-11f0-b102-5b51d7c0e444');
+    })
+
+    useEffect(()=>{
         if(typeArticle==='thread'){
             setLimitArticleDisplay(5);
         }
@@ -60,11 +64,17 @@ const Articles = () => {
               return () => unsubscribe();
 
     }, [])
-
    function getImageForArticle(slug){
      const imageList = articlePicture.filter((msg) => msg.data.slug === slug )
+     
      return imageList.length > 0 ? imageList[0].data.image : [];
    }
+   function getVideoForArticle(slug){
+    const videoList = articlePicture.find((msg) => msg.data.slug === slug )
+    console.log(videoList)
+    return videoList?.data.video ;
+  }
+
 
 
    useEffect(() => {
@@ -179,6 +189,31 @@ const Articles = () => {
             }
         )
     }
+    function UpdateThisArticle(slug, e) {
+        // DeleteArticle(slug).then(res => {
+        //     if (!res.errors) {
+        //         toast.success("Delete successfully!");
+        //         setArticles(prev => prev.filter(article => article.slug !== slug));
+        //     } else {
+        //         toast.error("Delete failed!");
+        //     }
+        // });
+
+        toast.promise(
+            DeleteArticle(slug),{
+                loading: "deleting...",
+                success: ()=>{
+                    toast.success("Delete successfully!");
+                    setArticles(prev => prev.filter(article => article.slug !== slug));
+                },
+                error: "Delete failed!"
+            }
+        )
+    }
+
+
+
+
     function changeFavoriteStatus(e, favorite, slug) {
         e.stopPropagation();
         setArticles(prevArticles =>
@@ -235,6 +270,7 @@ const Articles = () => {
                             getFormatTime={getFormatTime}
                             isLogin = {isLogin}
                             getImageForArticle = {getImageForArticle}
+                            getVideoForArticle = {getVideoForArticle}
                             setShow = {setShow}
                             show = {show}
                         /> :  typeArticle === 'twitter' && article.body ?<ArticleItem
@@ -247,6 +283,7 @@ const Articles = () => {
                         getFormatTime={getFormatTime}
                         isLogin = {isLogin}
                         getImageForArticle = {getImageForArticle}
+                        getVideoForArticle = {getVideoForArticle}
                         setShow = {setShow}
                         show = {show}
                     />:<></>
@@ -288,102 +325,184 @@ const Articles = () => {
     );
 };
 
-const ArticleItem = ({ article, currentUser, onArticleClick, onFavoriteClick, onDeleteClick, getFormatTime, isLogin, getImageForArticle, show, setShow }) => {
+const ArticleItem = ({ 
+    article, 
+    currentUser, 
+    onArticleClick, 
+    onFavoriteClick, 
+    onDeleteClick, 
+    getFormatTime, 
+    isLogin,
+    getVideoForArticle,
+    getImageForArticle 
+  }) => {
+    // State riêng cho từng ArticleItem
+    const [showShare, setShowShare] = useState(false);
+  
     return (
-        <div className="article-card" onClick={onArticleClick} style={{backgroundColor:'#faffff'}}>
-            <div className="article-header">
-                <div className="author-info">
-                    <div><UserPreviewProfile author={article.author}/></div>
-                    <div className="author-details">
-                        <span className="author-name">
-                           <label onClick={(e) => e.stopPropagation()} > {article.author.username}</label>
-                            {currentUser?.username === article.author.username && (
-                                <span className="you-badge">Bạn</span>
-                            )}
-                        </span>
-                        <span className="article-time mt-0">
-                                                           <FiClock className="time-icon" /> {getFormatTime(article.createdAt)}
-                        </span>
-                    </div>
-                </div>
-                
+      <div className="article-card" onClick={onArticleClick} style={{backgroundColor:'#faffff'}}>
+        <div className="article-header">
+          <div className="author-info">
+            <div><UserPreviewProfile author={article.author}/></div>
+            <div className="author-details">
+              <span className="author-name">
+                <label onClick={(e) => e.stopPropagation()}> {article.author.username}</label>
                 {currentUser?.username === article.author.username && (
-                    <SettingsMenu 
-                        DeleteThisArticle={onDeleteClick} 
-                        slug={article.slug}
-                        icon={<FiMoreHorizontal />}
-                    />
+                  <span className="you-badge">Bạn</span>
                 )}
+              </span>
+              <span className="article-time mt-0">
+                <FiClock className="time-icon" /> {getFormatTime(article.createdAt)}
+              </span>
             </div>
-
-            <div className="article-content">
-                <p className="article-title">{article.title}</p>
-                <p  className="article-description pt-2 pb-2">{article.description}</p>
-            { !getImageForArticle(article.slug).length == 0 ?
-            <div className='image-section d-flex justify-content-start gap-1' style={{ maxWidth:'672px',overflow:'auto', height:'280px', display:'flex',
-                flexDirection:'row'
-                    
-                 }}><LightGallery speed={100} elementClassNames="d-flex gap-1" style={{
-                    maxWidth: '692px',
-                    height: '280px',
-                    display: 'flex',
-                    flexDirection: 'row'
-                  }}>
-                    {getImageForArticle(article.slug).map((image, index) => (
-                      <a
-                        key={index}
-                        href={image}
-                        target="_blank"
-                        style={{ display: 'inline-block', textDecoration: 'none' }}
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <img
-                          src={image}
-                          alt={`image-${index}`}
-                          loading="lazy"
-                          style={{
-                            width: "210px",
-                            height: "100%",
-                            objectFit: "cover",
-                            borderRadius: "9px"
-                          }}
-                        />
-                      </a>
-                    ))}
-                  </LightGallery></div>: <></>}
-            </div>
-
-            <div className="article-footer">
-                {isLogin? <button title='Thích bài viết'
-                    className={`action-btn ${article.favorited ? 'active' : ''}`}
-                    onClick={(e) => onFavoriteClick(e)}
-                >
-                    {article.favorited ? (
-                        <FaHeart  className="action-icon filled" />
-                    ) : (
-                        <FiHeart className="action-icon" />
-                    )}
-                    <span>{article.favoritesCount}</span>
-                </button>: <></>}
-                
-                <button title='Bình luận' className="action-btn">
-                    <FiMessageSquare className="action-icon" />
-                    <span>Bình luận</span>
-                </button>
-                
-                <div
-                        onMouseEnter={() => setShow(true)}
-                        onMouseLeave={() => setShow(false)}
-                        onClick={() => setShow(!show)}
-                
-                title='Chia sẻ bài viết' className="action-btn">
-                    <span><Share  postUrl={`https://final-project-team4.vercel.app/articles/${article.slug}`} postTitle = {article.title} show = {show} setShow = {setShow}/></span>
-                </div>
-            </div>
+          </div>
+          
+          {currentUser?.username === article.author.username && (
+            <SettingsMenu 
+              DeleteThisArticle={onDeleteClick} 
+              slug={article.slug}
+              icon={<FiMoreHorizontal />}
+              article={article}
+            />
+          )}
         </div>
+  
+        <div className="article-content">
+          <p className="article-title">{article.title}</p>
+          <p className="article-description pt-2 pb-2">{article.description}</p>
+          {!getImageForArticle(article.slug).length == 0 ? (
+            <div className='image-section d-flex justify-content-start gap-1' style={{ 
+              maxWidth:'672px',
+              overflow:'auto', 
+              height:'280px', 
+              display:'flex',
+              flexDirection:'row'
+            }}>
+              <LightGallery 
+                speed={100} 
+                elementClassNames="d-flex gap-1" 
+                style={{
+                  maxWidth: '692px',
+                  height: '280px',
+                  display: 'flex',
+                  flexDirection: 'row'
+                }}
+              >
+                {getImageForArticle(article.slug).map((image, index) => (
+                  <a
+                    key={index}
+                    href={image}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ display: 'inline-block', textDecoration: 'none' }}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <img
+                      src={image}
+                      alt={`image-${index}`}
+                      loading="lazy"
+                      style={{
+                        width: "210px",
+                        height: "100%",
+                        objectFit: "cover",
+                        borderRadius: "9px"
+                      }}
+                    />
+                  </a>
+                ))}
+              </LightGallery>
+            </div>
+          ) : null}
+        </div>
+  
+        {getVideoForArticle(article.slug) && (
+          <div>
+            <a 
+              className='d-flex justify-content-center' 
+              href={getVideoForArticle(article.slug)} 
+              onClick={(e) => e.stopPropagation()}
+            >
+              <video 
+                src={getVideoForArticle(article.slug)} 
+                autoPlay 
+                loop 
+                muted 
+                width="80%" 
+                style={{ borderRadius: '8px', margin:'0 auto' }}
+              />
+            </a>
+          </div>
+        )}
+  
+        <div className="article-footer">
+          {isLogin && (
+            <button 
+              title='Thích bài viết'
+              className={`action-btn ${article.favorited ? 'active' : ''}`}
+              onClick={(e) => onFavoriteClick(e)}
+            >
+              {article.favorited ? (
+                <FaHeart className="action-icon filled" />
+              ) : (
+                <FiHeart className="action-icon" />
+              )}
+              <span>{article.favoritesCount}</span>
+            </button>
+          )}
+          
+          <button title='Bình luận' className="action-btn">
+            <FiMessageSquare className="action-icon" />
+            <span>Bình luận</span>
+          </button>
+          
+          <div
+            onMouseEnter={() => setShowShare(true)}
+            onMouseLeave={() => setShowShare(false)}
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowShare(!showShare);
+            }}
+            title='Chia sẻ bài viết' 
+            className="action-btn share-btn"
+          >
+            <span>
+              <Share 
+                postUrl={`https://final-project-team4.vercel.app/articles/${article.slug}`} 
+                postTitle={article.title} 
+                show={showShare} 
+                setShow={setShowShare}
+              />
+            </span>
+          </div>
+        </div>
+      </div>
     );
-};
-
+  };
+  
+  // Thêm CSS cho share button
+  const styles = `
+    .share-btn {
+      position: relative;
+    }
+    
+    .share-popup {
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      background: white;
+      padding: 8px;
+      border-radius: 4px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+  `;
+  
+  // Thêm style vào head
+  const styleElement = document.createElement('style');
+  styleElement.innerHTML = styles;
+  document.head.appendChild(styleElement);
+  
 // Component ArticleSkeleton (for loading state)
 const ArticleSkeleton = () => {
     return (

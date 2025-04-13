@@ -15,3 +15,14 @@ export const uploadImageAndGetUrl = async(file , path = 'image/')=> {
         console.log("Lỗi " + error)
     }
 }
+export const uploadVideoAndGetUrl = async(file , path = 'video/')=> {
+    if(!file) throw new Error('Ko co file');
+    try{
+        const newStore = ref(storage , `${path}${file.name}`);
+        await uploadBytes(newStore, file);
+        const url = await getDownloadURL(newStore);
+        return url;
+    }catch(error){
+        console.log("Lỗi " + error)
+    }
+}

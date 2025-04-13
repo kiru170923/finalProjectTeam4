@@ -14,3 +14,17 @@ export const updateProfileInformation = async (information)=>{
       return null;
     }
   } 
+  export const updateProfileInformation2 = async (information, token)=>{
+    try{
+      const res = await axios.put(userApi, information,  {
+        headers: {
+          'Authorization': 'Token '+ token
+        }
+      });
+      return res.data;
+    }
+    catch(error){
+      console.log('error')
+      return null;
+    }
+  } 

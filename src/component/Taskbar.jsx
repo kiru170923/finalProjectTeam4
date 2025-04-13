@@ -17,7 +17,14 @@ const Taskbar = () => {
                 <NavLink title='Chat với bạn' to="/chat" className="icon icon-chat" />
                     <NavLink title='Tạo 1 bài viết' to="/create" className="icon icon-create" />
                     <NavLink title='Xem bài viết của những người đã thích' to="/home/favorites" className="icon icon-favorites" />
-                    <NavLink title='Trang cá nhân' to="/profile" className="icon icon-profile" />
+<NavLink 
+  title='Trang cá nhân' 
+  to={{
+    pathname: "/profile",
+    state: { from: "taskbar" } // Add some identifying state
+  }} 
+  className="icon icon-profile" 
+/>
                 </>
             )}
         </div>

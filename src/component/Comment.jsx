@@ -53,11 +53,11 @@ const Comment = ({slug}) => {
     setReload((pre) => !pre);
   };
 
-  window.onkeydown = function (e) {
-    if(e.key == "Enter"){
-      handleSubmit();
-    }
-  }
+  // window.onkeydown = function (e) {
+  //   if(e.key == "Enter"){
+  //     handleSubmit();
+  //   }
+  // }
 
   return (
     <div style={{ 

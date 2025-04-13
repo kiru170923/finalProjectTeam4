@@ -2,7 +2,7 @@
  
   
   padding-top: 0px;
-  width: 100vw;
+  width: 100%;
   overflow-x: hidden ;
   
 }
@@ -58,9 +58,9 @@ hr{
   width: 100% !important;
 }
 
-.popover-body {
+/* .popover-body {
   white-space: normal;
-}
+} */
 .custom-popover {
   max-width: 400px !important;
  width: 400px!important;
@@ -842,4 +842,91 @@ hr {
   cursor: pointer;
   width: 45px !important;
   height: 45px  !important;
+}
+/* Add these styles to your existing CSS */
+.reply-section {
+  margin-top: 10px;
+  padding-left: 20px;
+  border-left: 2px solid #eee;
+}
+
+.reply-button {
+  background: none;
+  border: none;
+  color: #666;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 5px 0;
+  display: flex;
+  align-items: center;
+}
+
+.reply-button:hover {
+  color: #333;
+}
+
+.reply-input-container {
+  display: flex;
+  margin: 10px 0;
+}
+
+.reply-input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.send-reply-button {
+  margin-left: 10px;
+  padding: 8px 16px;
+  background-color: #4285f4;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.send-reply-button:hover {
+  background-color: #3367d6;
+}
+
+.reply-item {
+  margin: 10px 0;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+}
+
+.reply-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  margin-right: 8px;
+  object-fit: cover;
+}
+
+.reply-author {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.reply-author-name {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.reply-body {
+  font-size: 14px;
+  color: #333;
+  margin-left: 32px;
+}
+
+.loading-replies {
+  padding: 10px;
+  color: #666;
+  font-size: 14px;
 }

@@ -15,18 +15,22 @@ import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 import Share from '../component/Share';
 import LightGallery from 'lightgallery/react';
 import 'lightgallery/css/lightgallery.css';
+import { getRepliesForComment, sendReplyComment } from '../component/sendReplyComment';
 
 const ArticlesDetail = () => {
     const { slug } = useParams();
-        const [show, setShow] = useState(false)
+    const [show, setShow] = useState(false)
     const [currentArticle, setCurrentArticle] = useState(null);
     const [currentComments, setCurrentComments] = useState([]);
     const [favorite, setFavorite] = useState(false);
     const [visible, setVisible] = useState(false);
     const { setReload, reload, getFormatTime } = useContext(ThemeContext);
     const currentUser = JSON.parse(localStorage.getItem('user'));
-   const [articlePicture, setArticlePicture] = useState([])
-    
+    const [articlePicture, setArticlePicture] = useState([])
+    const [replyId, setReplyId] = useState('');
+    const [replyComment, setReplyComment] = useState('');
+    const [replies, setReplies] = useState({});
+    const [loadingReplies, setLoadingReplies] = useState({});
 
     useEffect(() => {
         getCurrentArticle(slug).then(res => {
@@ -38,6 +42,47 @@ const ArticlesDetail = () => {
             setCurrentComments(res.comments);
         });
     }, [slug, reload]);
+
+    const fetchReplies = async (commentId) => {
+        setLoadingReplies(prev => ({ ...prev, [commentId]: true }));
+        try {
+            const repliesData = await getRepliesForComment(slug, commentId);
+            setReplies(prev => ({
+                ...prev,
+                [commentId]: repliesData
+            }));
+        } catch (error) {
+            console.error("Error fetching replies:", error);
+            toast.error("Failed to load replies");
+        } finally {
+            setLoadingReplies(prev => ({ ...prev, [commentId]: false }));
+        }
+    };
+
+    const handleReplyClick = (commentId) => {
+        const newReplyId = replyId === commentId ? '' : commentId;
+        setReplyId(newReplyId);
+        if (newReplyId && !replies[newReplyId]) {
+            fetchReplies(newReplyId);
+        }
+    };
+
+    const handleSendReply = async (commentId) => {
+        if (!replyComment.trim()) {
+            toast.error("Reply cannot be empty");
+            return;
+        }
+
+        try {
+            await sendReplyComment(slug, commentId, replyComment, currentUser);
+            setReplyComment('');
+            fetchReplies(commentId); // Refresh replies after sending
+            toast.success("Reply sent successfully");
+        } catch (error) {
+            console.error("Error sending reply:", error);
+            toast.error("Failed to send reply");
+        }
+    };
 
     const changeFavoriteStatus = () => {
         if (!favorite) {
@@ -53,23 +98,21 @@ const ArticlesDetail = () => {
         }
     };
 
-    function getImageForArticle(slug){
-        const imageList = articlePicture.filter((msg) => msg.data.slug === slug )
+    function getImageForArticle(slug) {
+        const imageList = articlePicture.filter((msg) => msg.data.slug === slug)
         return imageList.length > 0 ? imageList[0].data.image : [];
-      }
-          useEffect(()=>{
-              const q = query(collection(db, 'articlesImage'));
-                    const unsubscribe = onSnapshot(q, snapshot => {
-                      setArticlePicture(snapshot.docs.map(doc => ({
-                        id: doc.id,
-                        data: doc.data()
-                      })));
-                    }
-                  ); 
-                    return () => unsubscribe();
-      
-          }, [])
-      
+    }
+
+    useEffect(() => {
+        const q = query(collection(db, 'articlesImage'));
+        const unsubscribe = onSnapshot(q, snapshot => {
+            setArticlePicture(snapshot.docs.map(doc => ({
+                id: doc.id,
+                data: doc.data()
+            })));
+        });
+        return () => unsubscribe();
+    }, [])
 
     const parseCommentContent = (content) => {
         const regex = /!\[image\]\((.*?)\)/g;
@@ -103,7 +146,7 @@ const ArticlesDetail = () => {
 
     const deleteComment = (id) => {
         deleteCurrentComment(slug, id).then(res => {
-            toast.success("Xóa bình luận thành công");
+            toast.success("Comment deleted successfully");
             setReload((pre) => !pre);
         });
     };
@@ -117,12 +160,12 @@ const ArticlesDetail = () => {
             <div className="article-detail-card">
                 <div className="article-header">
                     <div className="author-info">
-                        <UserPreviewProfile author = {currentArticle.author}/>
+                        <UserPreviewProfile author={currentArticle.author} />
                         <div className="author-details">
                             <span className="author-name">
                                 {currentArticle.author?.username || 'Unknown'}
                                 {currentArticle.author?.username === currentUser?.username && (
-                                    <span className="you-badge">Bạn</span>
+                                    <span className="you-badge">You</span>
                                 )}
                             </span>
                             <span className="article-time">
@@ -131,9 +174,9 @@ const ArticlesDetail = () => {
                             </span>
                         </div>
                     </div>
-                    
+
                     <div className="article-actions">
-                        <button 
+                        <button
                             className={`action-btn ${favorite ? 'active' : ''}`}
                             onClick={changeFavoriteStatus}
                         >
@@ -144,65 +187,64 @@ const ArticlesDetail = () => {
                             )}
                             <span>{currentArticle.favoritesCount}</span>
                         </button>
-                        
-                       
-                        
-                        <button className="action-btn" onMouseEnter={()=>setShow(true)} onMouseLeave={()=> setShow(false)}>
-                            <Share  postUrl={`https://final-project-team4.vercel.app/articles/${currentArticle.slug}`} postTitle = {currentArticle.title} show = {show} setShow = {setShow}/>
+
+                        <button className="action-btn" onMouseEnter={() => setShow(true)} onMouseLeave={() => setShow(false)}>
+                            <Share postUrl={`https://final-project-team4.vercel.app/articles/${currentArticle.slug}`} postTitle={currentArticle.title} show={show} setShow={setShow} />
                         </button>
                     </div>
                 </div>
 
                 <div className="article-content">
-                <p  className="article-title">{currentArticle.title}</p>
-                <p  style={{color:'black', fontSize:'15px'}}  className="article-description pt-2 pb-2">{currentArticle.description}</p>
-                <p  style={{color:'black', fontSize:'15px'}}
-  className="article-description pt-2 pb-2"
-  dangerouslySetInnerHTML={{ __html: currentArticle.body }}
-></p>
+                    <p className="article-title">{currentArticle.title}</p>
+                    <p style={{ color: 'black', fontSize: '15px' }} className="article-description pt-2 pb-2">{currentArticle.description}</p>
+                    <p
+                        style={{ color: 'black', fontSize: '15px' }}
+                        className="article-description pt-2 pb-2"
+                        dangerouslySetInnerHTML={{ __html: currentArticle.body }}
+                    ></p>
 
-            { !getImageForArticle(currentArticle.slug).length == 0 ?
-            <div className='image-section d-flex justify-content-start gap-1' style={{ maxWidth:'672px',overflow:'auto', height:'280px', display:'flex',
-                flexDirection:'row'
-                    
-                 }}><LightGallery speed={100} elementClassNames="d-flex gap-1" style={{
-                    maxWidth: '692px',
-                    height: '280px',
-                    display: 'flex',
-                    flexDirection: 'row'
-                  }}>
-                    {getImageForArticle(currentArticle.slug).map((image, index) => (
-                      <a
-                        key={index}
-                        href={image}
-                        target="_blank"
-                        style={{ display: 'inline-block', textDecoration: 'none' }}
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <img
-                          src={image}
-                          alt={`image-${index}`}
-                          loading="lazy"
-                          style={{
-                            width: "210px",
-                            height: "100%",
-                            objectFit: "cover",
-                            borderRadius: "9px"
-                          }}
-                        />
-                      </a>
-                    ))}
-                  </LightGallery></div>: <></>}
-            </div>
+                    {!getImageForArticle(currentArticle.slug).length == 0 ?
+                        <div className='image-section d-flex justify-content-start gap-1' style={{
+                            maxWidth: '672px', overflow: 'auto', height: '280px', display: 'flex',
+                            flexDirection: 'row'
+                        }}><LightGallery speed={100} elementClassNames="d-flex gap-1" style={{
+                            maxWidth: '692px',
+                            height: '280px',
+                            display: 'flex',
+                            flexDirection: 'row'
+                        }}>
+                            {getImageForArticle(currentArticle.slug).map((image, index) => (
+                                <a
+                                    key={index}
+                                    href={image}
+                                    target="_blank"
+                                    style={{ display: 'inline-block', textDecoration: 'none' }}
+                                    onClick={(e) => e.stopPropagation()}
+                                >
+                                    <img
+                                        src={image}
+                                        alt={`image-${index}`}
+                                        loading="lazy"
+                                        style={{
+                                            width: "210px",
+                                            height: "100%",
+                                            objectFit: "cover",
+                                            borderRadius: "9px"
+                                        }}
+                                    />
+                                </a>
+                            ))}
+                        </LightGallery></div> : <></>}
+                </div>
 
                 <div className="comments-section">
                     <h3 className="section-title">
                         <FiMessageSquare className="title-icon" />
-                        Bình luận
+                        Comments
                     </h3>
-                    
+
                     <Comment slug={slug} />
-                    
+
                     {currentComments.map((comment) => {
                         if (!comment.body) return null;
                         const parts = parseCommentContent(comment.body);
@@ -211,8 +253,8 @@ const ArticlesDetail = () => {
                             <div className="comment-card" key={comment.id}>
                                 <div className="comment-header">
                                     <div className="comment-author">
-                                        <img 
-                                            src={comment.author.image || '/default-avatar.png'} 
+                                        <img
+                                            src={comment.author.image || '/default-avatar.png'}
                                             alt={comment.author.username}
                                             className="comment-avatar"
                                         />
@@ -220,7 +262,7 @@ const ArticlesDetail = () => {
                                             <span className="comment-author-name">
                                                 {comment.author.username}
                                                 {comment.author.username === currentUser?.username && (
-                                                    <span className="you-badge">Bạn</span>
+                                                    <span className="you-badge">You</span>
                                                 )}
                                             </span>
                                             <span className="comment-time">
@@ -229,9 +271,9 @@ const ArticlesDetail = () => {
                                             </span>
                                         </div>
                                     </div>
-                                    
+
                                     {comment.author.username === currentUser?.username && (
-                                        <button 
+                                        <button
                                             className="delete-comment-btn"
                                             onClick={() => deleteComment(comment.id)}
                                         >
@@ -239,21 +281,21 @@ const ArticlesDetail = () => {
                                         </button>
                                     )}
                                 </div>
-                                
+
                                 <div className="comment-content">
                                     {parts.some(part => part.type === 'text') && (
                                         <p className="comment-text">
                                             {parts.filter(part => part.type === 'text').map(part => part.content).join(' ')}
                                         </p>
                                     )}
-                                    
+
                                     {parts.filter(part => part.type === 'image').length > 0 && (
                                         <div className="comment-images">
                                             {parts.filter(part => part.type === 'image').map((part, index) => (
                                                 <div key={index} className="comment-image-container">
-                                                    <img 
-                                                        src={part.content} 
-                                                        alt="comment" 
+                                                    <img
+                                                        src={part.content}
+                                                        alt="comment"
                                                         className="comment-image"
                                                         onClick={() => setVisible(true)}
                                                     />
@@ -267,17 +309,63 @@ const ArticlesDetail = () => {
                                         </div>
                                     )}
                                 </div>
+
+                                <div className="reply-section">
+                                    <button 
+                                        className="reply-button"
+                                        onClick={() => handleReplyClick(comment.id)}
+                                    >
+                                        Reply
+                                    </button>
+
+                                    {replyId === comment.id && (
+                                        <div className="reply-input-container">
+                                            <input
+                                                className='reply-input'
+                                                type='text'
+                                                value={replyComment}
+                                                onChange={(e) => setReplyComment(e.target.value)}
+                                                placeholder="Write your reply..."
+                                            />
+                                            <button 
+                                                className="send-reply-button"
+                                                onClick={() => handleSendReply(comment.id)}
+                                            >
+                                                Send
+                                            </button>
+                                        </div>
+                                    )}
+
+                                    {loadingReplies[comment.id] ? (
+                                        <div className="loading-replies">Loading replies...</div>
+                                    ) : (
+                                        replies[comment.id]?.map((reply) => (
+                                            <div key={reply.id} className="reply-item">
+                                                <div className="reply-author">
+                                                    <img 
+                                                        src={reply.data.author.image || '/default-avatar.png'}
+                                                        alt={reply.data.author.username}
+                                                        className="reply-avatar"
+                                                    />
+                                                    <span className="reply-author-name">
+                                                        {reply.data.author.username}
+                                                    </span>
+                                                </div>
+                                                <div className="reply-body">{reply.data.body}</div>
+                                            </div>
+                                        ))
+                                    )}
+                                </div>
                             </div>
                         );
                     })}
                 </div>
             </div>
-             <Link to={'/home'}><div title='Quay lại' className='back-button'></div></Link>
+            <Link to={'/home'}><div title='Back' className='back-button'></div></Link>
         </div>
     );
 };
 
-// Skeleton Loading Component
 const ArticleDetailSkeleton = () => {
     return (
         <div className="article-detail-skeleton">
@@ -288,13 +376,13 @@ const ArticleDetailSkeleton = () => {
                     <div className="skeleton-line shorter"></div>
                 </div>
             </div>
-            
+
             <div className="skeleton-content">
                 <div className="skeleton-line long"></div>
                 <div className="skeleton-line medium"></div>
                 <div className="skeleton-line medium"></div>
             </div>
-            
+
             <div className="skeleton-comments">
                 <div className="skeleton-comment">
                     <div className="skeleton-comment-header">
@@ -310,7 +398,6 @@ const ArticleDetailSkeleton = () => {
                     </div>
                 </div>
             </div>
-            
         </div>
     );
 };

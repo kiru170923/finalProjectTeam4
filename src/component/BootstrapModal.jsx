@@ -1,12 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
-import {createNewArticle} from "../service/articles"
+import {createNewArticle, updateArticle} from "../service/articles"
 import toast from "react-hot-toast";
 import { useNavigate , Link, useParams} from "react-router-dom";
 import { ThemeContext } from "../App";
 import { Editor } from '@tinymce/tinymce-react';
 import { set } from "date-fns";
-import {uploadImageAndGetUrl} from '../component/UpImageToFireBase';
+import {uploadImageAndGetUrl, uploadVideoAndGetUrl} from '../component/UpImageToFireBase';
 import { collection, addDoc, serverTimestamp, onSnapshot, query, orderBy } from 'firebase/firestore';
 import { db } from '../config/firebaseConfig';
 
@@ -17,16 +17,18 @@ import { db } from '../config/firebaseConfig';
  * @param {*} param0 
  * @returns A template để handle data cho article
  */
-const BootstrapModal = ({setArticles, articles, setReload}) => {
+const BootstrapModal = ({setArticles, articles, setReload, article}) => {
   const {create} = useParams();
   const [show, setShow] = useState(false);
   const nav = useNavigate();
   const [submit,setSubmit] = useState(false);
   const [imageList, setImageList] = useState([])
+  const [video,setVideo] = useState('')
   const [loading, setLoading] = useState(false)
   const [responseArticleSlug, setResponseArticleSlug] = useState(null)
   const [firstShow, setFirstShow] = useState(false)
   const [typePost, setTypePost] = useState('');
+  console.log(article)
   const [articleData, setArticleData] = useState({
     article: {
       title: '',
@@ -35,18 +37,40 @@ const BootstrapModal = ({setArticles, articles, setReload}) => {
       tagList: ''
     }
   });
+
+
   const currentUser = JSON.parse(localStorage.getItem('user')); // lấy data ng dùng htai
 
 
   //nếu tạo bài viết = cách nhấn vào nút thì sẽ set show= true để hiển thị template
   useEffect(() => {
-    if (create) {
+    if (create || article) { 
       setShow(true);
-      setFirstShow(true)
+      setFirstShow(true);
+      if (article) {
+        setArticleData({ article: article }); 
+        if(article.body === ''){
+          setTypePost('thread')
+        }
+        else{
+          setTypePost('twitter')
+        }
+      }
     }
-  }, [create]);
+  }, [create, article]);
+  
   
   const {isLogin, setIsLogin} = useContext(ThemeContext);
+
+  // useEffect(()=>{
+  //   console.log(currentArticleData)
+  //   if(currentArticleData){
+  //     setArticleData(currentArticleData);
+  //     setShow(true);
+  //     setFirstShow(true)
+  //     console.log(currentArticleData)
+  //   }
+  // }, [])
 
 
   //lưu dữ liệu của người dùng mỗi khi sự kiện onchange trên từng 
@@ -57,10 +81,11 @@ const BootstrapModal = ({setArticles, articles, setReload}) => {
       ...prevState,
       article: {
         ...prevState?.article,
-        [name]: value, tagList: "Mai"
+        [name]: value, tagList: "chienthanlachong"
       }
     }));
   };
+
 
   //tải dữ liệu lên api nếu nhấp lưu
   useEffect(()=>{
@@ -91,6 +116,7 @@ const BootstrapModal = ({setArticles, articles, setReload}) => {
         addDoc(collection(db, 'articlesImage'), {
         slug: res.article.slug,
         image: imageList,
+        video: video, 
         timestamp: serverTimestamp()
         
       });
@@ -120,7 +146,29 @@ const BootstrapModal = ({setArticles, articles, setReload}) => {
         setLoading(false);
       }
     }
-
+    async function handleVideo(e){
+      const files = e.target.files[0];
+      if(!files) return; 
+      setLoading(true);
+      try{
+          const videoUrl = await uploadVideoAndGetUrl(files); //tải vid lên firestore rồi lấy link ze
+        setVideo(videoUrl);
+        
+      }catch(error){
+        console.log(error);
+      }
+      finally{
+        setLoading(false);
+      }
+    }
+    function updateCurrentArticle(){
+      updateArticle(article.slug ,articleData).then(res =>{
+        if(res.article){
+          console.log(res.article)
+        }
+      })
+    }
+  
   
   return (
     <div>
@@ -135,16 +183,13 @@ const BootstrapModal = ({setArticles, articles, setReload}) => {
     placeholder="What's new?"
     style={{ outline: "none", border: "none", boxShadow: "none" }}
 />
-
                                   <div className='col-12 text-end mt-2'>
-                                  
                                   </div>
                               </div>
                           ) : (
                               <></>
                           )}
                       </div>
-
       <Modal show={firstShow} centered >
 <div style={{width:'104%'}} className="d-flex justify-content-center align-items-center text-center row p-4">
 <h4 className="text-center w-100 p-3 post_mode">Chọn chế độ đăng bài </h4>
@@ -164,19 +209,60 @@ onClick={()=> {setTypePost('thread');; setShow(true)}}><img src="/images/thread.
         </Modal.Header>
         <Modal.Body 
 >
-          <Form>
-            <Form.Group className="mb-3">
-              <Form.Label>{typePost==='thread'? "Bạn đang nghĩ gì ?": "Tiêu đề của bài viết"}</Form.Label>
-              <Form.Control
-                style={{border: typePost==='thread' ? 'none': '1px solid gray', outline:'none', boxShadow:'none'}}
-                type="text"
-                placeholder="viết gì đó..."
-                name="title"
-                value={articleData?.article?.title}
-                onChange={handleChange}
-              />
-              <hr></hr>
-            </Form.Group>
+          <Form onClick={(e) => e.stopPropagation()}>
+          <Form.Group className="mb-3">
+  <Form.Label>
+    {typePost === 'thread' ? "Bạn đang nghĩ gì ?" : "Tiêu đề của bài viết"}
+  </Form.Label>
+  {typePost === 'thread' ? (
+    <Form.Control
+      as="textarea"
+      rows={4}
+      style={{
+        border: 'none',
+        outline: 'none',
+        boxShadow: 'none',
+        resize: 'none'
+      }}
+      placeholder="viết gì đó..."
+      name="title"
+      value={articleData?.article?.title}
+      onChange={handleChange}
+      onKeyDown={(e) => {
+        if (e.code === "Enter") {
+          e.preventDefault();
+          const textarea = e.target;
+          const { selectionStart, selectionEnd, value } = textarea;
+          const newValue = value.slice(0, selectionStart) + "\n" + value.slice(selectionEnd);
+          handleChange({
+            target: {
+              name: "title",
+              value: newValue,
+            },
+          });
+          setTimeout(() => {
+            textarea.selectionStart = textarea.selectionEnd = selectionStart + 1;
+          }, 0);
+        }
+      }}
+    />
+  ) : (
+    <Form.Control
+      type="text"
+      style={{
+        border: '1px solid gray',
+        outline: 'none',
+        boxShadow: 'none'
+      }}
+      placeholder="viết gì đó..."
+      name="title"
+      value={articleData?.article?.title}
+      onChange={handleChange}
+    />
+  )}
+  <hr />
+</Form.Group>
+
             <Form.Group className="mb-3">
               <Form.Label>{typePost==='thread'? "Hashtag: ":"Mô tả bài viết"}</Form.Label>
               <Form.Control
@@ -199,6 +285,21 @@ onClick={()=> {setTypePost('thread');; setShow(true)}}><img src="/images/thread.
                 onChange={(e) => handleImage(e)}
               />
             </Form.Group>
+
+            {typePost === 'thread' ? 
+                        <Form.Group className="mb-3">
+                        <Form.Label>Chọn video</Form.Label>
+                        <Form.Control
+                          type="file"
+                          placeholder="Chọn ảnh..."
+                          name="description"
+                          multiple
+                          onChange={(e) => handleVideo(e)}
+                        />
+                      </Form.Group>:<></>  
+          
+          
+          }
             {typePost === 'twitter' ? 
             <Form.Group className="mb-3">
             {/* <Form.Label>Body</Form.Label>
@@ -254,8 +355,19 @@ onClick={()=> {setTypePost('thread');; setShow(true)}}><img src="/images/thread.
           <Button variant="secondary" onClick={() => {setShow(false); create? nav('/home'): <></>;  setTypePost('')}}>
             Đóng
           </Button>
-        {loading? <></>:<Button onClick={()=>{ sendNewArticle(); setShow(false);
-           create? nav('/home'): <></>; setTypePost(''); setFirstShow(false)}} variant="primary">Đăng</Button> }  
+        {loading? <></>:<Button onClick={()=>{ article?  updateCurrentArticle(): sendNewArticle(); setShow(false);
+           create? nav('/home'): <></>; setTypePost(''); setFirstShow(false); 
+           
+           setArticleData({
+            article: {
+              title: '',
+              description: '',
+              body: '',
+              tagList: ''
+            }
+          })  
+           
+           }} variant="primary">{article? 'Update': 'Đăng'}</Button> }  
         </Modal.Footer>
 
       </Modal>

@@ -11,7 +11,6 @@ const Header = () => {
     const [showGun,setShowGun] = useState(false)
     const [dan, setDan] = useState(false);
     const [ logoCung, setLogoCung] = useState(false);
-
     // Lấy token để duy trì đăng nhập
     useEffect(() => {
         if (localStorage.getItem('token')) {
@@ -102,14 +101,13 @@ const Header = () => {
             <header> 
                 
                 <ul 
-                    className='gap-4 list-unstyled justify-content-center row pt-3 pb-2' 
-                   
-                >
+                    className=' gap-4 list-unstyled justify-content-center  pt-3 pb-2 ' >
                     
                     <div className='col-12 d-flex gap-5 justify-content-end p-4 pb-0 pt-0' >
                         {!isLogin ? (
-                            <div className='d-flex gap-5 justify-content-center align-items-center'>
-                                <NavLink to={'/signup'}>
+                            <div className='header-button d-flex gap-5 justify-content-center align-items-center'>
+                               <div>
+                               <NavLink to={'/signup'}>
                                     <li 
                                         className='btn'
                                         style={{
@@ -135,8 +133,10 @@ const Header = () => {
                                     </li>
                                     
                                 </NavLink>
+                               </div>
                                 
-                                <NavLink to={'/login'}>
+                               <div>
+                               <NavLink to={'/login'}>
                                     <li 
                                         className='btn'
                                         style={{
@@ -162,6 +162,7 @@ const Header = () => {
                                         Login
                                     </li>
                                 </NavLink>
+                               </div>
                                 
                             </div>
                         ) : (

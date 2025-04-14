@@ -43,14 +43,6 @@ const Articles = () => {
         DeleteArticle('test-23b58620-184e-11f0-b102-5b51d7c0e444');
     })
 
-    useEffect(()=>{
-        if(typeArticle==='thread'){
-            setLimitArticleDisplay(5);
-        }
-        else if(typeArticle==="twitter"){
-            setLimitArticleDisplay(5);
-        }
-    }, [typeArticle])
 
     useEffect(()=>{
         const q = query(collection(db, 'articlesImage'));

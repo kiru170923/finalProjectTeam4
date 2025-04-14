@@ -134,17 +134,17 @@ const Profile = () => {
                     </li>
                     {!userData && (
                         <li 
-                            className={section === 'Current Comment' ? 'pb-2' : ''} 
+                            className={section === 'Bài viết đã thích' ? 'pb-2' : ''} 
                             onClick={getSection}
                             style={{
-                                color: section === 'Current Comment' ? '#4DA8CC' : '#80C4DE',
+                                color: section === 'Bài viết đã thích' ? '#4DA8CC' : '#80C4DE',
                                 padding: '10px 20px',
-                                borderBottom: section === 'Current Comment' ? '3px solid #4DA8CC' : 'none',
+                                borderBottom: section === 'Bài viết đã thích' ? '3px solid #4DA8CC' : 'none',
                                 transition: 'color 0.3s, border-bottom 0.3s',
                                 fontSize: '1.1rem'
                             }}
                             onMouseEnter={(e) => e.target.style.color = '#4DA8CC'}
-                            onMouseLeave={(e) => e.target.style.color = section === 'Current Comment' ? '#4DA8CC' : '#80C4DE'}
+                            onMouseLeave={(e) => e.target.style.color = section === 'Bài viết đã thích' ? '#4DA8CC' : '#80C4DE'}
                         >
                             Bài viết đã thích
                         </li>

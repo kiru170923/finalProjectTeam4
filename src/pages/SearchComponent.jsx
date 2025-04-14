@@ -61,7 +61,9 @@ const SearchComponent = () => {
   <ListGroup className="mt-2">
     {filteredSuggestions.map((user) => (
       <ListGroup.Item onClick={()=>nav("/profile", {
-        state: user
+        state:{
+          author: user
+        }
       }) }
         key={user.username}
         className="d-flex align-items-center p-2 border rounded shadow-sm mb-2"

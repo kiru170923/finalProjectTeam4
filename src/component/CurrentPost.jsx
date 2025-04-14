@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getAllArticles, getArticlesByUsername } from '../service/articles';
+import { getArticlesByUsername } from '../service/articles';
 import { useNavigate } from 'react-router-dom';
 
 const CurrentPost = ({ currentUser }) => {
@@ -7,65 +7,71 @@ const CurrentPost = ({ currentUser }) => {
     const [loading, setLoading] = useState(true);
     const nav = useNavigate();
 
-
-    // lọc post của bản thân từ list all post
     useEffect(() => {
-
-        if(currentUser){
-            
-        getArticlesByUsername(currentUser.username).then((res)=>{
-            setCurrentUserArticles(res.articles)
-            setLoading(false);
-        })
+        if (currentUser) {
+            getArticlesByUsername(currentUser.username).then((res) => {
+                setCurrentUserArticles(res.articles);
+                setLoading(false);
+            });
         }
-        // getAllArticles().then(res => {
-        //     setCurrentUserArticles(
-        //         res.articles.filter(article => article?.author?.username === currentUser?.username)
-        //     );
-        //     
-        // });
     }, [currentUser]);
 
     return (
-        <div className='border rounded-top-4 shadow-sm p-3 pt-0 mt-0 bg-white' 
-            style={{ width: '550px', margin: '20px auto', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <div className='articles' style={{ width: '550px' }}>
-                <hr />
-                {loading ? (
-                    <div className="text-center">
-                        <img style={{ width: '400px' }} src='/images/loading.gif' alt="Loading..." />
-                    </div>
-                ) : null}
-                {(currentUserArticles) && currentUserArticles.length > 0 ? (
-                    currentUserArticles.map((article, index) => (
-                        <div key={article.slug || index}
-                        onClick={()=>nav('/articles/' + article?.slug )}
-                            className='article_overview p-3 rounded mb-3 shadow-sm'
-                            style={{ cursor: 'pointer', transition: '0.3s', backgroundColor: '#fdfdfd' }}
-                            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f8f9fa'}
-                            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#fdfdfd'}>
-                            <div className='row align-items-center'>
-                                <div className='col-auto'>
-                                    <img style={{ width: '40px', height: '40px',objectFit:'cover', borderRadius: '100%' }}
-                                        src={article.author.image} alt={article.author.username} />
+        <div className='p-3'>
+            {loading && (
+                <div className="text-center">
+                    <img style={{ width: '400px' }} src='/images/loading.gif' alt="Loading..." />
+                </div>
+            )}
+
+            {currentUserArticles.length === 0 ? (
+                <div className="text-center">
+                    <img src='/images/nothing.png' width={'300px'} alt="No articles" />
+                </div>
+            ) : (
+                <div className="d-flex flex-column gap-3">
+                    {currentUserArticles.map((article, index) => (
+                        <div
+                            key={article.slug || index}
+                            className="border rounded-3 p-3 shadow-sm bg-white text-decoration-none text-dark"
+                            style={{
+                                transition: 'transform 0.2s',
+                                cursor: 'pointer'
+                            }}
+                            onClick={() => nav('/articles/' + article?.slug)}
+                            onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-3px)'}
+                            onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+                        >
+                            <div className="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <p className="fw-bold mb-1">{article.title}</p>
+                                    <p className="text-muted mb-1" style={{ fontSize: '0.9rem' }}>{article.description}</p>
+                                    <hr />
+                                    <p className="mb-1" style={{ fontSize: '0.85rem', color: '#6c757d' }}>
+                                        ❤️ {article.favoritesCount || 0} lượt thích
+                                    </p>
                                 </div>
-                                <div className='col-auto'>
-                                    <b>{article.author.username} {article.author.username === JSON.parse(localStorage.getItem('user')).username ? '(Bạn)' : ''}</b>
-                                    <p className='text-muted' style={{ fontSize: '12px' }}>{article.createdAt}</p>
-                                </div>
-                                <hr></hr>
                             </div>
-                         
-                            <div className='mt-2'>
-                                <h6 className='fw-bold'>{article.title}</h6>
-                                <p className='text-muted'>{article.description}</p>
-                            </div>
+                            <p className="text-muted mt-2" style={{ fontSize: '0.8rem' }}>
+                                Tác giả: <strong>{article.author.username}</strong>{' '}
+                                <img
+                                    src={article.author.image || 'https://via.placeholder.com/40'}
+                                    alt={article.author.username}
+                                    style={{
+                                        width: '40px',
+                                        height: '40px',
+                                        borderRadius: '50%',
+                                        border: '2px solid #80C4DE',
+                                        objectFit: 'cover',
+                                        marginLeft: '8px'
+                                    }}
+                                />
+                            </p>
+                            <hr />
                         </div>
-                    ))
-                ) : (
-                   <div><img src='/images/nothing.png' width={'300px'}></img></div>
-                )}
-            </div>
+                    ))}
+                </div>
+            )}
         </div>
     );
 };
